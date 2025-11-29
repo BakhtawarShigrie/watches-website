@@ -3,184 +3,19 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-// --- DATA & CONSTANTS ---
-
-// Hero Background Image
-const heroBgImage = "https://images.unsplash.com/photo-1670404160620-a3a86428560e?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bHV4dXJ5JTIwd2F0Y2h8ZW58MHx8MHx8fDA%3D";
-
-// Advertisement Background Image
-const adBgImage = "https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHdhdGNofGVufDB8fDB8fHww";
-
-// Categories Data
-const categories = [
-  { name: "11.11 Sale", image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=300&auto=format&fit=crop" },
-  { name: "Men Formal", image: "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?q=80&w=300&auto=format&fit=crop" },
-  { name: "Men Sports", image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=300&auto=format&fit=crop" },
-  { name: "Female Fancy", image: "https://images.unsplash.com/photo-1590736969955-71cc94801759?q=80&w=300&auto=format&fit=crop" },
-  { name: "Female Bracelets", image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=300&auto=format&fit=crop" },
-  { name: "Smart Watches", image: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?q=80&w=300&auto=format&fit=crop" },
-  { name: "Couple Watches", image: "https://images.unsplash.com/photo-1622434641406-a15810545182?q=80&w=300&auto=format&fit=crop" },
-];
-
-// Featured Products Data
-const products = [
-  {
-    id: 1, 
-    brand: "GUESS",
-    name: "Guess Womens Watch – GW0471L1",
-    oldPrice: "39,500",
-    newPrice: "27,650",
-    image: "https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?q=80&w=400&auto=format&fit=crop",
-  },
-  {
-    id: 2,
-    brand: "CASIO GENERAL",
-    name: "Casio General Watch – MTP-VD200BL-5BUDF",
-    oldPrice: "25,000",
-    newPrice: "12,500",
-    image: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?q=80&w=400&auto=format&fit=crop",
-  },
-  {
-    id: 3,
-    brand: "VICTORINOX",
-    name: "Victorinox Swiss Army Watch – 241693",
-    oldPrice: "309,000",
-    newPrice: "262,650",
-    image: "https://images.unsplash.com/photo-1619134778706-7015533a6150?q=80&w=400&auto=format&fit=crop",
-  },
-  {
-    id: 4,
-    brand: "BREITLING",
-    name: "Breitling Watch – A13314101B1A1",
-    oldPrice: "2,120,000",
-    newPrice: "1,802,000",
-    image: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?q=80&w=400&auto=format&fit=crop",
-  },
-  {
-    id: 5,
-    brand: "CASIO GENERAL",
-    name: "Casio General Watch – MTP-VD01B-5BVUDF",
-    oldPrice: "18,400",
-    newPrice: "12,880",
-    image: "https://images.unsplash.com/photo-1539874754764-5a96559165b0?q=80&w=400&auto=format&fit=crop",
-  },
-];
-
-// Featured Collections Data
-const featuredCollections = [
-  {
-    title: "Luxury Watches",
-    description: "Explore our Watches collection. We have a wide range of luxurious and unique Watches.",
-    image: "https://images.unsplash.com/photo-1596516109370-29001ec8ec36?q=80&w=600&auto=format&fit=crop",
-  },
-  {
-    title: "Eyewear Collection",
-    description: "Explore our Eyewear collection. We have a wide range of luxury glasses for both men and women.",
-    image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=600&auto=format&fit=crop",
-  },
-  {
-    title: "Accessories",
-    description: "Accessories are the utmost best way to update your look and your wardrobe.",
-    image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?q=80&w=600&auto=format&fit=crop",
-  },
-];
-
-// Loved Products Data
-const lovedProducts = [
-  {
-    id: 6,
-    brand: "Parfums de Marly",
-    name: "Castley",
-    price: "87,000",
-    mainImage: "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=600&auto=format&fit=crop",
-    thumbnail: "https://images.unsplash.com/photo-1594035910387-fea4779426e9?q=80&w=150&auto=format&fit=crop",
-  },
-  {
-    id: 7,
-    brand: "INITIO Parfums Privés",
-    name: "Narcotic Delight",
-    price: "82,000",
-    mainImage: "https://images.unsplash.com/photo-1615160936637-299a9a3b6805?q=80&w=600&auto=format&fit=crop",
-    thumbnail: "https://images.unsplash.com/photo-1592914610354-fd354ea45e48?q=80&w=150&auto=format&fit=crop",
-  },
-  {
-    id: 8,
-    brand: "Clive Christian",
-    name: "L Red Tea Vetiver",
-    price: "120,000",
-    mainImage: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=600&auto=format&fit=crop",
-    thumbnail: "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=150&auto=format&fit=crop",
-  },
-];
-
-// News / Blog Data
-const newsArticles = [
-  {
-    title: "Guess Watches – BLACK & GOLD",
-    category: "LifeStyle Collection",
-    date: "December 24, 2015",
-    image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=600&auto=format&fit=crop", // Gold watch
-  },
-  {
-    title: "Guess Watches – Breast Health Awareness and Education",
-    category: "LifeStyle Collection",
-    date: "July 7, 2020",
-    image: "https://images.unsplash.com/photo-1585123334904-845d60e97b29?q=80&w=600&auto=format&fit=crop", // Watches stack
-  },
-  {
-    title: "Victorinox I.N.O.X. PROFESSIONAL DIVER",
-    category: "LifeStyle Collection",
-    date: "July 27, 2020",
-    image: "https://images.unsplash.com/photo-1533139502658-0198f920d3e8?q=80&w=600&auto=format&fit=crop", // Diver watch
-  },
-];
-
-// FAQs Data
-const faqs = [
-  {
-    question: "What is your exchange & return policy",
-    answer: "We offer a 30-day exchange and return policy for all unworn watches in original packaging. Please retain your receipt.",
-  },
-  {
-    question: "How will my order be shipped",
-    answer: "All orders are shipped via insured express courier services. You will receive a tracking number once your order is dispatched.",
-  },
-  {
-    question: "How can I become part of the Loyalty Program",
-    answer: "You can join our Loyalty Program by creating an account on our website. Points are earned on every purchase.",
-  },
-  {
-    question: "Can I collect my order form your retail stores?",
-    answer: "Yes, you can choose the 'Click & Collect' option at checkout to pick up your order from your nearest store.",
-  },
-  {
-    question: "Do you offer international shipping?",
-    answer: "Yes, we ship to select countries worldwide. Shipping costs and delivery times vary by location.",
-  },
-  {
-    question: "Are your watches authentic?",
-    answer: "Absolutely. We are an authorized retailer for all the brands we carry, guaranteeing 100% authenticity.",
-  },
-  {
-    question: "What payment methods do you accept?",
-    answer: "We accept all major credit cards, PayPal, and bank transfers.",
-  },
-  {
-    question: "How do I track my order?",
-    answer: "Once shipped, you will receive an email with a tracking link to monitor your shipment's progress.",
-  },
-  {
-    question: "Do you offer watch repair services?",
-    answer: "Yes, we have a dedicated service center for repairs and maintenance of watches purchased from us.",
-  },
-  {
-    question: "Can I change my order after placing it?",
-    answer: "Please contact our customer service immediately. If the order hasn't been processed, we may be able to modify it.",
-  },
-];
+import { useGlobalContext } from "@/context/GlobalContext";
+import { heroBgImage, adBgImage } from "@/app/website-data"; // Static images from data file
 
 export default function Home() {
+  // Access data from Global Context
+  const { 
+    products, 
+    categories, 
+    featuredCollections, 
+    newsArticles, 
+    faqs 
+  } = useGlobalContext();
+
   // FAQ State Management
   const [showAll, setShowAll] = useState(false);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -196,6 +31,11 @@ export default function Home() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Derived Data for Sections
+  // We use the first 5 products for "Featured" and the next 3 for "Loved" to utilize the dynamic list
+  const featuredProducts = products.slice(0, 5);
+  const lovedProducts = products.slice(5, 8); 
 
   return (
     <main className="relative min-h-screen w-full bg-white font-sans text-[#333]">
@@ -275,7 +115,7 @@ export default function Home() {
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-10">
-            {products.map((product) => (
+            {featuredProducts.map((product) => (
               <Link href={`/product/${product.id}`} key={product.id} className="flex flex-col items-center text-center group cursor-pointer block">
                 <div className="relative w-full h-[300px] mb-6 overflow-hidden">
                   <Image src={product.image} alt={product.name} fill className="object-contain transition-transform duration-500 group-hover:scale-105" />
@@ -284,8 +124,10 @@ export default function Home() {
                   <h3 className="text-sm font-bold text-black uppercase tracking-wider">{product.brand}</h3>
                   <p className="text-xs text-gray-500 font-light leading-relaxed max-w-[200px]">{product.name}</p>
                   <div className="flex items-center gap-3 mt-2">
-                    <span className="text-xs text-orange-600 line-through font-medium">Rs {product.oldPrice}</span>
-                    <span className="text-sm text-black font-bold">Rs {product.newPrice}</span>
+                    {product.originalPrice && (
+                        <span className="text-xs text-orange-600 line-through font-medium">Rs {product.originalPrice.toLocaleString()}</span>
+                    )}
+                    <span className="text-sm text-black font-bold">Rs {product.price.toLocaleString()}</span>
                   </div>
                   <span className="text-[10px] text-gray-400 uppercase tracking-wide">inc. GST</span>
                 </div>
@@ -345,15 +187,19 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {lovedProducts.map((item) => (
               <Link href={`/product/${item.id}`} key={item.id} className="relative group cursor-pointer h-[500px] w-full bg-gray-100 overflow-hidden block">
-                <Image src={item.mainImage} alt={item.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                <Image src={item.image} alt={item.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-sm p-4 rounded-sm flex items-center gap-4 shadow-sm transition-transform duration-300 hover:-translate-y-1">
                   <div className="relative w-12 h-12 flex-shrink-0 bg-gray-50 rounded-sm overflow-hidden">
-                    <Image src={item.thumbnail} alt={item.name} fill className="object-contain" />
+                    {item.thumbnail ? (
+                        <Image src={item.thumbnail} alt={item.name} fill className="object-contain" />
+                    ) : (
+                        <Image src={item.image} alt={item.name} fill className="object-contain" />
+                    )}
                   </div>
                   <div className="flex-grow">
                     <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{item.brand}</h4>
                     <h3 className="text-sm font-semibold text-black">{item.name}</h3>
-                    <p className="text-xs font-bold text-gray-800 mt-1">Rs. {item.price}</p>
+                    <p className="text-xs font-bold text-gray-800 mt-1">Rs. {item.price.toLocaleString()}</p>
                   </div>
                   <div className="flex-shrink-0 text-gray-400 group-hover:text-black transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -506,7 +352,7 @@ export default function Home() {
             )}
           </div>
           
-          {/* Show Less Button (Optional, if you want to collapse back) */}
+          {/* Show Less Button */}
           {showAll && (
              <div className="mt-8">
                 <button
@@ -586,7 +432,7 @@ export default function Home() {
                         </Link>
                         {/* Instagram Icon */}
                         <Link href="#" className="text-gray-500 hover:text-black transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0-3-3Z"/></svg>
                         </Link>
                     </div>
                 </div>

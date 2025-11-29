@@ -3,146 +3,16 @@
 import { useState, use } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-// Mock Products Data (Duplicate for demo, normally fetched from API or context)
-const productsData = [
-  {
-    id: 1,
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – EFR-539DE-2AVUDF",
-    price: 51500,
-    originalPrice: 65000,
-    image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=600&auto=format&fit=crop",
-    isNew: true,
-    description: "Enhance your elegance with our premium Casio Edifice Watch. Handcrafted with precision, featuring high-quality stainless steel and intricate detailing. Perfect for formal and casual occasions.",
-    stock: 10,
-    reviews: 43
-  },
-  {
-    id: 2,
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – EFR-539DE-3AVUDF",
-    price: 51500,
-    originalPrice: 65000,
-    image: "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?q=80&w=600&auto=format&fit=crop",
-    isNew: true,
-    description: "Experience the perfect blend of style and functionality with this green dial Casio Edifice.",
-    stock: 5,
-    reviews: 12
-  },
-  {
-    id: 3,
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – EFR-539DE-8AVUDF",
-    price: 51500,
-    originalPrice: 60000,
-    image: "https://images.unsplash.com/photo-1622434641406-a15810545182?q=80&w=600&auto=format&fit=crop",
-    isNew: true,
-    description: "A classic grey dial timepiece for the modern man.",
-    stock: 8,
-    reviews: 20
-  },
-  {
-    id: 4,
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – EFR-S108DE-2AVUDF",
-    price: 47500,
-    originalPrice: 55000,
-    image: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?q=80&w=600&auto=format&fit=crop",
-    isNew: true,
-    description: "Slim and sophisticated, the EFR-S108DE series.",
-    stock: 15,
-    reviews: 5
-  },
-  {
-    id: 5,
-    brand: "CASIO G-SHOCK",
-    name: "G-Shock Rugged – GA-2100",
-    price: 35000,
-    originalPrice: 42000,
-    image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=600&auto=format&fit=crop",
-    isNew: false,
-    description: "The ultimate tough watch. G-Shock GA-2100 series.",
-    stock: 20,
-    reviews: 100
-  },
-  {
-    id: 6,
-    brand: "GUESS",
-    name: "Guess Gold Plated",
-    price: 65000,
-    originalPrice: 80000,
-    image: "https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?q=80&w=600&auto=format&fit=crop",
-    isNew: true,
-    description: "Luxurious gold plated watch for a statement look.",
-    stock: 3,
-    reviews: 8
-  },
-  {
-    id: 7,
-    brand: "MOVADO",
-    name: "Movado Museum Classic",
-    price: 120000,
-    originalPrice: 150000,
-    image: "https://images.unsplash.com/photo-1619134778706-7015533a6150?q=80&w=600&auto=format&fit=crop",
-    isNew: false,
-    description: "Minimalist icon. The Museum Classic by Movado.",
-    stock: 2,
-    reviews: 30
-  },
-  {
-    id: 8,
-    brand: "RAY-BAN",
-    name: "Aviator Classic",
-    price: 45000,
-    originalPrice: 50000,
-    image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=600&auto=format&fit=crop",
-    isNew: true,
-    description: "Timeless Aviator sunglasses.",
-    stock: 50,
-    reviews: 200
-  },
-];
-
-// Mock Reviews Data
-const reviewsData = [
-  {
-    id: 1,
-    name: "Fatima Nadeem",
-    date: "10/16/2025",
-    rating: 5,
-    title: "Beautiful",
-    content: "Same as shown, even more beautiful in person. Very satisfied!",
-    verified: true
-  },
-  {
-    id: 2,
-    name: "Fatima Nadeem",
-    date: "10/16/2025",
-    rating: 5,
-    title: "Beautiful",
-    content: "Same as shown, even more beautiful in person. Very satisfied!",
-    verified: true
-  },
-  {
-    id: 3,
-    name: "Fatima Nadeem",
-    date: "10/16/2025",
-    rating: 5,
-    title: "Beautiful",
-    content: "Same as shown, even more beautiful in person. Very satisfied!",
-    verified: true
-  },
-];
+import { mainProductsData, reviewsData } from "../../website-data";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   // Unwrap params using React.use()
   const { id } = use(params);
   const productId = parseInt(id);
-  const product = productsData.find((p) => p.id === productId);
+  const product = mainProductsData.find((p) => p.id === productId);
 
   // Get related products (exclude current product)
-  const relatedProducts = productsData.filter(p => p.id !== productId).slice(0, 4);
+  const relatedProducts = mainProductsData.filter(p => p.id !== productId).slice(0, 4);
 
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("Silver");
@@ -156,7 +26,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     );
   }
 
-  const discountPercentage = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+  // Calculate discount percentage if originalPrice exists
+  const discountPercentage = product.originalPrice 
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
+    : 0;
 
   const handleQuantityChange = (type: "inc" | "dec") => {
     if (type === "inc") {
@@ -233,22 +106,26 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 </h1>
                 <div className="flex items-center gap-2 mb-4">
                     <div className="flex text-[#D4B07B] text-sm">{"★".repeat(5)}</div>
-                    <span className="text-xs text-gray-500">({product.reviews} reviews)</span>
+                    <span className="text-xs text-gray-500">({product.reviews || 0} reviews)</span>
                 </div>
                 <div className="flex items-center gap-3 mb-2">
                     <span className="text-2xl font-bold text-[#8B1A1A]">Rs. {product.price.toLocaleString()}</span>
-                    <span className="text-lg text-gray-400 line-through decoration-1">Rs. {product.originalPrice.toLocaleString()}</span>
-                    <span className="bg-[#8B1A1A] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">-{discountPercentage}%</span>
+                    {product.originalPrice && (
+                        <>
+                            <span className="text-lg text-gray-400 line-through decoration-1">Rs. {product.originalPrice.toLocaleString()}</span>
+                            <span className="bg-[#8B1A1A] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">-{discountPercentage}%</span>
+                        </>
+                    )}
                 </div>
                 <div className="flex items-center gap-2 mb-6">
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                    <span className="text-xs font-medium text-green-600">{product.stock} items in stock</span>
+                    <span className="text-xs font-medium text-green-600">{product.stock || "In"} items in stock</span>
                 </div>
                 <div className="border-b border-gray-200 pb-2 mb-4">
                     <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">DESCRIPTION</h3>
                 </div>
                 <p className="text-sm text-gray-600 font-light leading-relaxed mb-6">
-                    {product.description}
+                    {product.description || "No description available."}
                 </p>
                 <div className="text-sm text-gray-700 space-y-1 mb-8">
                     <p><span className="font-bold">Material:</span> Stainless Steel / Leather</p>
@@ -317,7 +194,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         <div className="flex text-[#D4B07B] text-xl">{"★".repeat(5)}</div>
                         <span className="text-lg font-bold">4.84 out of 5</span>
                     </div>
-                    <p className="text-sm text-gray-500">Based on 43 reviews</p>
+                    <p className="text-sm text-gray-500">Based on {product.reviews || 0} reviews</p>
                 </div>
 
                 {/* Rating Bars */}
@@ -474,7 +351,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M12 2.04c-5.5 0-10 4.49-10 10.02c0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.89 3.78-3.89c1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02Z"/></svg>
                         </Link>
                         <Link href="#" className="text-gray-500 hover:text-black transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3Z"/></svg>
                         </Link>
                     </div>
                 </div>
