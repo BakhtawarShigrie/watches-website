@@ -39,13 +39,12 @@ const DashboardView = () => {
 };
 
 // 2. GENERIC LIST VIEW
-// Removed 'extends Record<string, unknown>' to fix Type 'Category' is not assignable error
 interface ListViewProps<T> {
   title: string;
   data: T[];
   onAdd?: (item: T) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onDelete?: (id: any) => void; // Relaxed type to handle both string and number IDs easily
+  // We allow string or number because IDs can vary
+  onDelete?: (id: string | number) => void; 
   fields: { name: string; key: keyof T; type?: string }[];
   idKey: keyof T;
   showAddButton?: boolean;
@@ -61,6 +60,7 @@ const GenericListView = <T,>({
   showAddButton = true 
 }: ListViewProps<T>) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // Partial<T> allows us to build the object step by step
   const [newItem, setNewItem] = useState<Partial<T>>({});
 
   const handleSubmit = (e: FormEvent) => {
@@ -100,7 +100,9 @@ const GenericListView = <T,>({
                       <td key={String(f.key)} className="p-3 md:p-4">
                         {(f.key === 'image' || f.key === 'thumbnail') && typeof item[f.key] === 'string' ? (
                           <div className="w-10 h-10 md:w-12 md:h-12 relative bg-gray-100 rounded overflow-hidden border border-gray-200 shrink-0">
-                            {item[f.key] && <Image src={item[f.key] as string} alt="img" fill className="object-cover w-full h-full" />}
+                            {item[f.key] ? (
+                                <Image src={item[f.key] as string} alt="img" fill className="object-cover w-full h-full" />
+                            ) : null}
                           </div>
                         ) : (
                           <span className="line-clamp-2">{String(item[f.key])}</span>
@@ -109,7 +111,8 @@ const GenericListView = <T,>({
                     ))}
                     {onDelete && (
                       <td className="p-3 md:p-4 text-center">
-                        <button onClick={() => onDelete(item[idKey])} className="text-red-500 hover:text-red-700 font-bold p-2">🗑</button>
+                        {/* We cast item[idKey] to string | number which satisfies the prop type */}
+                        <button onClick={() => onDelete(item[idKey] as string | number)} className="text-red-500 hover:text-red-700 font-bold p-2">🗑</button>
                       </td>
                     )}
                   </tr>
@@ -136,6 +139,7 @@ const GenericListView = <T,>({
                     placeholder={f.name}
                     className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none"
                     value={String(newItem[f.key] || '')}
+                    // We allow any input for now, but in a real app we might want specific types
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     onChange={e => setNewItem({ ...newItem, [f.key]: e.target.value as any })}
                     required
@@ -300,14 +304,17 @@ const ProductsView = () => {
                     )}
                   </td>
                   
+                  {/* Featured Toggle */}
                   <td className="p-3 md:p-4 text-center">
                     <button onClick={() => toggleFeatured(product)} className={`text-xl transition-all p-2 ${isFeatured(product.id) ? "text-yellow-400 scale-110" : "text-gray-200 hover:text-yellow-200"}`}>★</button>
                   </td>
 
+                  {/* Loved Toggle */}
                   <td className="p-3 md:p-4 text-center">
                     <button onClick={() => toggleLoved(product)} className={`text-lg transition-all p-2 ${isLoved(product.id) ? "text-red-500 scale-110" : "text-gray-200 hover:text-red-200"}`}>❤</button>
                   </td>
 
+                  {/* Actions */}
                   <td className="p-3 md:p-4 text-center flex items-center justify-center gap-2">
                     <button onClick={() => handleOpenEdit(product)} className="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1 rounded text-xs font-bold transition-colors">Edit</button>
                     <button onClick={() => deleteProduct(product.id)} className="text-red-500 hover:text-red-700 font-bold p-2 text-lg">×</button>
@@ -329,12 +336,14 @@ const ProductsView = () => {
             <form onSubmit={handleSubmit} className="space-y-5">
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {/* Name */}
                   <div className="md:col-span-2">
                     <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Product Name <span className="text-red-500">*</span></label>
                     <input className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none" 
                         value={currentProduct.name} onChange={e => setCurrentProduct({...currentProduct, name: e.target.value})} required />
                   </div>
 
+                  {/* Brand & Category */}
                   <div>
                     <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Brand <span className="text-red-500">*</span></label>
                     <input className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none"
@@ -349,6 +358,7 @@ const ProductsView = () => {
                     </select>
                   </div>
 
+                  {/* Pricing Logic */}
                   <div>
                     <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Discounted Price (Selling) <span className="text-red-500">*</span></label>
                     <input type="number" className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none" 
@@ -362,12 +372,14 @@ const ProductsView = () => {
                         onChange={e => handlePriceCalculation(currentProduct.price, Number(e.target.value))} />
                   </div>
                   
+                  {/* Auto-Calculated Real Price */}
                   <div>
                     <label className="text-xs font-bold text-gray-400 uppercase mb-1 block">Real Price (Auto-Calculated)</label>
                     <input type="number" className="w-full border border-gray-200 bg-gray-50 text-gray-500 p-2.5 rounded text-sm focus:outline-none cursor-not-allowed" 
                         value={currentProduct.originalPrice || ''} readOnly />
                   </div>
 
+                  {/* Stock */}
                   <div>
                     <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Stock Quantity <span className="text-red-500">*</span></label>
                     <input type="number" className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none" 
@@ -375,6 +387,7 @@ const ProductsView = () => {
                   </div>
               </div>
 
+              {/* Images */}
               <div>
                 <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Image URLs (Comma separated) <span className="text-red-500">*</span></label>
                 <textarea rows={3} className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none" 
@@ -521,7 +534,6 @@ export default function AdminPage() {
     if (!isAdmin) {
       router.push("/admin/login");
     } else {
-        // Prevent sync state update warning
         setTimeout(() => setIsLoading(false), 0);
     }
   }, [router]);
@@ -606,9 +618,6 @@ export default function AdminPage() {
         
         {activeTab === "Products" && <ProductsView />}
 
-        {/* Reusing GenericListView for other tabs with correct casting if needed, 
-            though for simplicity sake, passing direct data works as they mostly align with generic usage */}
-        
         {activeTab === "Featured" && (
           <GenericListView 
             title="Featured Products" 
