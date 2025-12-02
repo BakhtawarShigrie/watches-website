@@ -1,18 +1,19 @@
 // app/website-data.ts
 
-// --- Types (Data ka structure define karne ke liye) ---
+// --- Types ---
 export interface Product {
   id: number;
   brand: string;
   name: string;
   price: number;
-  originalPrice?: number; // Optional, discount dikhane ke liye
+  originalPrice?: number;
   image: string;
   isNew?: boolean;
   stock?: number;
   reviews?: number;
   description?: string;
-  thumbnail?: string; // Loved products ke liye choti image
+  thumbnail?: string;
+  category?: string; // Added to support admin category selection
 }
 
 export interface Category {
@@ -65,7 +66,7 @@ export const categoriesData: Category[] = [
 
 // --- HOME PAGE DATA ---
 
-// Featured Products (Home Page)
+// Featured Products
 export const homeFeaturedProducts: Product[] = [
   {
     id: 101, 
@@ -109,7 +110,7 @@ export const homeFeaturedProducts: Product[] = [
   },
 ];
 
-// Loved Products (Home Page)
+// Loved Products
 export const homeLovedProducts: Product[] = [
   {
     id: 106,
@@ -197,29 +198,9 @@ export const faqsData: FAQ[] = [
     question: "Do you offer international shipping?",
     answer: "Yes, we ship to select countries worldwide. Shipping costs and delivery times vary by location.",
   },
-  {
-    question: "Are your watches authentic?",
-    answer: "Absolutely. We are an authorized retailer for all the brands we carry, guaranteeing 100% authenticity.",
-  },
-  {
-    question: "What payment methods do you accept?",
-    answer: "We accept all major credit cards, PayPal, and bank transfers.",
-  },
-  {
-    question: "How do I track my order?",
-    answer: "Once shipped, you will receive an email with a tracking link to monitor your shipment's progress.",
-  },
-  {
-    question: "Do you offer watch repair services?",
-    answer: "Yes, we have a dedicated service center for repairs and maintenance of watches purchased from us.",
-  },
-  {
-    question: "Can I change my order after placing it?",
-    answer: "Please contact our customer service immediately. If the order hasn't been processed, we may be able to modify it.",
-  },
 ];
 
-// --- MAIN PRODUCTS CATALOG (Products Page & Detail Page) ---
+// --- MAIN PRODUCTS CATALOG ---
 export const mainProductsData: Product[] = [
   {
     id: 1,
@@ -229,7 +210,7 @@ export const mainProductsData: Product[] = [
     originalPrice: 65000,
     image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=600&auto=format&fit=crop",
     isNew: true,
-    description: "Enhance your elegance with our premium Casio Edifice Watch. Handcrafted with precision, featuring high-quality stainless steel and intricate detailing. Perfect for formal and casual occasions.",
+    description: "Enhance your elegance with our premium Casio Edifice Watch.",
     stock: 10,
     reviews: 43
   },
@@ -241,7 +222,6 @@ export const mainProductsData: Product[] = [
     originalPrice: 65000,
     image: "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?q=80&w=600&auto=format&fit=crop",
     isNew: true,
-    description: "Experience the perfect blend of style and functionality with this green dial Casio Edifice.",
     stock: 5,
     reviews: 12
   },
@@ -253,7 +233,6 @@ export const mainProductsData: Product[] = [
     originalPrice: 60000,
     image: "https://images.unsplash.com/photo-1622434641406-a15810545182?q=80&w=600&auto=format&fit=crop",
     isNew: true,
-    description: "A classic grey dial timepiece for the modern man.",
     stock: 8,
     reviews: 20
   },
@@ -265,7 +244,6 @@ export const mainProductsData: Product[] = [
     originalPrice: 55000,
     image: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?q=80&w=600&auto=format&fit=crop",
     isNew: true,
-    description: "Slim and sophisticated, the EFR-S108DE series.",
     stock: 15,
     reviews: 5
   },
@@ -277,7 +255,6 @@ export const mainProductsData: Product[] = [
     originalPrice: 42000,
     image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=600&auto=format&fit=crop",
     isNew: false,
-    description: "The ultimate tough watch. G-Shock GA-2100 series.",
     stock: 20,
     reviews: 100
   },
@@ -289,7 +266,6 @@ export const mainProductsData: Product[] = [
     originalPrice: 80000,
     image: "https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?q=80&w=600&auto=format&fit=crop",
     isNew: true,
-    description: "Luxurious gold plated watch for a statement look.",
     stock: 3,
     reviews: 8
   },
@@ -301,7 +277,6 @@ export const mainProductsData: Product[] = [
     originalPrice: 150000,
     image: "https://images.unsplash.com/photo-1619134778706-7015533a6150?q=80&w=600&auto=format&fit=crop",
     isNew: false,
-    description: "Minimalist icon. The Museum Classic by Movado.",
     stock: 2,
     reviews: 30
   },
@@ -313,13 +288,12 @@ export const mainProductsData: Product[] = [
     originalPrice: 50000,
     image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=600&auto=format&fit=crop",
     isNew: true,
-    description: "Timeless Aviator sunglasses.",
     stock: 50,
     reviews: 200
   },
 ];
 
-// --- FILTERS & BRANDS (Products Page) ---
+// --- FILTERS & BRANDS ---
 export const brandsList = [
   "All",
   "VOGUE",
@@ -345,7 +319,7 @@ export const sidebarFiltersList = [
   "MOVEMENT"
 ];
 
-// --- REVIEWS (Product Detail Page) ---
+// --- REVIEWS ---
 export const reviewsData: Review[] = [
   {
     id: 1,

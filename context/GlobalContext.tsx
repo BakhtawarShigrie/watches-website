@@ -18,7 +18,6 @@ import {
   Review
 } from "@/app/website-data";
 
-// Extended Product Interface to support new fields internally
 export interface ExtendedProduct extends Product {
   category?: string;
   images?: string[];
@@ -28,7 +27,7 @@ export interface ExtendedProduct extends Product {
 interface GlobalContextType {
   products: ExtendedProduct[];
   addProduct: (product: ExtendedProduct) => void;
-  updateProduct: (id: number, updatedProduct: ExtendedProduct) => void; // New Edit Function
+  updateProduct: (id: number, updatedProduct: ExtendedProduct) => void;
   deleteProduct: (id: number) => void;
   
   featuredProducts: ExtendedProduct[];
@@ -62,7 +61,6 @@ interface GlobalContextType {
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 
 export const GlobalProvider = ({ children }: { children: ReactNode }) => {
-  // --- INITIAL STATE ---
   const [products, setProducts] = useState<ExtendedProduct[]>(mainProductsData);
   const [featuredProducts, setFeaturedProducts] = useState<ExtendedProduct[]>(homeFeaturedProducts);
   const [lovedProducts, setLovedProducts] = useState<ExtendedProduct[]>(homeLovedProducts);
@@ -73,7 +71,6 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   const [reviews, setReviews] = useState<Review[]>(reviewsData);
   const [adminCreds, setAdminCreds] = useState({ user: "admin", pass: "watches123@" });
 
-  // --- REF FOR SYNC ---
   const stateRef = useRef({
     products, featuredProducts, lovedProducts, categories, 
     featuredCollections, newsArticles, faqs, reviews, adminCreds
@@ -86,7 +83,6 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [products, featuredProducts, lovedProducts, categories, featuredCollections, newsArticles, faqs, reviews, adminCreds]);
 
-  // --- BROADCAST CHANNEL (Live Sync) ---
   useEffect(() => {
     const channel = new BroadcastChannel('watches_website_sync');
     channel.onmessage = (event) => {
@@ -116,8 +112,6 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     channel.close();
   };
 
-  // --- ACTIONS ---
-
   const addProduct = (product: ExtendedProduct) => {
     const updated = [ { ...product, id: Date.now() }, ...products];
     setProducts(updated);
@@ -127,13 +121,10 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   const updateProduct = (id: number, updatedProduct: ExtendedProduct) => {
     const updated = products.map(p => p.id === id ? { ...updatedProduct, id } : p);
     setProducts(updated);
-    
-    // Also update in lists if exists
     const updatedFeatured = featuredProducts.map(p => p.id === id ? { ...updatedProduct, id } : p);
     const updatedLoved = lovedProducts.map(p => p.id === id ? { ...updatedProduct, id } : p);
     setFeaturedProducts(updatedFeatured);
     setLovedProducts(updatedLoved);
-
     broadcastUpdate({ ...stateRef.current, products: updated, featuredProducts: updatedFeatured, lovedProducts: updatedLoved });
   };
 
@@ -171,7 +162,6 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     broadcastUpdate({ ...stateRef.current, lovedProducts: updated });
   };
 
-  // ... (Other categories/collections/news/faq actions remain same)
   const addCategory = (category: Category) => {
     const updated = [...categories, category];
     setCategories(updated);

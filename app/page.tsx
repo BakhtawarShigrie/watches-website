@@ -1,487 +1,676 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
-import { useGlobalContext } from "@/context/GlobalContext";
-import { heroBgImage, adBgImage } from "@/app/website-data"; // Static images from data file
+import { useGlobalContext, ExtendedProduct } from "@/context/GlobalContext";
+import { brandsList } from "@/app/website-data";
 
-export default function Home() {
-  // Access data from Global Context
-  const { 
-    products, 
-    categories, 
-    featuredCollections, 
-    newsArticles, 
-    faqs 
-  } = useGlobalContext();
+// ======================= SUB-COMPONENTS =======================
 
-  // FAQ State Management
-  const [showAll, setShowAll] = useState(false);
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const toggleFAQ = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
-  // Determine FAQ visibility: 4 items (last one blurred) or all items
-  const visibleCount = showAll ? faqs.length : 4;
-
-  // Scroll to Top Function
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // Derived Data for Sections
-  // We use the first 5 products for "Featured" and the next 3 for "Loved" to utilize the dynamic list
-  const featuredProducts = products.slice(0, 5);
-  const lovedProducts = products.slice(5, 8); 
+// 1. DASHBOARD VIEW
+const DashboardView = () => {
+  const { products, featuredProducts, lovedProducts, newsArticles } = useGlobalContext();
+  
+  const stats = [
+    { title: "Total Products", value: products.length, icon: "📦", color: "bg-blue-50 text-blue-700" },
+    { title: "Featured", value: featuredProducts.length, icon: "⭐", color: "bg-yellow-50 text-yellow-600" },
+    { title: "Loved", value: lovedProducts.length, icon: "❤", color: "bg-red-50 text-red-600" },
+    { title: "Magazines", value: newsArticles.length, icon: "📰", color: "bg-orange-50 text-orange-700" },
+  ];
 
   return (
-    <main className="relative min-h-screen w-full bg-white font-sans text-[#333]">
-
-      {/* ================= HERO SECTION ================= */}
-      <section className="relative h-screen w-full overflow-hidden bg-black text-white">
-        <header className="absolute top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-6 md:px-12">
-          <div className="text-lg font-bold tracking-[0.15em] uppercase">Watches</div>
-          <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-zinc-300 uppercase tracking-widest">
-            <Link href="/" className="hover:text-white transition-colors">Watches</Link>
-            <Link href="/Products" className="hover:text-white transition-colors">Products</Link>
-            <Link href="#" className="hover:text-white transition-colors">World of Watches</Link>
-          </nav>
-          <div className="flex items-center gap-5 text-zinc-200">
-            <button className="hover:text-white transition-colors">
-               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 5.197 5.197Z" />
-              </svg>
-            </button>
-            <button className="hover:text-white transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A7.5 7.5 0 0 1 4.501 20.118Z" />
-              </svg>
-            </button>
-            <button className="hover:text-white transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-              </svg>
-            </button>
-          </div>
-        </header>
-        <div className="absolute inset-0 z-0">
-          <Image src={heroBgImage} alt="Hero" fill className="object-cover object-center" priority />
-          <div className="absolute inset-0 bg-black/30"></div>
-        </div>
-        <div className="absolute bottom-24 left-6 md:left-12 z-20 max-w-2xl">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-300 mb-4">Current Favorites</p>
-          <h1 className="text-3xl md:text-5xl font-semibold leading-tight mb-8 text-white">The Seamaster Diver 300M 42 mm, Steel on Steel</h1>
-          <button className="px-8 py-3 border border-white text-xs uppercase tracking-[0.2em] font-medium hover:bg-white hover:text-black transition-all duration-300">Discover now</button>
-        </div>
-        <div className="absolute bottom-10 right-6 md:right-12 z-20 flex items-center justify-end">
-          <div className="flex items-center gap-4 cursor-pointer group">
-            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-300 group-hover:text-white transition-colors">Next slide</span>
-            <div className="h-[2px] w-24 bg-zinc-600 overflow-hidden relative">
-              <div className="absolute left-0 top-0 h-full w-1/3 bg-white"></div>
+    <div>
+      <h2 className="text-xl md:text-2xl font-bold mb-6">Dashboard Overview</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((stat, index) => (
+          <div key={index} className="bg-white p-4 md:p-6 rounded-sm shadow-sm border border-gray-100 flex items-center gap-4">
+            <div className={`w-12 h-12 flex-shrink-0 rounded-full flex items-center justify-center text-xl ${stat.color}`}>
+              {stat.icon}
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider truncate">{stat.title}</p>
+              <p className="text-2xl font-bold text-black">{stat.value}</p>
             </div>
           </div>
-        </div>
-      </section>
+        ))}
+      </div>
+    </div>
+  );
+};
 
-      {/* ================= PRODUCT CATEGORIES ================= */}
-      <section className="bg-white py-20 border-b border-gray-100">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-8 place-items-center">
-            {categories.map((category, index) => (
-              <div key={index} className="group flex flex-col items-center gap-4 cursor-pointer">
-                <div className="relative w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden shadow-sm border border-gray-100 transition-transform duration-300 group-hover:scale-110 group-hover:shadow-md">
-                  <Image src={category.image} alt={category.name} fill className="object-cover" />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                </div>
-                <span className="text-sm font-semibold text-gray-800 text-center tracking-wide group-hover:text-black">{category.name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+// 2. PRODUCTS VIEW
+const ProductsView = () => {
+  const { products, deleteProduct, addProduct, updateProduct, featuredProducts, toggleFeatured, lovedProducts, toggleLoved, categories } = useGlobalContext();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  
+  const initialProductState: ExtendedProduct = {
+    id: 0,
+    name: "",
+    brand: "",
+    price: 0,
+    originalPrice: 0,
+    discountPercentage: 0,
+    stock: 0,
+    category: "",
+    image: "",
+    images: [],
+    isNew: false
+  };
+  const [currentProduct, setCurrentProduct] = useState<ExtendedProduct>(initialProductState);
+  const [imageInput, setImageInput] = useState("");
 
-      {/* ================= FEATURED PRODUCTS ================= */}
-      <section className="bg-white py-24 border-b border-gray-100">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <p className="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-3">New Arrivals</p>
-            <h2 className="text-4xl font-bold text-black mb-8">Featured Products</h2>
-            <div className="flex justify-center items-center gap-8 text-sm font-medium tracking-widest uppercase">
-              <button className="text-black border-b-2 border-black pb-1">Watches</button>
-              <button className="text-gray-400 hover:text-black transition-colors pb-1 border-b-2 border-transparent hover:border-gray-200">Eyewear</button>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-10">
-            {featuredProducts.map((product) => (
-              <Link href={`/product/${product.id}`} key={product.id} className="flex flex-col items-center text-center group cursor-pointer block">
-                <div className="relative w-full h-[300px] mb-6 overflow-hidden">
-                  <Image src={product.image} alt={product.name} fill className="object-contain transition-transform duration-500 group-hover:scale-105" />
-                </div>
-                <div className="flex flex-col items-center gap-1">
-                  <h3 className="text-sm font-bold text-black uppercase tracking-wider">{product.brand}</h3>
-                  <p className="text-xs text-gray-500 font-light leading-relaxed max-w-[200px]">{product.name}</p>
-                  <div className="flex items-center gap-3 mt-2">
-                    {product.originalPrice && (
-                        <span className="text-xs text-orange-600 line-through font-medium">Rs {product.originalPrice.toLocaleString()}</span>
-                    )}
-                    <span className="text-sm text-black font-bold">Rs {product.price.toLocaleString()}</span>
-                  </div>
-                  <span className="text-[10px] text-gray-400 uppercase tracking-wide">inc. GST</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-          {/* View All Products Button */}
-          <div className="mt-12 text-center">
-            <Link href="/Products">
-              <button className="bg-[#1a1a1a] text-white px-8 py-3 text-sm font-bold uppercase tracking-widest hover:bg-[#333] transition-colors rounded-sm shadow-md">
-                View All Products
-              </button>
-            </Link>
-          </div>
-        </div>
-      </section>
+  const filteredProducts = products.filter((p) =>
+    p.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-      {/* ================= FEATURED COLLECTION ================= */}
-      <section className="bg-white py-20 border-b border-gray-100">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16 max-w-2xl mx-auto">
-            <p className="text-xs font-bold text-gray-400 tracking-[0.25em] uppercase mb-3">DISCOVER</p>
-            <h2 className="text-4xl font-bold text-black mb-6">Featured Collection</h2>
-            <p className="text-sm text-gray-500 leading-relaxed font-light">
-              Our brand was built on our passion and love for what we do – browse our featured categories for our most popular pieces.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {featuredCollections.map((item, index) => (
-              <div key={index} className="flex flex-col group cursor-pointer">
-                <div className="relative w-full h-[400px] overflow-hidden bg-gray-100">
-                  <Image src={item.image} alt={item.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                </div>
-                <div className="pt-8 text-center px-4">
-                  <h3 className="text-lg font-bold text-black mb-3">{item.title}</h3>
-                  <p className="text-sm text-gray-500 font-light leading-relaxed mb-6 max-w-xs mx-auto">{item.description}</p>
-                  <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-black hover:text-gray-600 transition-colors">
-                    Shop The Collection <span className="text-base">→</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+  const handleOpenAdd = () => {
+    setCurrentProduct(initialProductState);
+    setImageInput("");
+    setIsEditMode(false);
+    setIsModalOpen(true);
+  };
 
-      {/* ================= LOVED PRODUCTS ================= */}
-      <section className="bg-white py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16 max-w-2xl mx-auto">
-            <p className="text-xs font-bold text-gray-400 tracking-[0.25em] uppercase mb-3">DISCOVER</p>
-            <h2 className="text-4xl font-bold text-black mb-6">Loved Products</h2>
-            <p className="text-sm text-gray-500 leading-relaxed font-light">
-              Our brand was built on our passion and love for what we do – browse our featured categories for our most popular pieces.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {lovedProducts.map((item) => (
-              <Link href={`/product/${item.id}`} key={item.id} className="relative group cursor-pointer h-[500px] w-full bg-gray-100 overflow-hidden block">
-                <Image src={item.image} alt={item.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-sm p-4 rounded-sm flex items-center gap-4 shadow-sm transition-transform duration-300 hover:-translate-y-1">
-                  <div className="relative w-12 h-12 flex-shrink-0 bg-gray-50 rounded-sm overflow-hidden">
-                    {item.thumbnail ? (
-                        <Image src={item.thumbnail} alt={item.name} fill className="object-contain" />
-                    ) : (
-                        <Image src={item.image} alt={item.name} fill className="object-contain" />
-                    )}
-                  </div>
-                  <div className="flex-grow">
-                    <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{item.brand}</h4>
-                    <h3 className="text-sm font-semibold text-black">{item.name}</h3>
-                    <p className="text-xs font-bold text-gray-800 mt-1">Rs. {item.price.toLocaleString()}</p>
-                  </div>
-                  <div className="flex-shrink-0 text-gray-400 group-hover:text-black transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                    </svg>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+  const handleOpenEdit = (product: ExtendedProduct) => {
+    setCurrentProduct(product);
+    setImageInput(product.images ? product.images.join(",\n") : product.image);
+    setIsEditMode(true);
+    setIsModalOpen(true);
+  };
 
-      {/* ================= ADVERTISEMENT SECTION ================= */}
-      <section className="relative h-screen w-full overflow-hidden bg-black">
-        <Image 
-          src={adBgImage} 
-          alt="Dark Side of the Moon Watch" 
-          fill 
-          className="object-cover object-center" 
-          priority 
+  const handlePriceCalculation = (sellingPrice: number, discount: number) => {
+    if (discount > 0 && discount < 100) {
+      const real = Math.round(sellingPrice / (1 - discount / 100));
+      setCurrentProduct(prev => ({ ...prev, price: sellingPrice, discountPercentage: discount, originalPrice: real }));
+    } else {
+      setCurrentProduct(prev => ({ ...prev, price: sellingPrice, discountPercentage: 0, originalPrice: sellingPrice }));
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const imagesArray = imageInput.split(",").map(s => s.trim()).filter(s => s !== "");
+    const mainImage = imagesArray.length > 0 ? imagesArray[0] : "";
+
+    const productToSave: ExtendedProduct = {
+      ...currentProduct,
+      image: mainImage,
+      images: imagesArray,
+    };
+
+    if (isEditMode) {
+      updateProduct(productToSave.id, productToSave);
+    } else {
+      addProduct(productToSave);
+    }
+    setIsModalOpen(false);
+  };
+
+  const isFeatured = (id: number) => featuredProducts.some(p => p.id === id);
+  const isLoved = (id: number) => lovedProducts.some(p => p.id === id);
+
+  return (
+    <div>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h2 className="text-xl md:text-2xl font-bold">All Products</h2>
+        <button onClick={handleOpenAdd} className="w-full sm:w-auto bg-black text-white px-6 py-2 rounded-sm text-sm font-medium hover:bg-gray-800 transition-colors">
+          + Add Product
+        </button>
+      </div>
+
+      <div className="bg-white p-3 md:p-4 rounded-sm border border-gray-200 mb-6">
+        <input 
+          type="text" 
+          placeholder="Search products..." 
+          className="w-full px-4 py-2 border border-gray-200 rounded-sm focus:outline-none focus:border-black text-sm"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="absolute inset-0 flex flex-col justify-between p-8 md:p-16">
-          <div className="text-white/80 text-xs font-bold uppercase tracking-widest mt-4">Speedmaster</div>
-          <div className="max-w-lg mb-8">
-            <h2 className="text-4xl md:text-5xl font-serif text-white mb-6 leading-tight">Dark Side of the Moon</h2>
-            <p className="text-white/80 text-sm md:text-base mb-8 leading-relaxed font-light">
-              Honouring OMEGA&apos;s legacy of space exploration, this Speedmaster Dark Side of the Moon features a 44.25 mm case in polished-brushed black ceramic.
-            </p>
-            <button className="bg-[#D4B07B] text-black px-8 py-3.5 rounded-sm text-xs font-bold uppercase tracking-wider hover:bg-[#c29e6b] transition-colors duration-300">
-              Explore the Collection
-            </button>
+      </div>
+
+      <div className="bg-white rounded-sm border border-gray-200 overflow-hidden w-full">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left text-sm min-w-[900px]">
+            <thead className="bg-gray-50 font-bold text-gray-500 uppercase text-xs">
+              <tr>
+                <th className="p-3 md:p-4 whitespace-nowrap">Product</th>
+                <th className="p-3 md:p-4 whitespace-nowrap">Category</th>
+                <th className="p-3 md:p-4 whitespace-nowrap">Price</th>
+                <th className="p-3 md:p-4 whitespace-nowrap">Stock</th>
+                <th className="p-3 md:p-4 text-center">Featured</th>
+                <th className="p-3 md:p-4 text-center">Loved</th>
+                <th className="p-3 md:p-4 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {filteredProducts.map((product) => (
+                <tr key={product.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="p-3 md:p-4 flex items-center gap-3 min-w-[200px]">
+                    <div className="w-10 h-10 md:w-12 md:h-12 relative bg-gray-100 rounded-md overflow-hidden border border-gray-200 flex-shrink-0">
+                      {product.image && (
+                        <Image 
+                          src={product.image} 
+                          alt={product.name} 
+                          fill 
+                          className="object-cover w-full h-full" 
+                          sizes="50px"
+                        />
+                      )}
+                    </div>
+                    <div>
+                      <span className="font-medium text-black line-clamp-1 block">{product.name}</span>
+                      <span className="text-[10px] text-gray-500 uppercase">{product.brand}</span>
+                    </div>
+                  </td>
+                  <td className="p-3 md:p-4 text-gray-500 whitespace-nowrap">{product.category || "-"}</td>
+                  <td className="p-3 md:p-4 whitespace-nowrap">
+                    <div className="flex flex-col">
+                        <span className="font-bold">Rs. {product.price.toLocaleString()}</span>
+                        {product.discountPercentage ? (
+                            <span className="text-[10px] text-gray-400 line-through">Rs. {product.originalPrice?.toLocaleString()}</span>
+                        ) : null}
+                    </div>
+                  </td>
+                  <td className="p-3 md:p-4 whitespace-nowrap">
+                    {product.stock && product.stock > 0 ? (
+                        <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold">
+                            In Stock ({product.stock})
+                        </span>
+                    ) : (
+                        <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-[10px] font-bold">
+                            Out of Stock
+                        </span>
+                    )}
+                  </td>
+                  
+                  <td className="p-3 md:p-4 text-center">
+                    <button onClick={() => toggleFeatured(product)} className={`text-xl transition-all p-2 ${isFeatured(product.id) ? "text-yellow-400 scale-110" : "text-gray-200 hover:text-yellow-200"}`}>★</button>
+                  </td>
+
+                  <td className="p-3 md:p-4 text-center">
+                    <button onClick={() => toggleLoved(product)} className={`text-lg transition-all p-2 ${isLoved(product.id) ? "text-red-500 scale-110" : "text-gray-200 hover:text-red-200"}`}>❤</button>
+                  </td>
+
+                  <td className="p-3 md:p-4 text-center flex items-center justify-center gap-2">
+                    <button onClick={() => handleOpenEdit(product)} className="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1 rounded text-xs font-bold transition-colors">Edit</button>
+                    <button onClick={() => deleteProduct(product.id)} className="text-red-500 hover:text-red-700 font-bold p-2 text-lg">×</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4 backdrop-blur-sm">
+          <div className="bg-white p-6 rounded-lg w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h3 className="text-xl font-bold mb-6 pb-2 border-b border-gray-100">
+                {isEditMode ? "Edit Product" : "Add New Product"}
+            </h3>
+            
+            <form onSubmit={handleSubmit} className="space-y-5">
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div className="md:col-span-2">
+                    <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Product Name <span className="text-red-500">*</span></label>
+                    <input className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none" 
+                        value={currentProduct.name} onChange={e => setCurrentProduct({...currentProduct, name: e.target.value})} required />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Brand <span className="text-red-500">*</span></label>
+                    <select className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none bg-white"
+                        value={currentProduct.brand} onChange={e => setCurrentProduct({...currentProduct, brand: e.target.value})} required>
+                        <option value="">Select Brand</option>
+                        {brandsList.map(b => b !== "All" && <option key={b} value={b}>{b}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Product Category <span className="text-red-500">*</span></label>
+                    <select className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none bg-white"
+                        value={currentProduct.category} onChange={e => setCurrentProduct({...currentProduct, category: e.target.value})} required>
+                        <option value="">Select Category</option>
+                        {categories.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Discounted Price (Selling) <span className="text-red-500">*</span></label>
+                    <input type="number" className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none" 
+                        value={currentProduct.price || ''} 
+                        onChange={e => handlePriceCalculation(Number(e.target.value), currentProduct.discountPercentage || 0)} required />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Discount Percentage (%)</label>
+                    <input type="number" className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none" 
+                        value={currentProduct.discountPercentage || ''} 
+                        onChange={e => handlePriceCalculation(currentProduct.price, Number(e.target.value))} />
+                  </div>
+                  
+                  <div>
+                    <label className="text-xs font-bold text-gray-400 uppercase mb-1 block">Real Price (Auto-Calculated)</label>
+                    <input type="number" className="w-full border border-gray-200 bg-gray-50 text-gray-500 p-2.5 rounded text-sm focus:outline-none cursor-not-allowed" 
+                        value={currentProduct.originalPrice || ''} readOnly />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Stock Quantity <span className="text-red-500">*</span></label>
+                    <input type="number" className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none" 
+                        value={currentProduct.stock || ''} onChange={e => setCurrentProduct({...currentProduct, stock: Number(e.target.value)})} required />
+                  </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Image URLs (Comma separated) <span className="text-red-500">*</span></label>
+                <textarea rows={3} className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none" 
+                    placeholder="https://example.com/img1.jpg, https://example.com/img2.jpg"
+                    value={imageInput} onChange={e => setImageInput(e.target.value)} required />
+                <p className="text-[10px] text-gray-400 mt-1">First image will be the main thumbnail.</p>
+              </div>
+
+              <div className="flex gap-3 justify-end pt-4 border-t border-gray-100">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-2.5 text-gray-600 text-sm font-bold hover:bg-gray-100 rounded transition-colors">Cancel</button>
+                <button type="submit" className="px-8 py-2.5 bg-black text-white rounded text-sm font-bold hover:bg-gray-800 transition-colors shadow-lg">
+                    {isEditMode ? "Update Product" : "Save Product"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-      </section>
+      )}
+    </div>
+  );
+};
 
-      {/* ================= NEWS / MAGAZINE SECTION ================= */}
-      <section className="bg-white py-24 border-b border-gray-100">
-        <div className="container mx-auto px-4">
-          
-          {/* Header */}
-          <div className="text-center mb-16 max-w-2xl mx-auto">
-            <p className="text-xs font-bold text-gray-400 tracking-[0.25em] uppercase mb-3">LIFESTYLE COLLECTION</p>
-            <h2 className="text-4xl font-bold text-black mb-6">Magazine & Press</h2>
-            <p className="text-sm text-gray-500 leading-relaxed font-light">
-              Updated monthly, follow the lifestyle collection blog for everything you want to know about watches & Eyewear.
-            </p>
-          </div>
+// 4. GENERIC LIST VIEW
+interface ListViewProps {
+  title: string;
+  data: any[];
+  onAdd?: (item: any) => void;
+  onDelete?: (id: any) => void;
+  fields: { name: string; key: string; type?: string }[];
+  idKey: string;
+  showAddButton?: boolean;
+}
 
-          {/* News Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {newsArticles.map((article, index) => (
-              <div key={index} className="flex flex-col group cursor-pointer text-center">
-                {/* Image */}
-                <div className="relative w-full h-[250px] overflow-hidden mb-6">
-                  <Image 
-                    src={article.image} 
-                    alt={article.title} 
-                    fill 
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+const GenericListView = ({ title, data, onAdd, onDelete, fields, idKey, showAddButton = true }: ListViewProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newItem, setNewItem] = useState<any>({});
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (onAdd) onAdd(newItem);
+    setIsModalOpen(false);
+    setNewItem({});
+  };
+
+  return (
+    <div>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h2 className="text-xl md:text-2xl font-bold">{title}</h2>
+        {showAddButton && (
+          <button onClick={() => setIsModalOpen(true)} className="w-full sm:w-auto bg-black text-white px-6 py-2 rounded-sm text-sm font-medium hover:bg-gray-800 transition-colors">
+            + Add New
+          </button>
+        )}
+      </div>
+
+      <div className="bg-white rounded-sm border border-gray-200 overflow-hidden w-full">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left text-sm min-w-[600px]">
+            <thead className="bg-gray-50 font-bold text-gray-500 uppercase text-xs">
+              <tr>
+                {fields.map(f => <th key={f.key} className="p-3 md:p-4 whitespace-nowrap">{f.name}</th>)}
+                {onDelete && <th className="p-3 md:p-4 text-center whitespace-nowrap">Action</th>}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {data.length > 0 ? (
+                data.map((item, idx) => (
+                  <tr key={idx} className="hover:bg-gray-50">
+                    {fields.map(f => (
+                      <td key={f.key} className="p-3 md:p-4">
+                        {f.key === 'image' || f.key === 'thumbnail' ? (
+                          <div className="w-10 h-10 md:w-12 md:h-12 relative bg-gray-100 rounded overflow-hidden border border-gray-200 flex-shrink-0">
+                            {item[f.key] && <Image src={item[f.key]} alt="img" fill className="object-cover w-full h-full" />}
+                          </div>
+                        ) : (
+                          <span className="line-clamp-2">{item[f.key]}</span>
+                        )}
+                      </td>
+                    ))}
+                    {onDelete && (
+                      <td className="p-3 md:p-4 text-center">
+                        <button onClick={() => onDelete(item[idKey])} className="text-red-500 hover:text-red-700 font-bold p-2">🗑</button>
+                      </td>
+                    )}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={fields.length + 1} className="p-8 text-center text-gray-400">No items found.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {isModalOpen && showAddButton && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h3 className="text-xl font-bold mb-4">Add {title}</h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {fields.map(f => (
+                <div key={f.key}>
+                  <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">{f.name}</label>
+                  <input
+                    placeholder={f.name}
+                    className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none"
+                    value={newItem[f.key] || ''}
+                    onChange={e => setNewItem({ ...newItem, [f.key]: e.target.value })}
+                    required
                   />
                 </div>
-                
-                {/* Content */}
-                <h3 className="text-base font-semibold text-black mb-3 px-4 leading-snug group-hover:text-gray-600 transition-colors">
-                  {article.title}
-                </h3>
-                
-                <div className="flex items-center justify-center gap-3 text-xs text-gray-400 font-light mb-6">
-                  <span>{article.category}</span>
-                  <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                  <span>{article.date}</span>
-                </div>
-
-                {/* Link */}
-                <div className="inline-block relative">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-black pb-1 border-b border-black group-hover:text-gray-600 group-hover:border-gray-600 transition-all">
-                    CONTINUE READING...
-                  </span>
-                </div>
+              ))}
+              <div className="flex gap-3 justify-end mt-6">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-500 text-sm hover:bg-gray-100 rounded">Cancel</button>
+                <button type="submit" className="px-6 py-2 bg-black text-white rounded text-sm hover:bg-gray-800">Save</button>
               </div>
-            ))}
+            </form>
           </div>
-
         </div>
-      </section>
+      )}
+    </div>
+  );
+};
 
-      {/* ================= FAQ SECTION ================= */}
-      <section className="bg-[#f0f2eb] py-24 text-[#1a1a1a]">
-        <div className="container mx-auto px-4 max-w-4xl">
-          {/* Header */}
-          <div className="mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif text-[#1a1a1a] mb-3">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-gray-600 text-sm md:text-base font-light">
-              Find quick answers to your questions in our comprehensive FAQ section.
-            </p>
+// 5. SETTINGS VIEW
+const SettingsView = () => {
+  const contextData = useGlobalContext();
+  const [username, setUsername] = useState(contextData.adminCreds.user);
+  const [password, setPassword] = useState(contextData.adminCreds.pass);
+
+  const handleSaveSettings = () => {
+    contextData.updateAdminCreds(username, password);
+    alert("Credentials Updated! (Export data to save permanently)");
+  };
+
+  const handleExport = () => {
+    const fileContent = `
+// app/website-data.ts (Generated from Admin Panel)
+
+export interface Product { id: number; brand: string; name: string; price: number; originalPrice?: number; discountPercentage?: number; image: string; images?: string[]; isNew?: boolean; stock?: number; reviews?: number; description?: string; thumbnail?: string; category?: string; }
+export interface Category { name: string; image: string; }
+export interface Collection { title: string; description: string; image: string; }
+export interface Article { title: string; category: string; date: string; image: string; }
+export interface FAQ { question: string; answer: string; }
+export interface Review { id: number; name: string; date: string; rating: number; title: string; content: string; verified: boolean; }
+
+export const heroBgImage = "https://images.unsplash.com/photo-1670404160620-a3a86428560e?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bHV4dXJ5JTIwd2F0Y2h8ZW58MHx8MHx8fDA%3D";
+export const adBgImage = "https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHdhdGNofGVufDB8fDB8fHww";
+
+export const categoriesData: Category[] = ${JSON.stringify(contextData.categories, null, 2)};
+export const homeFeaturedProducts: Product[] = ${JSON.stringify(contextData.featuredProducts, null, 2)};
+export const homeLovedProducts: Product[] = ${JSON.stringify(contextData.lovedProducts, null, 2)};
+export const featuredCollectionsData: Collection[] = ${JSON.stringify(contextData.featuredCollections, null, 2)};
+export const newsArticlesData: Article[] = ${JSON.stringify(contextData.newsArticles, null, 2)};
+export const faqsData: FAQ[] = ${JSON.stringify(contextData.faqs, null, 2)};
+export const mainProductsData: Product[] = ${JSON.stringify(contextData.products, null, 2)};
+
+export const brandsList = ["All", "VOGUE", "CASIO EDIFICE", "CASIO G-SHOCK", "GC", "GUESS", "MOVADO", "RAY-BAN"];
+export const sidebarFiltersList = ["PRICE", "GENDER", "PRODUCTS", "WATCHES CATEGORY", "BRANDS", "CASE MATERIAL", "CASE SHAPE", "CASE SIZE", "STRAP / BRACELET", "FEATURE", "MOVEMENT"];
+export const reviewsData: Review[] = ${JSON.stringify(contextData.reviews, null, 2)};
+`;
+
+    const blob = new Blob([fileContent], { type: "text/typescript" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "website-data.ts";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      <div className="bg-white p-6 md:p-8 rounded-lg shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center gap-6 mb-8 text-center sm:text-left">
+        <div className="relative">
+          <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-gray-100 bg-gray-800 flex items-center justify-center text-white text-3xl font-bold">BS</div>
+        </div>
+        <div>
+          <h2 className="text-xl md:text-2xl font-bold text-black">Bakhtawar Shigrie</h2>
+          <p className="text-gray-500">Super Admin</p>
+        </div>
+      </div>
+
+      <div className="bg-white p-6 md:p-8 rounded-lg shadow-sm border border-gray-100 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="w-full">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-black focus:border-transparent outline-none" />
           </div>
+          <div className="w-full">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-black focus:border-transparent outline-none" />
+          </div>
+        </div>
+        <div className="mt-6 text-right">
+            <button onClick={handleSaveSettings} className="bg-black text-white px-6 py-2 rounded-sm text-sm font-medium hover:bg-gray-800 w-full sm:w-auto">Update Credentials</button>
+        </div>
+      </div>
 
-          {/* FAQ List */}
-          <div className="relative">
-            <div className="border-t border-gray-300">
-              {faqs.slice(0, visibleCount).map((faq, index) => {
-                const isLastVisible = !showAll && index === 3;
-                
-                return (
-                  <div 
-                    key={index} 
-                    className={`border-b border-gray-300 transition-all duration-300 ${isLastVisible ? 'opacity-30 blur-[1px] pointer-events-none' : ''}`}
-                  >
-                    <button
-                      onClick={() => toggleFAQ(index)}
-                      className="w-full py-6 flex justify-between items-center text-left hover:text-gray-600 transition-colors focus:outline-none"
-                    >
-                      <span className="text-lg md:text-xl font-serif text-[#1a1a1a]">
-                        {faq.question}
-                      </span>
-                      <span className="text-2xl font-light text-gray-500 ml-4">
-                        {openIndex === index ? "−" : "+"}
-                      </span>
-                    </button>
-                    
-                    {/* Dropdown Content */}
-                    <div
-                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                        openIndex === index ? "max-h-40 opacity-100 pb-6" : "max-h-0 opacity-0"
-                      }`}
-                    >
-                      <p className="text-gray-600 font-light leading-relaxed">
-                        {faq.answer}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
+      <div className="bg-white p-6 md:p-8 rounded-lg shadow-sm border border-gray-100">
+        <h3 className="text-lg font-bold mb-4">Export & Preview</h3>
+        <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-md">
+          <div className="flex items-start gap-3">
+            <div className="text-blue-500 mt-1">ℹ</div>
+            <div>
+              <h4 className="text-blue-800 font-bold text-sm">Ready to Deploy?</h4>
+              <p className="text-blue-600 text-xs mt-1">Click 'Export Data' to download the updated code file, then replace your project's <strong>website-data.ts</strong> file.</p>
             </div>
-
-            {/* Show More Button Overlay */}
-            {!showAll && (
-              <div className="absolute bottom-0 left-0 w-full pt-10 pb-2 bg-gradient-to-t from-[#f0f2eb] to-transparent flex justify-start pl-0">
-                <button
-                  onClick={() => setShowAll(true)}
-                  className="bg-[#dcdccf] hover:bg-[#cfcfc2] text-[#1a1a1a] px-8 py-3 text-sm font-medium transition-colors rounded-sm"
-                >
-                  Show More
-                </button>
-              </div>
-            )}
           </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+          <button onClick={() => window.open('/live-changes', '_blank')} className="flex-1 flex items-center justify-center gap-2 border border-gray-300 text-gray-700 py-3 rounded-md font-medium hover:bg-gray-50 transition-colors">
+            View Changes
+          </button>
           
-          {/* Show Less Button */}
-          {showAll && (
-             <div className="mt-8">
-                <button
-                  onClick={() => setShowAll(false)}
-                  className="bg-[#dcdccf] hover:bg-[#cfcfc2] text-[#1a1a1a] px-8 py-3 text-sm font-medium transition-colors rounded-sm"
-                >
-                  Show Less
-                </button>
-             </div>
-          )}
-
+          <button onClick={handleExport} className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-md font-medium hover:bg-blue-700 transition-colors shadow-sm">
+            Export Data
+          </button>
         </div>
-      </section>
+      </div>
+    </div>
+  );
+};
 
-      {/* ================= FOOTER ================= */}
-      <footer className="bg-[#f9f9f9] text-[#333] pt-16 pb-8 font-sans border-t border-gray-200">
-        <div className="container mx-auto px-4">
-            {/* Top Footer Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
-                {/* HELP */}
-                <div>
-                    <h3 className="font-bold text-sm uppercase mb-6 tracking-wider">Help</h3>
-                    <ul className="space-y-4 text-sm text-gray-600">
-                        <li><Link href="#" className="hover:text-black transition-colors">About Us</Link></li>
-                        <li><Link href="#" className="hover:text-black transition-colors">Contact Us</Link></li>
-                        <li><Link href="#" className="hover:text-black transition-colors">Terms & Conditions</Link></li>
-                        <li><Link href="#" className="hover:text-black transition-colors">Returns & Exchanges</Link></li>
-                        <li><Link href="#" className="hover:text-black transition-colors">Shipping & Delivery</Link></li>
-                        <li><Link href="#" className="hover:text-black transition-colors">Privacy Policy</Link></li>
-                    </ul>
-                </div>
+// ======================= MAIN PAGE COMPONENT =======================
 
-                {/* INFORMATION */}
-                <div>
-                    <h3 className="font-bold text-sm uppercase mb-6 tracking-wider">Information</h3>
-                    <ul className="space-y-4 text-sm text-gray-600">
-                        <li><Link href="#" className="hover:text-black transition-colors">Store Location</Link></li>
-                        <li><Link href="#" className="hover:text-black transition-colors">Gift Card</Link></li>
-                        <li><Link href="#" className="hover:text-black transition-colors">Orders Tracking</Link></li>
-                        <li><Link href="#" className="hover:text-black transition-colors">FAQs</Link></li>
-                    </ul>
-                </div>
+export default function AdminPage() {
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState("Dashboard");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  const { 
+    categories, addCategory, deleteCategory,
+    featuredCollections, addCollection, deleteCollection,
+    newsArticles, addArticle, deleteArticle,
+    faqs, addFAQ, deleteFAQ,
+    featuredProducts, toggleFeatured, 
+    lovedProducts, toggleLoved
+  } = useGlobalContext();
 
-                {/* ACCOUNT */}
-                <div>
-                    <h3 className="font-bold text-sm uppercase mb-6 tracking-wider">Account</h3>
-                    <ul className="space-y-4 text-sm text-gray-600">
-                        <li><Link href="#" className="hover:text-black transition-colors">Login / Register</Link></li>
-                        <li><Link href="#" className="hover:text-black transition-colors">Wishlist</Link></li>
-                        <li><Link href="#" className="hover:text-black transition-colors">Cart</Link></li>
-                        <li><Link href="#" className="hover:text-black transition-colors">Checkout</Link></li>
-                    </ul>
-                </div>
+  useEffect(() => {
+    const isAdmin = localStorage.getItem("isAdmin");
+    if (!isAdmin) {
+      router.push("/admin/login");
+    } else {
+      setIsLoading(false);
+    }
+  }, [router]);
 
-                {/* CATEGORIES */}
-                <div>
-                    <h3 className="font-bold text-sm uppercase mb-6 tracking-wider">Categories</h3>
-                    <ul className="space-y-4 text-sm text-gray-600">
-                        <li><Link href="#" className="hover:text-black transition-colors">Watches</Link></li>
-                        <li><Link href="#" className="hover:text-black transition-colors">Eyewear</Link></li>
-                        <li><Link href="#" className="hover:text-black transition-colors">Brands</Link></li>
-                        <li><Link href="#" className="hover:text-black transition-colors">Accessories</Link></li>
-                        <li><Link href="#" className="text-[#d95e00] hover:text-red-700 transition-colors">Sale</Link></li>
-                    </ul>
-                </div>
+  if (isLoading) return null;
 
-                {/* SUBSCRIBE & FOLLOW US */}
-                <div className="lg:col-span-1">
-                    <h3 className="font-bold text-sm uppercase mb-6 tracking-wider">Subscribe & Follow Us</h3>
-                    <p className="text-sm text-gray-600 mb-6 leading-relaxed">
-                        Get the latest updates on promotions, new products, much more.
-                    </p>
-                    <div className="flex items-center gap-4">
-                        {/* Facebook Icon */}
-                        <Link href="#" className="text-gray-500 hover:text-black transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M12 2.04c-5.5 0-10 4.49-10 10.02c0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.89 3.78-3.89c1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02Z"/></svg>
-                        </Link>
-                        {/* Instagram Icon */}
-                        <Link href="#" className="text-gray-500 hover:text-black transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0-3-3Z"/></svg>
-                        </Link>
-                    </div>
-                </div>
-            </div>
+  const menuItems = [
+    { name: "Dashboard", icon: "⊞" },
+    { name: "Products", icon: "📦" },
+    { name: "Featured", icon: "⭐" },
+    { name: "Loved", icon: "❤" },
+    { name: "Categories", icon: "Dg" },
+    { name: "Collections", icon: "📚" },
+    { name: "Magazines", icon: "📰" },
+    { name: "FAQs", icon: "❓" },
+    { name: "Settings", icon: "⚙" },
+  ];
 
-            {/* Divider */}
-            <div className="border-t border-gray-300 mb-8"></div>
-
-            {/* Bottom Footer */}
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-                {/* Logo */}
-                <div className="bg-black text-white px-4 py-2 font-serif text-xl tracking-widest border border-black cursor-pointer">
-                    LifeStyle <span className="block text-[8px] text-center tracking-[0.2em] -mt-1 text-gray-300">COLLECTION</span>
-                </div>
-
-                {/* Copyright */}
-                <div className="text-xs text-gray-500 text-center md:text-left">
-                    Copyright 2024 Lifestyle Collection all rights reserved.
-                </div>
-
-                {/* Payment Icons & Scroll Top */}
-                <div className="flex items-center gap-4">
-                    <div className="flex gap-2 opacity-60 grayscale hover:grayscale-0 transition-all cursor-default">
-                        {/* Simulated Payment Icons using Text */}
-                       <span className="text-xs font-bold text-blue-900">VISA</span>
-                       <span className="text-[10px] font-bold text-gray-600 border border-gray-400 px-1 rounded-sm">CASH ON DELIVERY</span>
-                       <span className="text-xs font-bold text-red-600">UnionPay</span>
-                       <span className="text-[10px] font-bold text-gray-600 border border-gray-400 px-1 rounded-sm">BANK TRANSFER</span>
-                       <span className="text-xs font-bold text-orange-600">MasterCard</span>
-                    </div>
-                    
-                    {/* Scroll Top Button */}
-                    <button onClick={scrollToTop} className="bg-[#666] hover:bg-[#444] text-white w-10 h-10 flex items-center justify-center rounded-sm transition-colors shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+  return (
+    <div className="flex min-h-screen bg-[#F9F9F9] font-sans text-[#333]">
+      
+      {/* MOBILE HEADER */}
+      <div className="fixed top-0 left-0 w-full bg-white z-40 border-b border-gray-200 md:hidden flex items-center justify-between p-4 shadow-sm">
+        <div className="flex items-center gap-2">
+           <div className="w-8 h-8 bg-gray-900 text-white rounded-full flex items-center justify-center font-bold text-xs">BS</div>
+           <span className="font-bold text-sm">Admin Panel</span>
         </div>
-      </footer>
+        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 text-gray-700">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
 
-       {/* Floating Chat Button */}
-       <button className="fixed bottom-6 right-6 z-50 h-12 w-12 bg-[#1a1a1a] rounded-full flex items-center justify-center hover:bg-[#333] transition-colors shadow-xl border border-zinc-800/50">
-         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-white">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-        </svg>
-       </button>
+      {/* OVERLAY */}
+      {isSidebarOpen && (
+        <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setIsSidebarOpen(false)}></div>
+      )}
 
-    </main>
+      {/* SIDEBAR */}
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        <div className="p-6 flex items-center gap-3 border-b border-gray-100">
+          <div className="w-10 h-10 bg-gray-900 text-white rounded-full flex items-center justify-center font-bold">BS</div>
+          <div>
+            <h3 className="text-sm font-bold text-black">Bakhtawar Shigrie</h3>
+            <p className="text-[10px] text-gray-500 uppercase">Super Admin</p>
+          </div>
+        </div>
+
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+          {menuItems.map((item) => (
+            <button
+              key={item.name}
+              onClick={() => { setActiveTab(item.name); setIsSidebarOpen(false); }}
+              className={`flex w-full items-center gap-3 px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+                activeTab === item.name
+                  ? "bg-black text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-black"
+              }`}
+            >
+              <span className="text-lg w-6 text-center">{item.icon}</span>
+              {item.name}
+            </button>
+          ))}
+        </nav>
+
+        <div className="p-4 border-t border-gray-100">
+          <button
+            onClick={() => {
+              localStorage.removeItem("isAdmin");
+              router.push("/admin/login");
+            }}
+            className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 rounded-md w-full"
+          >
+            <span>↪</span> Logout
+          </button>
+        </div>
+      </aside>
+
+      {/* MAIN CONTENT */}
+      <main className="flex-1 p-4 md:p-8 md:ml-64 pt-20 md:pt-8 w-full max-w-full overflow-hidden">
+        
+        {activeTab === "Dashboard" && <DashboardView />}
+        
+        {activeTab === "Products" && <ProductsView />}
+
+        {activeTab === "Featured" && (
+          <GenericListView 
+            title="Featured Products" 
+            data={featuredProducts} 
+            showAddButton={false} 
+            onDelete={(id) => {
+               const p = featuredProducts.find(x => x.id === id);
+               if(p) toggleFeatured(p);
+            }}
+            idKey="id"
+            fields={[{ name: "Product Name", key: "name" }, { name: "Image", key: "image" }, { name: "Price", key: "price" }]} 
+          />
+        )}
+
+        {activeTab === "Loved" && (
+          <GenericListView 
+            title="Loved Products" 
+            data={lovedProducts} 
+            showAddButton={false} 
+            onDelete={(id) => {
+               const p = lovedProducts.find(x => x.id === id);
+               if(p) toggleLoved(p);
+            }}
+            idKey="id"
+            fields={[{ name: "Product Name", key: "name" }, { name: "Image", key: "image" }, { name: "Price", key: "price" }]} 
+          />
+        )}
+
+        {activeTab === "Categories" && (
+          <GenericListView 
+            title="Product Categories" 
+            data={categories} 
+            onAdd={addCategory} 
+            onDelete={deleteCategory}
+            idKey="name"
+            fields={[{ name: "Name", key: "name" }, { name: "Image URL", key: "image" }]} 
+          />
+        )}
+
+        {activeTab === "Collections" && (
+          <GenericListView 
+            title="Featured Collections" 
+            data={featuredCollections} 
+            onAdd={addCollection} 
+            onDelete={deleteCollection}
+            idKey="title"
+            fields={[{ name: "Title", key: "title" }, { name: "Description", key: "description" }, { name: "Image URL", key: "image" }]} 
+          />
+        )}
+
+        {activeTab === "Magazines" && (
+          <GenericListView 
+            title="Magazines & News" 
+            data={newsArticles} 
+            onAdd={addArticle} 
+            onDelete={deleteArticle}
+            idKey="title"
+            fields={[{ name: "Title", key: "title" }, { name: "Category", key: "category" }, { name: "Date", key: "date" }, { name: "Image URL", key: "image" }]} 
+          />
+        )}
+
+        {activeTab === "FAQs" && (
+          <GenericListView 
+            title="FAQs" 
+            data={faqs} 
+            onAdd={addFAQ} 
+            onDelete={deleteFAQ}
+            idKey="question"
+            fields={[{ name: "Question", key: "question" }, { name: "Answer", key: "answer" }]} 
+          />
+        )}
+
+        {activeTab === "Settings" && <SettingsView />}
+
+      </main>
+    </div>
   );
 }
