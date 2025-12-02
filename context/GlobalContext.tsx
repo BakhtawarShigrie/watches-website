@@ -24,6 +24,19 @@ export interface ExtendedProduct extends Product {
   discountPercentage?: number;
 }
 
+// Define the shape of the state snapshot for broadcasting
+interface GlobalStateSnapshot {
+  products: ExtendedProduct[];
+  featuredProducts: ExtendedProduct[];
+  lovedProducts: ExtendedProduct[];
+  categories: Category[];
+  featuredCollections: Collection[];
+  newsArticles: Article[];
+  faqs: FAQ[];
+  reviews: Review[];
+  adminCreds: { user: string; pass: string };
+}
+
 interface GlobalContextType {
   products: ExtendedProduct[];
   addProduct: (product: ExtendedProduct) => void;
@@ -71,7 +84,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   const [reviews, setReviews] = useState<Review[]>(reviewsData);
   const [adminCreds, setAdminCreds] = useState({ user: "admin", pass: "watches123@" });
 
-  const stateRef = useRef({
+  const stateRef = useRef<GlobalStateSnapshot>({
     products, featuredProducts, lovedProducts, categories, 
     featuredCollections, newsArticles, faqs, reviews, adminCreds
   });
@@ -86,12 +99,13 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const channel = new BroadcastChannel('watches_website_sync');
     channel.onmessage = (event) => {
-      const data = event.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data = event.data as any;
       if (data.type === 'REQUEST_STATE') {
         channel.postMessage({ type: 'UPDATE_ALL', state: stateRef.current });
       }
       if (data.type === 'UPDATE_ALL') {
-        const { state } = data;
+        const state = data.state as GlobalStateSnapshot;
         if (state.products) setProducts(state.products);
         if (state.featuredProducts) setFeaturedProducts(state.featuredProducts);
         if (state.lovedProducts) setLovedProducts(state.lovedProducts);
@@ -99,6 +113,8 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
         if (state.featuredCollections) setFeaturedCollections(state.featuredCollections);
         if (state.newsArticles) setNewsArticles(state.newsArticles);
         if (state.faqs) setFaqs(state.faqs);
+        // Explicitly using setReviews to silence unused var warning if it persists
+        if (state.reviews) setReviews(state.reviews);
         if (state.adminCreds) setAdminCreds(state.adminCreds);
       }
     };
@@ -106,7 +122,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     return () => channel.close();
   }, []);
 
-  const broadcastUpdate = (newState: any) => {
+  const broadcastUpdate = (newState: GlobalStateSnapshot) => {
     const channel = new BroadcastChannel('watches_website_sync');
     channel.postMessage({ type: 'UPDATE_ALL', state: newState });
     channel.close();
