@@ -24,7 +24,6 @@ export interface ExtendedProduct extends Product {
   discountPercentage?: number;
 }
 
-// Define the shape of the state snapshot for broadcasting
 interface GlobalStateSnapshot {
   products: ExtendedProduct[];
   featuredProducts: ExtendedProduct[];
@@ -47,7 +46,7 @@ interface GlobalContextType {
   toggleFeatured: (product: ExtendedProduct) => void;
 
   lovedProducts: ExtendedProduct[];
-  toggleLoved: (product: ExtendedProduct) => void;
+  toggleLoved: (product: ExtendedProduct, customThumbnail?: string) => void; // Updated signature
   
   categories: Category[];
   addCategory: (category: Category) => void;
@@ -113,7 +112,6 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
         if (state.featuredCollections) setFeaturedCollections(state.featuredCollections);
         if (state.newsArticles) setNewsArticles(state.newsArticles);
         if (state.faqs) setFaqs(state.faqs);
-        // Explicitly using setReviews to silence unused var warning if it persists
         if (state.reviews) setReviews(state.reviews);
         if (state.adminCreds) setAdminCreds(state.adminCreds);
       }
@@ -166,13 +164,16 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     broadcastUpdate({ ...stateRef.current, featuredProducts: updated });
   };
 
-  const toggleLoved = (product: ExtendedProduct) => {
+  // UPDATE: Accepts customThumbnail
+  const toggleLoved = (product: ExtendedProduct, customThumbnail?: string) => {
     const exists = lovedProducts.find(p => p.id === product.id);
     let updated;
     if (exists) {
       updated = lovedProducts.filter(p => p.id !== product.id);
     } else {
-      updated = [product, ...lovedProducts];
+      // If adding, attach the custom thumbnail if provided
+      const productToAdd = customThumbnail ? { ...product, thumbnail: customThumbnail } : product;
+      updated = [productToAdd, ...lovedProducts];
     }
     setLovedProducts(updated);
     broadcastUpdate({ ...stateRef.current, lovedProducts: updated });

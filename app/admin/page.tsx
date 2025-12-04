@@ -4,6 +4,7 @@ import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useGlobalContext, ExtendedProduct } from "@/context/GlobalContext";
+import { brandsList } from "@/app/website-data"; // Creating brands list dynamically in export
 
 // ======================= SUB-COMPONENTS (VIEWS) =======================
 
@@ -44,7 +45,7 @@ interface ListViewProps<T> {
   data: T[];
   onAdd?: (item: T) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onDelete?: (id: any) => void; // Using any to accept both string and number IDs
+  onDelete?: (id: any) => void;
   fields: { name: string; key: keyof T; type?: string }[];
   idKey: keyof T;
   showAddButton?: boolean;
@@ -157,11 +158,18 @@ const GenericListView = <T,>({
 
 // 3. PRODUCTS VIEW
 const ProductsView = () => {
-  const { products, deleteProduct, addProduct, updateProduct, featuredProducts, toggleFeatured, lovedProducts, toggleLoved, categories } = useGlobalContext();
+  const { products, deleteProduct, addProduct, updateProduct, toggleStock, featuredProducts, toggleFeatured, lovedProducts, toggleLoved, categories } = useGlobalContext();
   const [searchTerm, setSearchTerm] = useState("");
+  
+  // Product CRUD Modals
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   
+  // Love Popup States
+  const [isLoveModalOpen, setIsLoveModalOpen] = useState(false);
+  const [productToLove, setProductToLove] = useState<ExtendedProduct | null>(null);
+  const [loveImageInput, setLoveImageInput] = useState("");
+
   const initialProductState: ExtendedProduct = {
     id: 0,
     name: "",
@@ -182,6 +190,7 @@ const ProductsView = () => {
     p.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // --- HANDLERS ---
   const handleOpenAdd = () => {
     setCurrentProduct(initialProductState);
     setImageInput("");
@@ -224,8 +233,31 @@ const ProductsView = () => {
     setIsModalOpen(false);
   };
 
-  const isFeatured = (id: number) => featuredProducts.some(p => p.id === id);
+  // --- LOVE HANDLERS ---
   const isLoved = (id: number) => lovedProducts.some(p => p.id === id);
+  
+  const handleHeartClick = (product: ExtendedProduct) => {
+    if (isLoved(product.id)) {
+        // If already loved, just toggle it off (remove)
+        toggleLoved(product);
+    } else {
+        // If adding to loved, open the popup
+        setProductToLove(product);
+        setLoveImageInput(""); // Reset input
+        setIsLoveModalOpen(true);
+    }
+  };
+
+  const handleConfirmLove = (e: FormEvent) => {
+    e.preventDefault();
+    if (productToLove) {
+        toggleLoved(productToLove, loveImageInput); // Pass the custom image
+        setIsLoveModalOpen(false);
+        setProductToLove(null);
+    }
+  };
+
+  const isFeatured = (id: number) => featuredProducts.some(p => p.id === id);
 
   return (
     <div>
@@ -254,7 +286,7 @@ const ProductsView = () => {
                 <th className="p-3 md:p-4 whitespace-nowrap">Product</th>
                 <th className="p-3 md:p-4 whitespace-nowrap">Category</th>
                 <th className="p-3 md:p-4 whitespace-nowrap">Price</th>
-                <th className="p-3 md:p-4 whitespace-nowrap">Stock</th>
+                <th className="p-3 md:p-4 whitespace-nowrap">Stock Status (Click to Toggle)</th>
                 <th className="p-3 md:p-4 text-center">Featured</th>
                 <th className="p-3 md:p-4 text-center">Loved</th>
                 <th className="p-3 md:p-4 text-center">Actions</th>
@@ -289,16 +321,21 @@ const ProductsView = () => {
                         ) : null}
                     </div>
                   </td>
+
+                  {/* Stock Toggle Button */}
                   <td className="p-3 md:p-4 whitespace-nowrap">
-                    {product.stock && product.stock > 0 ? (
-                        <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold">
-                            In Stock ({product.stock})
-                        </span>
-                    ) : (
-                        <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-[10px] font-bold">
-                            Out of Stock
-                        </span>
-                    )}
+                    <button 
+                      onClick={() => toggleStock(product)}
+                      className={`px-3 py-1 rounded text-[10px] font-bold uppercase transition-all ${
+                        product.stock && product.stock > 0 
+                        ? "bg-green-100 text-green-700 hover:bg-green-200" 
+                        : "bg-red-100 text-red-700 hover:bg-red-200"
+                      }`}
+                    >
+                      {product.stock && product.stock > 0 
+                        ? `In Stock (${product.stock})` 
+                        : "Out of Stock"}
+                    </button>
                   </td>
                   
                   {/* Featured Toggle */}
@@ -306,9 +343,9 @@ const ProductsView = () => {
                     <button onClick={() => toggleFeatured(product)} className={`text-xl transition-all p-2 ${isFeatured(product.id) ? "text-yellow-400 scale-110" : "text-gray-200 hover:text-yellow-200"}`}>★</button>
                   </td>
 
-                  {/* Loved Toggle */}
+                  {/* Loved Toggle (Opens Modal) */}
                   <td className="p-3 md:p-4 text-center">
-                    <button onClick={() => toggleLoved(product)} className={`text-lg transition-all p-2 ${isLoved(product.id) ? "text-red-500 scale-110" : "text-gray-200 hover:text-red-200"}`}>❤</button>
+                    <button onClick={() => handleHeartClick(product)} className={`text-lg transition-all p-2 ${isLoved(product.id) ? "text-red-500 scale-110" : "text-gray-200 hover:text-red-200"}`}>❤</button>
                   </td>
 
                   {/* Actions */}
@@ -323,8 +360,9 @@ const ProductsView = () => {
         </div>
       </div>
       
+      {/* ADD / EDIT PRODUCT MODAL */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4 backdrop-blur-sm">
           <div className="bg-white p-6 rounded-lg w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
             <h3 className="text-xl font-bold mb-6 pb-2 border-b border-gray-100">
                 {isEditMode ? "Edit Product" : "Add New Product"}
@@ -333,14 +371,11 @@ const ProductsView = () => {
             <form onSubmit={handleSubmit} className="space-y-5">
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {/* Name */}
                   <div className="md:col-span-2">
                     <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Product Name <span className="text-red-500">*</span></label>
                     <input className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none" 
                         value={currentProduct.name} onChange={e => setCurrentProduct({...currentProduct, name: e.target.value})} required />
                   </div>
-
-                  {/* Brand & Category */}
                   <div>
                     <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Brand <span className="text-red-500">*</span></label>
                     <input className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none"
@@ -354,8 +389,6 @@ const ProductsView = () => {
                         {categories.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
                     </select>
                   </div>
-
-                  {/* Pricing Logic */}
                   <div>
                     <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Discounted Price (Selling) <span className="text-red-500">*</span></label>
                     <input type="number" className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none" 
@@ -368,23 +401,17 @@ const ProductsView = () => {
                         value={currentProduct.discountPercentage || ''} 
                         onChange={e => handlePriceCalculation(currentProduct.price, Number(e.target.value))} />
                   </div>
-                  
-                  {/* Auto-Calculated Real Price */}
                   <div>
                     <label className="text-xs font-bold text-gray-400 uppercase mb-1 block">Real Price (Auto-Calculated)</label>
                     <input type="number" className="w-full border border-gray-200 bg-gray-50 text-gray-500 p-2.5 rounded text-sm focus:outline-none cursor-not-allowed" 
                         value={currentProduct.originalPrice || ''} readOnly />
                   </div>
-
-                  {/* Stock */}
                   <div>
                     <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Stock Quantity <span className="text-red-500">*</span></label>
                     <input type="number" className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none" 
                         value={currentProduct.stock || ''} onChange={e => setCurrentProduct({...currentProduct, stock: Number(e.target.value)})} required />
                   </div>
               </div>
-
-              {/* Images */}
               <div>
                 <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Image URLs (Comma separated) <span className="text-red-500">*</span></label>
                 <textarea rows={3} className="w-full border border-gray-300 p-2.5 rounded text-sm focus:ring-1 focus:ring-black outline-none" 
@@ -392,13 +419,53 @@ const ProductsView = () => {
                     value={imageInput} onChange={e => setImageInput(e.target.value)} required />
                 <p className="text-[10px] text-gray-400 mt-1">First image will be the main thumbnail.</p>
               </div>
-
               <div className="flex gap-3 justify-end pt-4 border-t border-gray-100">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-2.5 text-gray-600 text-sm font-bold hover:bg-gray-100 rounded transition-colors">Cancel</button>
                 <button type="submit" className="px-8 py-2.5 bg-black text-white rounded text-sm font-bold hover:bg-gray-800 transition-colors shadow-lg">
                     {isEditMode ? "Update Product" : "Save Product"}
                 </button>
               </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ADD TO LOVED POPUP MODAL */}
+      {isLoveModalOpen && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[70] p-4 backdrop-blur-sm">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-2xl transform scale-100 transition-all">
+            <h3 className="text-xl font-bold mb-4 text-center">Add to Loved Products</h3>
+            <p className="text-sm text-gray-500 mb-6 text-center">
+              Please provide a custom image URL for this product to appear in the "Loved" section.
+            </p>
+            
+            <form onSubmit={handleConfirmLove}>
+                <div className="mb-4">
+                  <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Loved Image URL <span className="text-red-500">*</span></label>
+                  <input 
+                    type="text"
+                    className="w-full border border-gray-300 p-3 rounded text-sm focus:ring-2 focus:ring-black outline-none"
+                    placeholder="https://..."
+                    value={loveImageInput}
+                    onChange={(e) => setLoveImageInput(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="flex gap-3">
+                    <button 
+                        type="button" 
+                        onClick={() => setIsLoveModalOpen(false)} 
+                        className="flex-1 py-3 text-gray-600 text-sm font-bold hover:bg-gray-100 rounded transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        type="submit" 
+                        className="flex-1 py-3 bg-red-600 text-white rounded text-sm font-bold hover:bg-red-700 transition-colors shadow-md"
+                    >
+                        Confirm & Love
+                    </button>
+                </div>
             </form>
           </div>
         </div>
@@ -419,29 +486,111 @@ const SettingsView = () => {
   };
 
   const handleExport = () => {
+    // We construct the file string manually to match the exact TypeScript format
     const fileContent = `
 // app/website-data.ts (Generated from Admin Panel)
 
-export interface Product { id: number; brand: string; name: string; price: number; originalPrice?: number; discountPercentage?: number; image: string; images?: string[]; isNew?: boolean; stock?: number; reviews?: number; description?: string; thumbnail?: string; category?: string; }
-export interface Category { name: string; image: string; }
-export interface Collection { title: string; description: string; image: string; }
-export interface Article { title: string; category: string; date: string; image: string; }
-export interface FAQ { question: string; answer: string; }
-export interface Review { id: number; name: string; date: string; rating: number; title: string; content: string; verified: boolean; }
+export interface Product {
+  id: number;
+  brand: string;
+  name: string;
+  price: number;
+  originalPrice?: number;
+  discountPercentage?: number;
+  image: string;
+  images?: string[];
+  isNew?: boolean;
+  stock?: number;
+  reviews?: number;
+  description?: string;
+  thumbnail?: string;
+  category?: string;
+}
 
+export interface Category {
+  name: string;
+  image: string;
+}
+
+export interface Collection {
+  title: string;
+  description: string;
+  image: string;
+}
+
+export interface Article {
+  title: string;
+  category: string;
+  date: string;
+  image: string;
+}
+
+export interface FAQ {
+  question: string;
+  answer: string;
+}
+
+export interface Review {
+  id: number;
+  name: string;
+  date: string;
+  rating: number;
+  title: string;
+  content: string;
+  verified: boolean;
+}
+
+// --- IMAGES ---
 export const heroBgImage = "https://images.unsplash.com/photo-1670404160620-a3a86428560e?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bHV4dXJ5JTIwd2F0Y2h8ZW58MHx8MHx8fDA%3D";
 export const adBgImage = "https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHdhdGNofGVufDB8fDB8fHww";
 
+// --- CATEGORIES ---
 export const categoriesData: Category[] = ${JSON.stringify(contextData.categories, null, 2)};
+
+// --- HOME PAGE DATA ---
+
+// Featured Products
 export const homeFeaturedProducts: Product[] = ${JSON.stringify(contextData.featuredProducts, null, 2)};
+
+// Loved Products
 export const homeLovedProducts: Product[] = ${JSON.stringify(contextData.lovedProducts, null, 2)};
+
 export const featuredCollectionsData: Collection[] = ${JSON.stringify(contextData.featuredCollections, null, 2)};
+
 export const newsArticlesData: Article[] = ${JSON.stringify(contextData.newsArticles, null, 2)};
+
 export const faqsData: FAQ[] = ${JSON.stringify(contextData.faqs, null, 2)};
+
+// --- MAIN PRODUCTS CATALOG ---
 export const mainProductsData: Product[] = ${JSON.stringify(contextData.products, null, 2)};
 
-export const brandsList = ["All", "VOGUE", "CASIO EDIFICE", "CASIO G-SHOCK", "GC", "GUESS", "MOVADO", "RAY-BAN"];
-export const sidebarFiltersList = ["PRICE", "GENDER", "PRODUCTS", "WATCHES CATEGORY", "BRANDS", "CASE MATERIAL", "CASE SHAPE", "CASE SIZE", "STRAP / BRACELET", "FEATURE", "MOVEMENT"];
+// --- FILTERS & BRANDS ---
+export const brandsList = [
+  "All",
+  "VOGUE",
+  "CASIO EDIFICE",
+  "CASIO G-SHOCK",
+  "GC",
+  "GUESS",
+  "MOVADO",
+  "RAY-BAN"
+];
+
+export const sidebarFiltersList = [
+  "PRICE",
+  "GENDER",
+  "PRODUCTS",
+  "WATCHES CATEGORY",
+  "BRANDS",
+  "CASE MATERIAL",
+  "CASE SHAPE",
+  "CASE SIZE",
+  "STRAP / BRACELET",
+  "FEATURE",
+  "MOVEMENT"
+];
+
+// --- REVIEWS ---
 export const reviewsData: Review[] = ${JSON.stringify(contextData.reviews, null, 2)};
 `;
 

@@ -3,16 +3,20 @@
 import { useState, use } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { mainProductsData, reviewsData } from "../../website-data";
+import { useGlobalContext, ExtendedProduct } from "@/context/GlobalContext"; // Import ExtendedProduct type
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  // Unwrap params using React.use()
+  // Unwrap params
   const { id } = use(params);
   const productId = parseInt(id);
-  const product = mainProductsData.find((p) => p.id === productId);
+
+  // Use Global Context to get LIVE data
+  const { products } = useGlobalContext();
+  
+  const product = products.find((p) => p.id === productId);
 
   // Get related products (exclude current product)
-  const relatedProducts = mainProductsData.filter(p => p.id !== productId).slice(0, 4);
+  const relatedProducts = products.filter(p => p.id !== productId).slice(0, 4);
 
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("Silver");
@@ -26,12 +30,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     );
   }
 
-  // Calculate discount percentage if originalPrice exists
+  // Stock Logic for Main Product
+  const isOutOfStock = !product.stock || product.stock === 0;
+
   const discountPercentage = product.originalPrice 
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
 
   const handleQuantityChange = (type: "inc" | "dec") => {
+    if (isOutOfStock) return;
     if (type === "inc") {
       setQuantity(quantity + 1);
     } else {
@@ -43,9 +50,32 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // Helper to render Product Badge (Reused for Related Products)
+  const renderProductBadge = (prod: ExtendedProduct) => {
+    if (!prod.stock || prod.stock === 0) {
+      return (
+        <span className="absolute top-2 right-2 z-10 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">
+          Out of Stock
+        </span>
+      );
+    }
+    if (prod.isNew) {
+      return (
+        <span className="absolute top-2 right-2 z-10 bg-[#49a010] text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">
+          New
+        </span>
+      );
+    }
+    return (
+      <span className="absolute top-2 right-2 z-10 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">
+        In Stock
+      </span>
+    );
+  };
+
   return (
     <div className="bg-white min-h-screen font-sans text-[#333]">
-      {/* ================= NAVBAR (Copied from Home) ================= */}
+      {/* ================= NAVBAR ================= */}
       <header className="bg-black text-white w-full z-50 flex items-center justify-between px-6 py-4 md:px-12 sticky top-0">
         <Link href="/" className="text-lg font-bold tracking-[0.15em] uppercase">
           Watches
@@ -81,18 +111,28 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             {/* --- LEFT: IMAGES --- */}
             <div className="w-full lg:w-1/2">
                 <div className="relative w-full aspect-square bg-gray-50 border border-gray-100 rounded-sm overflow-hidden mb-4">
+                    {/* Out of Stock Overlay for Main Image */}
+                    {isOutOfStock && (
+                        <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center backdrop-blur-[2px]">
+                            <span className="bg-red-600 text-white px-6 py-2 text-lg font-bold uppercase tracking-widest shadow-lg -rotate-12 border-2 border-white">
+                                Out of Stock
+                            </span>
+                        </div>
+                    )}
                     <Image 
                         src={product.image} 
                         alt={product.name} 
                         fill 
-                        className="object-cover"
+                        className={`object-cover ${isOutOfStock ? "grayscale opacity-75" : ""}`}
                         priority
                     />
                 </div>
+                {/* Thumbnails */}
                 <div className="flex gap-4">
                     <div className="w-20 h-20 border border-black cursor-pointer relative">
                         <Image src={product.image} alt="thumb1" fill className="object-cover" />
                     </div>
+                    {/* If multiple images exist, map them here. Using placeholder for now */}
                     <div className="w-20 h-20 border border-gray-200 cursor-pointer relative opacity-60 hover:opacity-100">
                         <Image src={product.image} alt="thumb2" fill className="object-cover" />
                     </div>
@@ -117,10 +157,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         </>
                     )}
                 </div>
+
+                {/* STOCK STATUS INDICATOR */}
                 <div className="flex items-center gap-2 mb-6">
-                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                    <span className="text-xs font-medium text-green-600">{product.stock || "In"} items in stock</span>
+                    <div className={`w-2 h-2 rounded-full ${isOutOfStock ? "bg-red-500" : "bg-green-500 animate-pulse"}`}></div>
+                    <span className={`text-xs font-medium ${isOutOfStock ? "text-red-600" : "text-green-600"}`}>
+                        {isOutOfStock ? "Currently unavailable" : `${product.stock} items in stock`}
+                    </span>
                 </div>
+
                 <div className="border-b border-gray-200 pb-2 mb-4">
                     <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">DESCRIPTION</h3>
                 </div>
@@ -128,9 +173,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     {product.description || "No description available."}
                 </p>
                 <div className="text-sm text-gray-700 space-y-1 mb-8">
-                    <p><span className="font-bold">Material:</span> Stainless Steel / Leather</p>
-                    <p><span className="font-bold">Movement:</span> Quartz / Automatic</p>
+                    <p><span className="font-bold">Brand:</span> {product.brand}</p>
+                    <p><span className="font-bold">Category:</span> {product.category || "General"}</p>
                 </div>
+
+                {/* Color Selection */}
                 <div className="mb-6">
                     <span className="text-sm font-bold text-black block mb-2">Color</span>
                     <div className="flex gap-3">
@@ -138,39 +185,62 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                             <button 
                                 key={color}
                                 onClick={() => setSelectedColor(color)}
+                                disabled={isOutOfStock}
                                 className={`px-4 py-2 text-xs border rounded-sm transition-all ${
                                     selectedColor === color 
                                     ? 'bg-black text-white border-black' 
                                     : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400'
-                                }`}
+                                } ${isOutOfStock ? "opacity-50 cursor-not-allowed" : ""}`}
                             >
                                 {color}
                             </button>
                         ))}
                     </div>
                 </div>
+
+                {/* Quantity Selector */}
                 <div className="mb-8">
                     <span className="text-sm font-bold text-black block mb-2">Quantity</span>
-                    <div className="flex items-center border border-gray-300 w-max rounded-sm">
+                    <div className={`flex items-center border border-gray-300 w-max rounded-sm ${isOutOfStock ? "opacity-50 pointer-events-none" : ""}`}>
                         <button onClick={() => handleQuantityChange("dec")} className="px-4 py-2 hover:bg-gray-100 text-gray-600">-</button>
                         <span className="px-4 py-2 text-sm font-bold min-w-[30px] text-center">{quantity}</span>
                         <button onClick={() => handleQuantityChange("inc")} className="px-4 py-2 hover:bg-gray-100 text-gray-600">+</button>
                     </div>
                 </div>
+
+                {/* ACTION BUTTONS */}
                 <div className="space-y-3 mb-8">
-                    <button className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors">
+                    <button 
+                        disabled={isOutOfStock}
+                        className={`w-full py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors ${
+                            isOutOfStock 
+                            ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
+                            : "bg-[#25D366] hover:bg-[#128C7E] text-white"
+                        }`}
+                    >
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
                         </svg>
-                        ORDER ON WHATSAPP
+                        {isOutOfStock ? "Out of Stock" : "ORDER ON WHATSAPP"}
                     </button>
+                    
+                    {/* Secondary Buttons */}
                     <button className="w-full bg-white border border-[#8B1A1A] text-[#8B1A1A] py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#8B1A1A] hover:text-white transition-colors">
                         DETAILS OF PRODUCT
                     </button>
-                    <button className="w-full bg-[#8B1A1A] hover:bg-[#6d1414] text-white py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider transition-colors shadow-sm">
+                    
+                    <button 
+                        disabled={isOutOfStock}
+                        className={`w-full py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider transition-colors shadow-sm ${
+                            isOutOfStock
+                            ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+                            : "bg-[#8B1A1A] hover:bg-[#6d1414] text-white"
+                        }`}
+                    >
                         ADD TO CART
                     </button>
                 </div>
+
                 <div className="text-center pt-4 border-t border-gray-100">
                     <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-3">GUARANTEE SAFE & SECURE CHECKOUT</p>
                     <div className="flex justify-center items-center gap-4 grayscale opacity-70">
@@ -236,25 +306,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
             {/* Reviews List */}
             <div className="space-y-6">
-                {reviewsData.map((review) => (
-                    <div key={review.id} className="bg-[#f9f9f9] p-6 rounded-sm border border-gray-100">
-                        <div className="flex justify-between items-start mb-3">
-                            <div className="flex text-[#D4B07B] text-xs">{"★".repeat(review.rating)}</div>
-                            <span className="text-xs text-gray-400">{review.date}</span>
-                        </div>
-                        <div className="flex items-center gap-2 mb-2">
-                            <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-[10px] font-bold text-white">
-                                {review.name.charAt(0)}{review.name.split(' ')[1]?.charAt(0)}
-                            </div>
-                            <span className="text-sm font-bold text-gray-800">{review.name}</span>
-                            {review.verified && (
-                                <span className="bg-[#B88E2F] text-white text-[9px] px-1.5 py-0.5 rounded-sm font-medium">Verified</span>
-                            )}
-                        </div>
-                        <h4 className="text-sm font-bold text-black mb-1">{review.title}</h4>
-                        <p className="text-sm text-gray-600 font-light">{review.content}</p>
+                {/* Mock Reviews Data - typically this would come from product.reviews array if structured that way */}
+                <div className="bg-[#f9f9f9] p-6 rounded-sm border border-gray-100">
+                    <div className="flex justify-between items-start mb-3">
+                        <div className="flex text-[#D4B07B] text-xs">★★★★★</div>
+                        <span className="text-xs text-gray-400">10/16/2025</span>
                     </div>
-                ))}
+                    <div className="flex items-center gap-2 mb-2">
+                        <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-[10px] font-bold text-white">FN</div>
+                        <span className="text-sm font-bold text-gray-800">Fatima Nadeem</span>
+                        <span className="bg-[#B88E2F] text-white text-[9px] px-1.5 py-0.5 rounded-sm font-medium">Verified</span>
+                    </div>
+                    <h4 className="text-sm font-bold text-black mb-1">Beautiful</h4>
+                    <p className="text-sm text-gray-600 font-light">Same as shown, even more beautiful in person. Very satisfied!</p>
+                </div>
             </div>
 
             {/* Pagination */}
@@ -277,6 +342,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 {relatedProducts.map((related) => (
                     <Link href={`/product/${related.id}`} key={related.id} className="group cursor-pointer block">
                         <div className="relative w-full aspect-[4/5] bg-gray-50 mb-4 overflow-hidden border border-gray-100 rounded-sm">
+                            
+                            {/* BADGE ADDED HERE for Related Products */}
+                            {renderProductBadge(related)}
+
                             <Image 
                                 src={related.image} 
                                 alt={related.name} 
@@ -298,7 +367,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
       </div>
 
-      {/* ================= FOOTER (Copied from Home) ================= */}
+      {/* ================= FOOTER ================= */}
       <footer className="bg-[#f9f9f9] text-[#333] pt-16 pb-8 font-sans border-t border-gray-200">
         <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
@@ -351,7 +420,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M12 2.04c-5.5 0-10 4.49-10 10.02c0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.89 3.78-3.89c1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02Z"/></svg>
                         </Link>
                         <Link href="#" className="text-gray-500 hover:text-black transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0-3-3Z"/></svg>
                         </Link>
                     </div>
                 </div>

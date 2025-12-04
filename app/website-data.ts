@@ -13,7 +13,7 @@ export interface Product {
   reviews?: number;
   description?: string;
   thumbnail?: string;
-  category?: string; // Added to support admin category selection
+  category?: string;
 }
 
 export interface Category {
@@ -55,13 +55,13 @@ export const adBgImage = "https://images.unsplash.com/photo-1612817159949-195b6e
 
 // --- CATEGORIES ---
 export const categoriesData: Category[] = [
-  { name: "11.11 Sale", image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=300&auto=format&fit=crop" },
-  { name: "Men Formal", image: "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?q=80&w=300&auto=format&fit=crop" },
-  { name: "Men Sports", image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=300&auto=format&fit=crop" },
-  { name: "Female Fancy", image: "https://images.unsplash.com/photo-1590736969955-71cc94801759?q=80&w=300&auto=format&fit=crop" },
-  { name: "Female Bracelets", image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=300&auto=format&fit=crop" },
-  { name: "Smart Watches", image: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?q=80&w=300&auto=format&fit=crop" },
-  { name: "Couple Watches", image: "https://images.unsplash.com/photo-1622434641406-a15810545182?q=80&w=300&auto=format&fit=crop" },
+  { name: "11.11 Sale", image: "https://en-pk.svestonwatches.com/cdn/shop/files/12.12_Sale_Website_Icon_06500ae6-9643-43f1-b445-d65fc100837f_1024x1024.png?v=1764334753" },
+  { name: "Men Formal", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Men_Formal_833139bc-31be-4be7-a4a9-8a627e7b4120_1024x1024.png?v=1750671977" },
+  { name: "Men Sports", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Men_Sports_ed2c875c-5bf8-478c-b297-506a3d232b40_1024x1024.png?v=1750671977" },
+  { name: "Female Fancy", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Female_Fancy_fe1e3bd7-a82a-4d40-a5f0-6a8b51681a49_1024x1024.png?v=1750671977" },
+  { name: "Female Bracelets", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Female_Bracelet_29118e56-ffe6-40b4-ab00-3e960548cb9e_1024x1024.png?v=1750671977" },
+  { name: "Smart Watches", image: "https://en-pk.svestonwatches.com/cdn/shop/files/tourque_png_1024x1024.png?v=1750671977" },
+  { name: "Couple Watches", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Couple_Watches_9997088b-d0fe-4781-8101-47b5d0c33f03_1024x1024.png?v=1750671977" },
 ];
 
 // --- HOME PAGE DATA ---
@@ -70,43 +70,43 @@ export const categoriesData: Category[] = [
 export const homeFeaturedProducts: Product[] = [
   {
     id: 101, 
-    brand: "GUESS",
-    name: "Guess Womens Watch – GW0471L1",
+    brand: "CASIO EDIFICE",
+    name: "Casio Edifice – ECB-10DC-3A",
     originalPrice: 39500,
     price: 27650,
-    image: "https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?q=80&w=400&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2021/12/ECB-10DC-3A_JR_DR-330x440.jpg",
   },
   {
     id: 102,
-    brand: "CASIO GENERAL",
-    name: "Casio General Watch – MTP-VD200BL-5BUDF",
+    brand: "CASIO EDIFICE",
+    name: "Casio Edifice – ECB-10P-1ADF",
     originalPrice: 25000,
     price: 12500,
-    image: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?q=80&w=400&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2020/07/ECB-10P-1ADF-1-1-330x440.jpg",
   },
   {
     id: 103,
-    brand: "VICTORINOX",
-    name: "Victorinox Swiss Army Watch – 241693",
+    brand: "CASIO EDIFICE",
+    name: "Casio Edifice – EFR-S108DE-8AVUDF",
     originalPrice: 309000,
     price: 262650,
-    image: "https://images.unsplash.com/photo-1619134778706-7015533a6150?q=80&w=400&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-S108DE-8AVUDF-1-330x440.jpg",
   },
   {
     id: 104,
-    brand: "BREITLING",
-    name: "Breitling Watch – A13314101B1A1",
+    brand: "CASIO EDIFICE",
+    name: "Casio Edifice – EFR-539DE-2AVUDF",
     originalPrice: 2120000,
     price: 1802000,
-    image: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?q=80&w=400&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-539DE-2AVUDF-1-330x440.jpg",
   },
   {
     id: 105,
-    brand: "CASIO GENERAL",
-    name: "Casio General Watch – MTP-VD01B-5BVUDF",
+    brand: "CASIO EDIFICE",
+    name: "Casio Edifice – EFR-539DE-3AVUDF",
     originalPrice: 18400,
     price: 12880,
-    image: "https://images.unsplash.com/photo-1539874754764-5a96559165b0?q=80&w=400&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-539DE-3AVUDF-1-330x440.jpg",
   },
 ];
 
@@ -114,27 +114,27 @@ export const homeFeaturedProducts: Product[] = [
 export const homeLovedProducts: Product[] = [
   {
     id: 106,
-    brand: "Parfums de Marly",
-    name: "Castley",
+    brand: "CASIO EDIFICE",
+    name: "Casio Edifice – EFR-539DE-8AVUDF",
     price: 87000,
-    image: "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=600&auto=format&fit=crop",
-    thumbnail: "https://images.unsplash.com/photo-1594035910387-fea4779426e9?q=80&w=150&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-539DE-8AVUDF-1-330x440.jpg",
+    thumbnail: "https://images.unsplash.com/photo-1582150264904-e0bea5ef0ad1?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8d3Jpc3R3YXRjaHxlbnwwfHwwfHx8MA%3D%3D",
   },
   {
     id: 107,
-    brand: "INITIO Parfums Privés",
-    name: "Narcotic Delight",
+    brand: "CASIO EDIFICE",
+    name: "Casio Edifice – EFR-S108DE-3AVUDF",
     price: 82000,
-    image: "https://images.unsplash.com/photo-1615160936637-299a9a3b6805?q=80&w=600&auto=format&fit=crop",
-    thumbnail: "https://images.unsplash.com/photo-1592914610354-fd354ea45e48?q=80&w=150&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-S108DE-3AVUDF-1-330x440.jpg",
+    thumbnail: "https://images.unsplash.com/photo-1622434641406-a158123450f9?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8d2F0Y2h8ZW58MHx8MHx8fDA%3D",
   },
   {
     id: 108,
-    brand: "Clive Christian",
-    name: "L Red Tea Vetiver",
+    brand: "CASIO EDIFICE",
+    name: "Casio Edifice – ECB-2000DC-1BDF",
     price: 120000,
-    image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=600&auto=format&fit=crop",
-    thumbnail: "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=150&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2024/04/ECB-2000DC-1BDF-330x440.jpg",
+    thumbnail: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8d2F0Y2h8ZW58MHx8MHx8fDA%3D",
   },
 ];
 
@@ -142,17 +142,17 @@ export const featuredCollectionsData: Collection[] = [
   {
     title: "Luxury Watches",
     description: "Explore our Watches collection. We have a wide range of luxurious and unique Watches.",
-    image: "https://images.unsplash.com/photo-1596516109370-29001ec8ec36?q=80&w=600&auto=format&fit=crop",
+    image: "https://www.swisswatchexpo.com/thewatchclub/wp-content/uploads/2023/06/How-to-Start-a-Watch-Collection-Rolex-Daytona-Panerai-Radiomir-Vacheron-Constantin-Overseas-Omega-Seamaster.jpg",
   },
   {
-    title: "Eyewear Collection",
-    description: "Explore our Eyewear collection. We have a wide range of luxury glasses for both men and women.",
-    image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=600&auto=format&fit=crop",
-  },
-  {
-    title: "Accessories",
+    title: "Classic Watches",
     description: "Accessories are the utmost best way to update your look and your wardrobe.",
-    image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?q=80&w=600&auto=format&fit=crop",
+    image: "https://wornandwound.com/library/uploads/2023/04/Traska_Crossroads_Formex_header.jpg",
+  },
+  {
+    title: "Fancy Watches",
+    description: "Explore our Eyewear collection. We have a wide range of luxury glasses for both men and women.",
+    image: "https://cdn.shopify.com/s/files/1/0257/0017/1839/collections/patek-philippe-collection-350726.jpg?v=1746544799",
   },
 ];
 
@@ -161,19 +161,19 @@ export const newsArticlesData: Article[] = [
     title: "Guess Watches – BLACK & GOLD",
     category: "LifeStyle Collection",
     date: "December 24, 2015",
-    image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=600&auto=format&fit=crop",
+    image: "https://i.pinimg.com/736x/dd/de/51/ddde51bee1994e52a67c9883c9f0a824.jpg",
   },
   {
     title: "Guess Watches – Breast Health Awareness and Education",
     category: "LifeStyle Collection",
     date: "July 7, 2020",
-    image: "https://images.unsplash.com/photo-1585123334904-845d60e97b29?q=80&w=600&auto=format&fit=crop",
+    image: "https://sharpmagazine.com/wp-content/uploads/2025/11/moser-streamliner-dubai-watch-week.png",
   },
   {
     title: "Victorinox I.N.O.X. PROFESSIONAL DIVER",
     category: "LifeStyle Collection",
     date: "July 27, 2020",
-    image: "https://images.unsplash.com/photo-1533139502658-0198f920d3e8?q=80&w=600&auto=format&fit=crop",
+    image: "https://bezlmagazine.com/wp-content/uploads/2025/09/cropped-Omslag-Artikel-About.jpg",
   },
 ];
 
@@ -208,7 +208,7 @@ export const mainProductsData: Product[] = [
     name: "Casio Edifice – EFR-539DE-2AVUDF",
     price: 51500,
     originalPrice: 65000,
-    image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=600&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-539DE-2AVUDF-1-330x440.jpg",
     isNew: true,
     description: "Enhance your elegance with our premium Casio Edifice Watch.",
     stock: 10,
@@ -220,7 +220,7 @@ export const mainProductsData: Product[] = [
     name: "Casio Edifice – EFR-539DE-3AVUDF",
     price: 51500,
     originalPrice: 65000,
-    image: "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?q=80&w=600&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-539DE-3AVUDF-1-330x440.jpg",
     isNew: true,
     stock: 5,
     reviews: 12
@@ -231,7 +231,7 @@ export const mainProductsData: Product[] = [
     name: "Casio Edifice – EFR-539DE-8AVUDF",
     price: 51500,
     originalPrice: 60000,
-    image: "https://images.unsplash.com/photo-1622434641406-a15810545182?q=80&w=600&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-539DE-8AVUDF-1-330x440.jpg",
     isNew: true,
     stock: 8,
     reviews: 20
@@ -239,54 +239,54 @@ export const mainProductsData: Product[] = [
   {
     id: 4,
     brand: "CASIO EDIFICE",
-    name: "Casio Edifice – EFR-S108DE-2AVUDF",
+    name: "Casio Edifice – EFR-S108DE-3AVUDF",
     price: 47500,
     originalPrice: 55000,
-    image: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?q=80&w=600&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-S108DE-3AVUDF-1-330x440.jpg",
     isNew: true,
     stock: 15,
     reviews: 5
   },
   {
     id: 5,
-    brand: "CASIO G-SHOCK",
-    name: "G-Shock Rugged – GA-2100",
+    brand: "CASIO EDIFICE",
+    name: "Casio Edifice – ECB-2000DC-1BDF",
     price: 35000,
     originalPrice: 42000,
-    image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=600&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2024/04/ECB-2000DC-1BDF-330x440.jpg",
     isNew: false,
     stock: 20,
     reviews: 100
   },
   {
     id: 6,
-    brand: "GUESS",
-    name: "Guess Gold Plated",
+    brand: "CASIO EDIFICE",
+    name: "Casio Edifice – ECB-2000DD-1ADF",
     price: 65000,
     originalPrice: 80000,
-    image: "https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?q=80&w=600&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2024/04/ECB-2000DD-1ADF-330x440.jpg",
     isNew: true,
     stock: 3,
     reviews: 8
   },
   {
     id: 7,
-    brand: "MOVADO",
-    name: "Movado Museum Classic",
+    brand: "CASIO EDIFICE",
+    name: "Casio Edifice – ECB-2000NP-1ADF",
     price: 120000,
     originalPrice: 150000,
-    image: "https://images.unsplash.com/photo-1619134778706-7015533a6150?q=80&w=600&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2024/04/ECB-2000NP-1ADF-1-330x440.jpg",
     isNew: false,
     stock: 2,
     reviews: 30
   },
   {
     id: 8,
-    brand: "RAY-BAN",
-    name: "Aviator Classic",
+    brand: "CASIO EDIFICE",
+    name: "Casio Edifice – ECB-2000PB-1A",
     price: 45000,
     originalPrice: 50000,
-    image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=600&auto=format&fit=crop",
+    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2022/10/ECB-2000PB-1A-330x440.jpg",
     isNew: true,
     stock: 50,
     reviews: 200
