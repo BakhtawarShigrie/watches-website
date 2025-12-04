@@ -13,7 +13,10 @@ export interface Product {
   reviews?: number;
   description?: string;
   thumbnail?: string;
-  category?: string;
+  category?: string; // e.g., "Men Sports", "Female Fancy"
+  gender?: string;   // "Men", "Women", "Unisex"
+  discountPercentage?: number;
+  images?: string[];
 }
 
 export interface Category {
@@ -65,78 +68,6 @@ export const categoriesData: Category[] = [
 ];
 
 // --- HOME PAGE DATA ---
-
-// Featured Products
-export const homeFeaturedProducts: Product[] = [
-  {
-    id: 101, 
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – ECB-10DC-3A",
-    originalPrice: 39500,
-    price: 27650,
-    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2021/12/ECB-10DC-3A_JR_DR-330x440.jpg",
-  },
-  {
-    id: 102,
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – ECB-10P-1ADF",
-    originalPrice: 25000,
-    price: 12500,
-    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2020/07/ECB-10P-1ADF-1-1-330x440.jpg",
-  },
-  {
-    id: 103,
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – EFR-S108DE-8AVUDF",
-    originalPrice: 309000,
-    price: 262650,
-    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-S108DE-8AVUDF-1-330x440.jpg",
-  },
-  {
-    id: 104,
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – EFR-539DE-2AVUDF",
-    originalPrice: 2120000,
-    price: 1802000,
-    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-539DE-2AVUDF-1-330x440.jpg",
-  },
-  {
-    id: 105,
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – EFR-539DE-3AVUDF",
-    originalPrice: 18400,
-    price: 12880,
-    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-539DE-3AVUDF-1-330x440.jpg",
-  },
-];
-
-// Loved Products
-export const homeLovedProducts: Product[] = [
-  {
-    id: 106,
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – EFR-539DE-8AVUDF",
-    price: 87000,
-    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-539DE-8AVUDF-1-330x440.jpg",
-    thumbnail: "https://images.unsplash.com/photo-1582150264904-e0bea5ef0ad1?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8d3Jpc3R3YXRjaHxlbnwwfHwwfHx8MA%3D%3D",
-  },
-  {
-    id: 107,
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – EFR-S108DE-3AVUDF",
-    price: 82000,
-    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-S108DE-3AVUDF-1-330x440.jpg",
-    thumbnail: "https://images.unsplash.com/photo-1622434641406-a158123450f9?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8d2F0Y2h8ZW58MHx8MHx8fDA%3D",
-  },
-  {
-    id: 108,
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – ECB-2000DC-1BDF",
-    price: 120000,
-    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2024/04/ECB-2000DC-1BDF-330x440.jpg",
-    thumbnail: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8d2F0Y2h8ZW58MHx8MHx8fDA%3D",
-  },
-];
 
 export const featuredCollectionsData: Collection[] = [
   {
@@ -200,8 +131,9 @@ export const faqsData: FAQ[] = [
   },
 ];
 
-// --- MAIN PRODUCTS CATALOG ---
+// --- MAIN PRODUCTS CATALOG (Total 8 Products) ---
 export const mainProductsData: Product[] = [
+  // 1. Men's Formal
   {
     id: 1,
     brand: "CASIO EDIFICE",
@@ -210,10 +142,13 @@ export const mainProductsData: Product[] = [
     originalPrice: 65000,
     image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-539DE-2AVUDF-1-330x440.jpg",
     isNew: true,
-    description: "Enhance your elegance with our premium Casio Edifice Watch.",
+    description: "Enhance your elegance with our premium Casio Edifice Watch. Perfect for formal occasions.",
     stock: 10,
-    reviews: 43
+    reviews: 43,
+    category: "Men Formal",
+    gender: "Men"
   },
+  // 2. Men's Sports
   {
     id: 2,
     brand: "CASIO EDIFICE",
@@ -223,41 +158,53 @@ export const mainProductsData: Product[] = [
     image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-539DE-3AVUDF-1-330x440.jpg",
     isNew: true,
     stock: 5,
-    reviews: 12
+    reviews: 12,
+    category: "Men Sports",
+    gender: "Men"
   },
+  // 3. Women's Fancy
   {
     id: 3,
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – EFR-539DE-8AVUDF",
-    price: 51500,
-    originalPrice: 60000,
-    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-539DE-8AVUDF-1-330x440.jpg",
+    brand: "GUESS",
+    name: "Guess Collection – Gold Chic",
+    price: 45000,
+    originalPrice: 50000,
+    image: "https://images.unsplash.com/photo-1507682723113-4d6769000738?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHdvbWVuJTIwd2F0Y2h8ZW58MHx8MHx8fDA%3D",
     isNew: true,
     stock: 8,
-    reviews: 20
+    reviews: 20,
+    category: "Female Fancy",
+    gender: "Women"
   },
+  // 4. Women's Bracelet
   {
     id: 4,
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – EFR-S108DE-3AVUDF",
-    price: 47500,
-    originalPrice: 55000,
-    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2025/10/EFR-S108DE-3AVUDF-1-330x440.jpg",
+    brand: "VOGUE",
+    name: "Vogue – Silver Elegance",
+    price: 32000,
+    originalPrice: 38000,
+    image: "https://images.unsplash.com/photo-1619134778706-7015533a6150?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d29tZW4lMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D",
     isNew: true,
     stock: 15,
-    reviews: 5
+    reviews: 5,
+    category: "Female Bracelets",
+    gender: "Women"
   },
+  // 5. Unisex / Smart
   {
     id: 5,
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – ECB-2000DC-1BDF",
+    brand: "CASIO G-SHOCK",
+    name: "G-Shock – Digital Sport",
     price: 35000,
     originalPrice: 42000,
-    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2024/04/ECB-2000DC-1BDF-330x440.jpg",
+    image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d2F0Y2h8ZW58MHx8MHx8fDA%3D",
     isNew: false,
     stock: 20,
-    reviews: 100
+    reviews: 100,
+    category: "Smart Watches",
+    gender: "Unisex"
   },
+  // 6. Men's Classic
   {
     id: 6,
     brand: "CASIO EDIFICE",
@@ -267,19 +214,25 @@ export const mainProductsData: Product[] = [
     image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2024/04/ECB-2000DD-1ADF-330x440.jpg",
     isNew: true,
     stock: 3,
-    reviews: 8
+    reviews: 8,
+    category: "Men Formal",
+    gender: "Men"
   },
+  // 7. Unisex / Couple
   {
     id: 7,
-    brand: "CASIO EDIFICE",
-    name: "Casio Edifice – ECB-2000NP-1ADF",
+    brand: "MOVADO",
+    name: "Movado – Minimalist Black",
     price: 120000,
     originalPrice: 150000,
-    image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2024/04/ECB-2000NP-1ADF-1-330x440.jpg",
+    image: "https://images.unsplash.com/photo-1616348436918-d22d80184640?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bWluaW1hbGlzdCUyMHdhdGNofGVufDB8fDB8fHww",
     isNew: false,
     stock: 2,
-    reviews: 30
+    reviews: 30,
+    category: "Couple Watches",
+    gender: "Unisex"
   },
+  // 8. Men's Sport
   {
     id: 8,
     brand: "CASIO EDIFICE",
@@ -289,19 +242,48 @@ export const mainProductsData: Product[] = [
     image: "https://www.lifestyle-collection.com.pk/wp-content/uploads/2022/10/ECB-2000PB-1A-330x440.jpg",
     isNew: true,
     stock: 50,
-    reviews: 200
+    reviews: 200,
+    category: "Men Sports",
+    gender: "Men"
   },
+];
+
+// --- FEATURED & LOVED LISTS (Derived from Main Products) ---
+
+// Featured Products: A mix of Men and Women
+export const homeFeaturedProducts: Product[] = [
+  mainProductsData[0], // Men Formal
+  mainProductsData[2], // Women Fancy
+  mainProductsData[4], // Unisex
+  mainProductsData[1], // Men Sports
+  mainProductsData[3], // Women Bracelet
+];
+
+// Loved Products: Special items
+export const homeLovedProducts: Product[] = [
+  {
+    ...mainProductsData[5], // Men Formal
+    thumbnail: "https://images.unsplash.com/photo-1582150264904-e0bea5ef0ad1?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8d3Jpc3R3YXRjaHxlbnwwfHwwfHx8MA%3D%3D"
+  },
+  {
+    ...mainProductsData[6], // Unisex Movado
+    thumbnail: "https://images.unsplash.com/photo-1622434641406-a158123450f9?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8d2F0Y2h8ZW58MHx8MHx8fDA%3D"
+  },
+  {
+    ...mainProductsData[7], // Men Sports
+    thumbnail: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8d2F0Y2h8ZW58MHx8MHx8fDA%3D"
+  }
 ];
 
 // --- FILTERS & BRANDS ---
 export const brandsList = [
   "All",
-  "VOGUE",
   "CASIO EDIFICE",
-  "CASIO G-SHOCK",
-  "GC",
   "GUESS",
+  "VOGUE",
+  "CASIO G-SHOCK",
   "MOVADO",
+  "GC",
   "RAY-BAN"
 ];
 
@@ -332,20 +314,20 @@ export const reviewsData: Review[] = [
   },
   {
     id: 2,
-    name: "Fatima Nadeem",
-    date: "10/16/2025",
-    rating: 5,
-    title: "Beautiful",
-    content: "Same as shown, even more beautiful in person. Very satisfied!",
+    name: "Ali Khan",
+    date: "10/18/2025",
+    rating: 4,
+    title: "Good Quality",
+    content: "The watch is solid and feels premium. Delivery was a bit late though.",
     verified: true
   },
   {
     id: 3,
-    name: "Fatima Nadeem",
-    date: "10/16/2025",
+    name: "Sara Ahmed",
+    date: "10/20/2025",
     rating: 5,
-    title: "Beautiful",
-    content: "Same as shown, even more beautiful in person. Very satisfied!",
+    title: "Love it!",
+    content: "Bought this for my husband and he loves it. Highly recommended.",
     verified: true
   },
 ];

@@ -42,11 +42,14 @@ interface GlobalContextType {
   updateProduct: (id: number, updatedProduct: ExtendedProduct) => void;
   deleteProduct: (id: number) => void;
   
+  // NEW: Added toggleStock here
+  toggleStock: (product: ExtendedProduct) => void;
+
   featuredProducts: ExtendedProduct[];
   toggleFeatured: (product: ExtendedProduct) => void;
 
   lovedProducts: ExtendedProduct[];
-  toggleLoved: (product: ExtendedProduct, customThumbnail?: string) => void; // Updated signature
+  toggleLoved: (product: ExtendedProduct, customThumbnail?: string) => void;
   
   categories: Category[];
   addCategory: (category: Category) => void;
@@ -152,6 +155,26 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     broadcastUpdate({ ...stateRef.current, products: updated, featuredProducts: updatedFeatured, lovedProducts: updatedLoved });
   };
 
+  // --- NEW FUNCTION: Toggle Stock Logic ---
+  const toggleStock = (product: ExtendedProduct) => {
+    if (product.stock && product.stock > 0) {
+      // Agar stock hai, tou user se confirm karein ke unstock karna hai ya nahi
+      const confirmUnstock = window.confirm("Are you sure you want to mark this product as Out of Stock?");
+      if (confirmUnstock) {
+        updateProduct(product.id, { ...product, stock: 0 });
+      }
+    } else {
+      // Agar out of stock hai, tou user se quantity pouchein
+      const qtyStr = window.prompt("Enter stock quantity to add:", "10");
+      if (qtyStr) {
+        const qty = parseInt(qtyStr);
+        if (!isNaN(qty) && qty > 0) {
+          updateProduct(product.id, { ...product, stock: qty });
+        }
+      }
+    }
+  };
+
   const toggleFeatured = (product: ExtendedProduct) => {
     const exists = featuredProducts.find(p => p.id === product.id);
     let updated;
@@ -229,6 +252,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     <GlobalContext.Provider
       value={{
         products, addProduct, updateProduct, deleteProduct,
+        toggleStock, // Exporting the new function
         featuredProducts, toggleFeatured,
         lovedProducts, toggleLoved,
         categories, addCategory, deleteCategory,

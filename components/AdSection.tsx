@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { adBgImage } from "@/app/website-data";
+import Link from "next/link";
 
 export default function AdSection() {
   return (
@@ -19,9 +20,11 @@ export default function AdSection() {
           <p className="text-white/80 text-sm md:text-base mb-8 leading-relaxed font-light">
             Honouring OMEGA&apos;s legacy of space exploration, this Speedmaster Dark Side of the Moon features a 44.25 mm case in polished-brushed black ceramic.
           </p>
-          <button className="bg-[#D4B07B] text-black px-8 py-3.5 rounded-sm text-xs font-bold uppercase tracking-wider hover:bg-[#c29e6b] transition-colors duration-300">
+          <Link href="/Products">
+          <button className="bg-[#D4B07B] cursor-pointer text-black px-8 py-3.5 rounded-sm text-xs font-bold uppercase tracking-wider hover:bg-[#c29e6b] transition-colors duration-300">
             Explore the Collection
           </button>
+          </Link>
         </div>
       </div>
     </section>
