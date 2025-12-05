@@ -61,10 +61,8 @@ export const categoriesData: Category[] = [
   { name: "11.11 Sale", image: "https://en-pk.svestonwatches.com/cdn/shop/files/12.12_Sale_Website_Icon_06500ae6-9643-43f1-b445-d65fc100837f_1024x1024.png?v=1764334753" },
   { name: "Men Formal", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Men_Formal_833139bc-31be-4be7-a4a9-8a627e7b4120_1024x1024.png?v=1750671977" },
   { name: "Men Sports", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Men_Sports_ed2c875c-5bf8-478c-b297-506a3d232b40_1024x1024.png?v=1750671977" },
-  { name: "Female Fancy", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Female_Fancy_fe1e3bd7-a82a-4d40-a5f0-6a8b51681a49_1024x1024.png?v=1750671977" },
-  { name: "Female Bracelets", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Female_Bracelet_29118e56-ffe6-40b4-ab00-3e960548cb9e_1024x1024.png?v=1750671977" },
   { name: "Smart Watches", image: "https://en-pk.svestonwatches.com/cdn/shop/files/tourque_png_1024x1024.png?v=1750671977" },
-  { name: "Couple Watches", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Couple_Watches_9997088b-d0fe-4781-8101-47b5d0c33f03_1024x1024.png?v=1750671977" },
+  { name: "Luxury Steel", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Couple_Watches_9997088b-d0fe-4781-8101-47b5d0c33f03_1024x1024.png?v=1750671977" },
 ];
 
 // --- MAIN PRODUCTS CATALOG (Only 11 Products as requested) ---
@@ -227,7 +225,7 @@ export const mainProductsData: Product[] = [
 
 // --- FEATURED & LOVED LISTS (Derived from Main Products) ---
 
-// Featured Products: Selecting a few from the main list
+// Featured Products
 export const homeFeaturedProducts: Product[] = [
   mainProductsData[0], // EFR-539DE-2AVUDF
   mainProductsData[3], // ECB-10DC-3A
@@ -236,7 +234,7 @@ export const homeFeaturedProducts: Product[] = [
   mainProductsData[10] // ECB-2000PB-1A
 ];
 
-// Loved Products: Updated with specific thumbnails provided
+// Loved Products
 export const homeLovedProducts: Product[] = [
   {
     ...mainProductsData[1], // EFR-539DE-3AVUDF

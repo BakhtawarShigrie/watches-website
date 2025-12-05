@@ -9,6 +9,7 @@ import { brandsList } from "@/app/website-data";
 
 // Main Content Component inside Suspense
 function ProductsContent() {
+  // FIX: Hooks moved to top level
   const { products, categories, addToCart, cart, setIsCartOpen } = useGlobalContext();
   const searchParams = useSearchParams();
 
@@ -40,12 +41,13 @@ function ProductsContent() {
   // --- EFFECT: Sync with URL changes ---
   useEffect(() => {
     const categoryFromUrl = searchParams.get("category");
+    // Check if category in URL exists and is different from current selection
     if (categoryFromUrl && categoryFromUrl !== selectedCategory) {
       setSelectedCategory(categoryFromUrl);
       setExpandedSections(prev => ({ ...prev, "WATCHES CATEGORY": true }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]); // Removed selectedCategory to avoid linter warning and loops
+  }, [searchParams]); // REMOVED selectedCategory to fix ESLint error
 
   // --- EFFECT: Click Outside to Close Search ---
   useEffect(() => {
@@ -68,7 +70,7 @@ function ProductsContent() {
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    // 1. Filter by Search Query (Fuzzy Match)
+    // 1. Filter by Search Query
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
       result = result.filter((p) => 
@@ -377,11 +379,12 @@ function ProductsContent() {
                 {filteredProducts.map((product) => (
                   <div key={product.id} className="group relative block">
                     <Link href={`/product/${product.id}`} className="cursor-pointer">
-                        <div className="relative w-full aspect-[4/5] bg-white mb-4 overflow-hidden border border-gray-100 rounded-sm">
+                        {/* FIX: aspect-[0.8] matches 4/5 ratio */}
+                        <div className="relative w-full aspect-[0.8] bg-white mb-4 overflow-hidden border border-gray-100 rounded-sm">
                         {renderProductBadge(product)}
                         <Image src={product.image} alt={product.name} fill className="object-contain p-4 transition-transform duration-500 group-hover:scale-105" />
                         
-                        {/* --- CART BUTTON --- */}
+                        {/* --- CART BUTTON (Updated for Mobile) --- */}
                         <button 
                             onClick={(e) => {
                                 e.preventDefault();

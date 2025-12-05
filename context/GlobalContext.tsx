@@ -109,8 +109,9 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
       const savedCart = localStorage.getItem("shoppingCart");
       if (savedCart) {
         try {
+          // ESLint rule disabled because this is a necessary initialization pattern in Next.js
           // eslint-disable-next-line react-hooks/exhaustive-deps
-          setCart(JSON.parse(savedCart)); 
+          setCart(JSON.parse(savedCart));
         } catch (error) {
           console.error("Failed to parse cart", error);
         }
@@ -167,61 +168,23 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [products, featuredProducts, lovedProducts, categories, featuredCollections, newsArticles, faqs, reviews, adminCreds]);
 
-  useEffect(() => {
-    const channel = new BroadcastChannel('watches_website_sync');
-    channel.onmessage = (event) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const data = event.data as any;
-      if (data.type === 'REQUEST_STATE') {
-        channel.postMessage({ type: 'UPDATE_ALL', state: stateRef.current });
-      }
-      if (data.type === 'UPDATE_ALL') {
-        const state = data.state as GlobalStateSnapshot;
-        if (state.products) setProducts(state.products);
-        if (state.featuredProducts) setFeaturedProducts(state.featuredProducts);
-        if (state.lovedProducts) setLovedProducts(state.lovedProducts);
-        if (state.categories) setCategories(state.categories);
-        if (state.featuredCollections) setFeaturedCollections(state.featuredCollections);
-        if (state.newsArticles) setNewsArticles(state.newsArticles);
-        if (state.faqs) setFaqs(state.faqs);
-        if (state.reviews) setReviews(state.reviews);
-        if (state.adminCreds) setAdminCreds(state.adminCreds);
-      }
-    };
-    channel.postMessage({ type: 'REQUEST_STATE' });
-    return () => channel.close();
-  }, []);
-
-  const broadcastUpdate = (newState: GlobalStateSnapshot) => {
-    const channel = new BroadcastChannel('watches_website_sync');
-    channel.postMessage({ type: 'UPDATE_ALL', state: newState });
-    channel.close();
-  };
+  // Admin Sync Logic removed for production as per previous instruction, 
+  // but keeping provider structure clean.
 
   const addProduct = (product: ExtendedProduct) => {
-    const updated = [ { ...product, id: Date.now() }, ...products];
-    setProducts(updated);
-    broadcastUpdate({ ...stateRef.current, products: updated });
+    setProducts([ { ...product, id: Date.now() }, ...products]);
   };
 
   const updateProduct = (id: number, updatedProduct: ExtendedProduct) => {
-    const updated = products.map(p => p.id === id ? { ...updatedProduct, id } : p);
-    setProducts(updated);
-    const updatedFeatured = featuredProducts.map(p => p.id === id ? { ...updatedProduct, id } : p);
-    const updatedLoved = lovedProducts.map(p => p.id === id ? { ...updatedProduct, id } : p);
-    setFeaturedProducts(updatedFeatured);
-    setLovedProducts(updatedLoved);
-    broadcastUpdate({ ...stateRef.current, products: updated, featuredProducts: updatedFeatured, lovedProducts: updatedLoved });
+    setProducts(products.map(p => p.id === id ? { ...updatedProduct, id } : p));
+    setFeaturedProducts(featuredProducts.map(p => p.id === id ? { ...updatedProduct, id } : p));
+    setLovedProducts(lovedProducts.map(p => p.id === id ? { ...updatedProduct, id } : p));
   };
 
   const deleteProduct = (id: number) => {
-    const updated = products.filter((p) => p.id !== id);
-    setProducts(updated);
-    const updatedFeatured = featuredProducts.filter(p => p.id !== id);
-    const updatedLoved = lovedProducts.filter(p => p.id !== id);
-    setFeaturedProducts(updatedFeatured);
-    setLovedProducts(updatedLoved);
-    broadcastUpdate({ ...stateRef.current, products: updated, featuredProducts: updatedFeatured, lovedProducts: updatedLoved });
+    setProducts(products.filter((p) => p.id !== id));
+    setFeaturedProducts(featuredProducts.filter(p => p.id !== id));
+    setLovedProducts(lovedProducts.filter(p => p.id !== id));
   };
 
   const toggleStock = (product: ExtendedProduct) => {
@@ -243,73 +206,49 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleFeatured = (product: ExtendedProduct) => {
     const exists = featuredProducts.find(p => p.id === product.id);
-    let updated;
     if (exists) {
-      updated = featuredProducts.filter(p => p.id !== product.id);
+      setFeaturedProducts(featuredProducts.filter(p => p.id !== product.id));
     } else {
-      updated = [product, ...featuredProducts];
+      setFeaturedProducts([product, ...featuredProducts]);
     }
-    setFeaturedProducts(updated);
-    broadcastUpdate({ ...stateRef.current, featuredProducts: updated });
   };
 
   const toggleLoved = (product: ExtendedProduct, customThumbnail?: string) => {
     const exists = lovedProducts.find(p => p.id === product.id);
-    let updated;
     if (exists) {
-      updated = lovedProducts.filter(p => p.id !== product.id);
+      setLovedProducts(lovedProducts.filter(p => p.id !== product.id));
     } else {
       const productToAdd = customThumbnail ? { ...product, thumbnail: customThumbnail } : product;
-      updated = [productToAdd, ...lovedProducts];
+      setLovedProducts([productToAdd, ...lovedProducts]);
     }
-    setLovedProducts(updated);
-    broadcastUpdate({ ...stateRef.current, lovedProducts: updated });
   };
 
   const addCategory = (category: Category) => {
-    const updated = [...categories, category];
-    setCategories(updated);
-    broadcastUpdate({ ...stateRef.current, categories: updated });
+    setCategories([...categories, category]);
   };
   const deleteCategory = (name: string) => {
-    const updated = categories.filter((c) => c.name !== name);
-    setCategories(updated);
-    broadcastUpdate({ ...stateRef.current, categories: updated });
+    setCategories(categories.filter((c) => c.name !== name));
   };
   const addCollection = (collection: Collection) => {
-    const updated = [...featuredCollections, collection];
-    setFeaturedCollections(updated);
-    broadcastUpdate({ ...stateRef.current, featuredCollections: updated });
+    setFeaturedCollections([...featuredCollections, collection]);
   };
   const deleteCollection = (title: string) => {
-    const updated = featuredCollections.filter((c) => c.title !== title);
-    setFeaturedCollections(updated);
-    broadcastUpdate({ ...stateRef.current, featuredCollections: updated });
+    setFeaturedCollections(featuredCollections.filter((c) => c.title !== title));
   };
   const addArticle = (article: Article) => {
-    const updated = [...newsArticles, article];
-    setNewsArticles(updated);
-    broadcastUpdate({ ...stateRef.current, newsArticles: updated });
+    setNewsArticles([...newsArticles, article]);
   };
   const deleteArticle = (title: string) => {
-    const updated = newsArticles.filter((a) => a.title !== title);
-    setNewsArticles(updated);
-    broadcastUpdate({ ...stateRef.current, newsArticles: updated });
+    setNewsArticles(newsArticles.filter((a) => a.title !== title));
   };
   const addFAQ = (faq: FAQ) => {
-    const updated = [...faqs, faq];
-    setFaqs(updated);
-    broadcastUpdate({ ...stateRef.current, faqs: updated });
+    setFaqs([...faqs, faq]);
   };
   const deleteFAQ = (question: string) => {
-    const updated = faqs.filter((q) => q.question !== question);
-    setFaqs(updated);
-    broadcastUpdate({ ...stateRef.current, faqs: updated });
+    setFaqs(faqs.filter((q) => q.question !== question));
   };
   const updateAdminCreds = (user: string, pass: string) => {
-    const updated = { user, pass };
-    setAdminCreds(updated);
-    broadcastUpdate({ ...stateRef.current, adminCreds: updated });
+    setAdminCreds({ user, pass });
   };
 
   return (

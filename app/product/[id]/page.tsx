@@ -1,29 +1,32 @@
 "use client";
 
-import { useState, use } from "react";
+import { useState, use, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useGlobalContext, ExtendedProduct } from "@/context/GlobalContext";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  // Unwrap params
   const { id } = use(params);
   const productId = parseInt(id);
 
-  // Use Global Context to get LIVE data and Cart functions
   const { products, featuredProducts, lovedProducts, addToCart, cart, setIsCartOpen } = useGlobalContext();
   
-  // Merge all products to find the correct one by ID
   const allProducts = [...products, ...featuredProducts, ...lovedProducts];
   const product = allProducts.find((p) => p.id === productId);
-
-  // Get related products (exclude current product)
   const relatedProducts = products.filter(p => p.id !== productId).slice(0, 4);
 
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("Silver");
 
-  // Handle case where product is not found
+  // --- ZOOM STATE ---
+  const [zoom, setZoom] = useState({ x: 0, y: 0, show: false });
+  const imageContainerRef = useRef<HTMLDivElement>(null);
+
+  // Define scrollToTop function
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   if (!product) {
     return (
         <div className="min-h-screen flex items-center justify-center bg-white text-black">
@@ -32,10 +35,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     );
   }
 
-  // FIX: Define mainImage
   const mainImage = product.image;
-
-  // Stock Logic
   const isOutOfStock = !product.stock || product.stock === 0;
 
   const discountPercentage = product.originalPrice 
@@ -51,11 +51,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     }
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  // WhatsApp Logic for Single Product
   const handleSingleProductWhatsApp = () => {
     const phoneNumber = "923264555275";
     const deliveryCharges = 300;
@@ -76,36 +71,41 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     window.open(url, "_blank");
   };
 
-  // Helper to render Product Badge
   const renderProductBadge = (prod: ExtendedProduct) => {
     if (!prod.stock || prod.stock === 0) {
-      return (
-        <span className="absolute top-2 right-2 z-10 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">
-          Out of Stock
-        </span>
-      );
+      return <span className="absolute top-2 right-2 z-10 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">Out of Stock</span>;
     }
     if (prod.isNew) {
-      return (
-        <span className="absolute top-2 right-2 z-10 bg-[#49a010] text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">
-          New
-        </span>
-      );
+      return <span className="absolute top-2 right-2 z-10 bg-[#49a010] text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">New</span>;
     }
-    return (
-      <span className="absolute top-2 right-2 z-10 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">
-        In Stock
-      </span>
-    );
+    return <span className="absolute top-2 right-2 z-10 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">In Stock</span>;
+  };
+
+  // --- ZOOM HANDLERS ---
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!imageContainerRef.current) return;
+    const { left, top, width, height } = imageContainerRef.current.getBoundingClientRect();
+    
+    // Calculate percentage position
+    let x = ((e.pageX - left) / width) * 100;
+    let y = ((e.pageY - window.scrollY - top) / height) * 100;
+
+    // Bounds check
+    if (x < 0) x = 0; if (x > 100) x = 100;
+    if (y < 0) y = 0; if (y > 100) y = 100;
+
+    setZoom({ x, y, show: true });
+  };
+
+  const handleMouseLeave = () => {
+    setZoom({ ...zoom, show: false });
   };
 
   return (
     <div className="bg-white min-h-screen font-sans text-[#333]">
       {/* ================= NAVBAR ================= */}
       <header className="bg-black text-white w-full z-50 flex items-center justify-between px-6 py-4 md:px-12 sticky top-0">
-        <Link href="/" className="text-lg font-bold tracking-[0.15em] uppercase">
-          Watches
-        </Link>
+        <Link href="/" className="text-lg font-bold tracking-[0.15em] uppercase">Watches</Link>
         <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-zinc-300 uppercase tracking-widest">
           <Link href="/" className="hover:text-white transition-colors">Watches</Link>
           <Link href="/Products" className="hover:text-white transition-colors">Products</Link>
@@ -114,8 +114,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         <div className="flex items-center gap-5 text-zinc-200">
           <div className="flex gap-4">
              <button><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 5.197 5.197Z" /></svg></button>
-             
-             {/* CART ICON (Functional) */}
              <button onClick={() => setIsCartOpen(true)} className="relative hover:text-white transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
                 {cart.length > 0 && (
@@ -142,10 +140,16 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
         <div className="flex flex-col lg:flex-row gap-12 mb-24">
             
-            {/* --- LEFT: IMAGES --- */}
-            <div className="w-full lg:w-1/2">
-                <div className="relative w-full aspect-square bg-gray-50 border border-gray-100 rounded-sm overflow-hidden mb-4">
-                    {/* Out of Stock Overlay for Main Image */}
+            {/* --- LEFT: IMAGES (With Zoom) --- */}
+            <div className="w-full lg:w-1/2 flex flex-col items-center">
+                
+                {/* Image Container */}
+                <div 
+                    ref={imageContainerRef}
+                    className="relative w-full max-w-[450px] aspect-[0.8] bg-gray-50 border border-gray-100 rounded-sm overflow-hidden mb-4 cursor-crosshair group"
+                    onMouseMove={handleMouseMove}
+                    onMouseLeave={handleMouseLeave}
+                >
                     {isOutOfStock && (
                         <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center backdrop-blur-[2px]">
                             <span className="bg-red-600 text-white px-6 py-2 text-lg font-bold uppercase tracking-widest shadow-lg -rotate-12 border-2 border-white">
@@ -153,6 +157,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                             </span>
                         </div>
                     )}
+                    
                     <Image 
                         src={mainImage} 
                         alt={product.name} 
@@ -160,15 +165,31 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         className={`object-cover ${isOutOfStock ? "grayscale opacity-75" : ""}`}
                         priority
                     />
+
+                    {/* Magnifying Glass Lens */}
+                    {zoom.show && !isOutOfStock && (
+                        <div 
+                            className="absolute pointer-events-none w-32 h-32 rounded-full border-2 border-gray-200 bg-white shadow-2xl z-20"
+                            style={{
+                                top: `${zoom.y}%`,
+                                left: `${zoom.x}%`,
+                                transform: 'translate(-50%, -50%)',
+                                backgroundImage: `url(${mainImage})`,
+                                backgroundPosition: `${zoom.x}% ${zoom.y}%`,
+                                backgroundSize: '500%', 
+                                backgroundRepeat: 'no-repeat'
+                            }}
+                        ></div>
+                    )}
                 </div>
+
                 {/* Thumbnails */}
                 <div className="flex gap-4">
-                    <div className="w-20 h-20 border border-black cursor-pointer relative">
+                    <div className="w-16 h-16 md:w-20 md:h-20 border border-black cursor-pointer relative">
                         <Image src={product.image} alt="thumb1" fill className="object-cover" />
                     </div>
-                    {/* If multiple images exist, map them here */}
                     {product.images && product.images.length > 0 && product.images.map((img, idx) => (
-                        <div key={idx} className="w-20 h-20 border border-gray-200 cursor-pointer relative opacity-60 hover:opacity-100">
+                        <div key={idx} className="w-16 h-16 md:w-20 md:h-20 border border-gray-200 cursor-pointer relative opacity-60 hover:opacity-100">
                             <Image src={img} alt={`thumb${idx}`} fill className="object-cover" />
                         </div>
                     ))}
@@ -194,7 +215,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     )}
                 </div>
 
-                {/* STOCK STATUS INDICATOR */}
                 <div className="flex items-center gap-2 mb-6">
                     <div className={`w-2 h-2 rounded-full ${isOutOfStock ? "bg-red-500" : "bg-green-500 animate-pulse"}`}></div>
                     <span className={`text-xs font-medium ${isOutOfStock ? "text-red-600" : "text-green-600"}`}>
@@ -213,7 +233,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     <p><span className="font-bold">Category:</span> {product.category || "General"}</p>
                 </div>
 
-                {/* Color Selection */}
                 <div className="mb-6">
                     <span className="text-sm font-bold text-black block mb-2">Color</span>
                     <div className="flex gap-3">
@@ -234,17 +253,16 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     </div>
                 </div>
 
-                {/* Quantity Selector */}
                 <div className="mb-8">
                     <span className="text-sm font-bold text-black block mb-2">Quantity</span>
                     <div className={`flex items-center border border-gray-300 w-max rounded-sm ${isOutOfStock ? "opacity-50 pointer-events-none" : ""}`}>
                         <button onClick={() => handleQuantityChange("dec")} className="px-4 py-2 hover:bg-gray-100 text-gray-600">-</button>
-                        <span className="px-4 py-2 text-sm font-bold min-w-5 text-center">{quantity}</span> {/* FIX: min-w-[20px] -> min-w-5 */}
+                        {/* Fixed min-w-5 */}
+                        <span className="px-4 py-2 text-sm font-bold min-w-5 text-center">{quantity}</span>
                         <button onClick={() => handleQuantityChange("inc")} className="px-4 py-2 hover:bg-gray-100 text-gray-600">+</button>
                     </div>
                 </div>
 
-                {/* ACTION BUTTONS */}
                 <div className="space-y-3 mb-8">
                     <button 
                         onClick={handleSingleProductWhatsApp}
@@ -261,12 +279,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         {isOutOfStock ? "Out of Stock" : "ORDER ON WHATSAPP"}
                     </button>
                     
-                    {/* Secondary Buttons */}
                     <button className="w-full bg-white border border-[#8B1A1A] text-[#8B1A1A] py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#8B1A1A] hover:text-white transition-colors">
                         DETAILS OF PRODUCT
                     </button>
                     
-                    {/* Add to Cart Button - FIXED */}
+                    {/* FIXED: Correctly passing quantity as separate argument */}
                     <button 
                         onClick={() => addToCart(product, quantity)}
                         disabled={isOutOfStock}
@@ -379,7 +396,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {relatedProducts.map((related) => (
                     <Link href={`/product/${related.id}`} key={related.id} className="group cursor-pointer block">
-                        <div className="relative w-full aspect-4/5 bg-gray-50 mb-4 overflow-hidden border border-gray-100 rounded-sm"> {/* FIX: aspect-[4/5] -> aspect-4/5 if configured or custom */}
+                        <div className="relative w-full aspect-[0.8] bg-white mb-4 overflow-hidden border border-gray-100 rounded-sm">
                             
                             {/* BADGE ADDED HERE for Related Products */}
                             {renderProductBadge(related)}
@@ -458,7 +475,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M12 2.04c-5.5 0-10 4.49-10 10.02c0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.89 3.78-3.89c1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02Z"/></svg>
                         </Link>
                         <Link href="#" className="text-gray-500 hover:text-black transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0-3-3Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0-3-3Z"/></svg>
                         </Link>
                     </div>
                 </div>
@@ -479,6 +496,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                        <span className="text-[10px] font-bold text-gray-600 border border-gray-400 px-1 rounded-sm">BANK TRANSFER</span>
                        <span className="text-xs font-bold text-orange-600">MasterCard</span>
                     </div>
+                    {/* Fixed button onClick to use defined scrollToTop function */}
                     <button onClick={scrollToTop} className="bg-[#666] hover:bg-[#444] text-white w-10 h-10 flex items-center justify-center rounded-sm transition-colors shadow-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                           <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
