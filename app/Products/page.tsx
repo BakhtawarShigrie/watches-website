@@ -9,19 +9,16 @@ import { brandsList } from "@/app/website-data";
 
 // Main Content Component inside Suspense
 function ProductsContent() {
-  const { products, addToCart, cart, setIsCartOpen } = useGlobalContext();
+  const { products, categories, addToCart, cart, setIsCartOpen } = useGlobalContext();
   const searchParams = useSearchParams();
 
-  // 1. Initialize variables directly from URL to avoid useEffect cascade
+  // 1. Initialize variables directly from URL
   const initialCategory = searchParams.get("category");
   
   // --- STATES ---
   const [selectedBrand, setSelectedBrand] = useState("All");
-  
-  // Initialize state directly with URL param
   const [selectedCategory, setSelectedCategory] = useState(initialCategory || "All");
-  
-  const [selectedGender, setSelectedGender] = useState("All"); // Men, Women, Unisex
+  const [selectedGender, setSelectedGender] = useState("All");
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000000 });
   const [sortOption, setSortOption] = useState("default");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -36,7 +33,7 @@ function ProductsContent() {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     PRICE: false,
     GENDER: false,
-    "WATCHES CATEGORY": !!initialCategory, // Auto-open if category is in URL
+    "WATCHES CATEGORY": !!initialCategory,
     BRANDS: false,
   });
 
@@ -47,7 +44,8 @@ function ProductsContent() {
       setSelectedCategory(categoryFromUrl);
       setExpandedSections(prev => ({ ...prev, "WATCHES CATEGORY": true }));
     }
-  }, [searchParams, selectedCategory]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]); // Removed selectedCategory to avoid linter warning and loops
 
   // --- EFFECT: Click Outside to Close Search ---
   useEffect(() => {
@@ -183,7 +181,6 @@ function ProductsContent() {
                 </svg>
               </button>
            </div>
-           {/* --- END SEARCH --- */}
 
            {/* Shopping Bag Icon */}
            <button onClick={() => setIsCartOpen(true)} className="hover:text-white cursor-pointer transition-colors relative">
@@ -326,7 +323,7 @@ function ProductsContent() {
                                 <input type="radio" name="category" className="hidden" checked={selectedCategory === "All"} onChange={() => setSelectedCategory("All")} />
                                 <span className="text-xs text-gray-600">All Categories</span>
                             </label>
-                            {useGlobalContext().categories.map((cat, idx) => (
+                            {categories.map((cat, idx) => (
                                 <label key={idx} className="flex items-center gap-3 cursor-pointer group">
                                     <div className={`w-4 h-4 border rounded-sm flex items-center justify-center ${selectedCategory === cat.name ? "bg-black border-black" : "border-gray-300 group-hover:border-gray-400"}`}>
                                         {selectedCategory === cat.name && <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
@@ -384,7 +381,7 @@ function ProductsContent() {
                         {renderProductBadge(product)}
                         <Image src={product.image} alt={product.name} fill className="object-contain p-4 transition-transform duration-500 group-hover:scale-105" />
                         
-                        {/* --- CART BUTTON (Updated for Mobile) --- */}
+                        {/* --- CART BUTTON --- */}
                         <button 
                             onClick={(e) => {
                                 e.preventDefault();

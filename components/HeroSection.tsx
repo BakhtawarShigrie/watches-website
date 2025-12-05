@@ -1,15 +1,37 @@
-"use client"; // Add this at top
+"use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { heroBgImage } from "@/app/website-data";
-import { useGlobalContext } from "@/context/GlobalContext"; // Import Context
+import { useGlobalContext } from "@/context/GlobalContext";
 
 export default function HeroSection() {
-  const { setIsCartOpen, cart } = useGlobalContext(); // Use Context
+  const { setIsCartOpen, cart } = useGlobalContext();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Detect Scroll Position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <section className="relative h-screen w-full overflow-hidden bg-black text-white">
-      <header className="absolute top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-6 md:px-12">
+      
+      {/* HEADER with Dynamic Background Class */}
+      <header 
+        className={`fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-6 md:px-12 transition-colors duration-300 ${
+          isScrolled ? "bg-black shadow-md" : "bg-transparent"
+        }`}
+      >
         <div className="text-lg font-bold tracking-[0.15em] uppercase">Watches</div>
         <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-zinc-300 uppercase tracking-widest">
           <Link href="#featuredProducts" className="hover:text-white transition-colors">Watches</Link>
@@ -36,6 +58,7 @@ export default function HeroSection() {
           </button>
         </div>
       </header>
+
       <div className="absolute inset-0 z-0">
         <Image src={heroBgImage} alt="Hero" fill className="object-cover object-center" priority />
         <div className="absolute inset-0 bg-black/30"></div>

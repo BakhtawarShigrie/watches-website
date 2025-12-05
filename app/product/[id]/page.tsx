@@ -32,6 +32,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     );
   }
 
+  // FIX: Define mainImage
+  const mainImage = product.image;
+
   // Stock Logic
   const isOutOfStock = !product.stock || product.stock === 0;
 
@@ -151,7 +154,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         </div>
                     )}
                     <Image 
-                        src={product.image} 
+                        src={mainImage} 
                         alt={product.name} 
                         fill 
                         className={`object-cover ${isOutOfStock ? "grayscale opacity-75" : ""}`}
@@ -236,7 +239,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     <span className="text-sm font-bold text-black block mb-2">Quantity</span>
                     <div className={`flex items-center border border-gray-300 w-max rounded-sm ${isOutOfStock ? "opacity-50 pointer-events-none" : ""}`}>
                         <button onClick={() => handleQuantityChange("dec")} className="px-4 py-2 hover:bg-gray-100 text-gray-600">-</button>
-                        <span className="px-4 py-2 text-sm font-bold min-w-[30px] text-center">{quantity}</span>
+                        <span className="px-4 py-2 text-sm font-bold min-w-5 text-center">{quantity}</span> {/* FIX: min-w-[20px] -> min-w-5 */}
                         <button onClick={() => handleQuantityChange("inc")} className="px-4 py-2 hover:bg-gray-100 text-gray-600">+</button>
                     </div>
                 </div>
@@ -263,9 +266,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         DETAILS OF PRODUCT
                     </button>
                     
-                    {/* Add to Cart Button */}
+                    {/* Add to Cart Button - FIXED */}
                     <button 
-                        onClick={() => addToCart({ ...product, quantity })}
+                        onClick={() => addToCart(product, quantity)}
                         disabled={isOutOfStock}
                         className={`w-full py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider transition-colors shadow-sm ${
                             isOutOfStock
@@ -376,7 +379,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {relatedProducts.map((related) => (
                     <Link href={`/product/${related.id}`} key={related.id} className="group cursor-pointer block">
-                        <div className="relative w-full aspect-[4/5] bg-gray-50 mb-4 overflow-hidden border border-gray-100 rounded-sm">
+                        <div className="relative w-full aspect-4/5 bg-gray-50 mb-4 overflow-hidden border border-gray-100 rounded-sm"> {/* FIX: aspect-[4/5] -> aspect-4/5 if configured or custom */}
                             
                             {/* BADGE ADDED HERE for Related Products */}
                             {renderProductBadge(related)}
@@ -455,7 +458,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M12 2.04c-5.5 0-10 4.49-10 10.02c0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.89 3.78-3.89c1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02Z"/></svg>
                         </Link>
                         <Link href="#" className="text-gray-500 hover:text-black transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0-3-3Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0-3-3Z"/></svg>
                         </Link>
                     </div>
                 </div>

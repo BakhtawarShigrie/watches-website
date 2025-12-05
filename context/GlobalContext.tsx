@@ -80,7 +80,7 @@ interface GlobalContextType {
   cart: CartItem[];
   isCartOpen: boolean;
   setIsCartOpen: (isOpen: boolean) => void;
-  addToCart: (product: ExtendedProduct) => void;
+  addToCart: (product: ExtendedProduct, quantity?: number) => void;
   removeFromCart: (id: number) => void;
   updateCartQuantity: (id: number, type: 'inc' | 'dec') => void;
 }
@@ -101,35 +101,42 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   // --- CART STATE ---
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isCartLoaded, setIsCartLoaded] = useState(false);
 
   // Load Cart from Local Storage on Mount
   useEffect(() => {
-    const savedCart = localStorage.getItem("shoppingCart");
-    if (savedCart) {
-      try {
-        setCart(JSON.parse(savedCart));
-      } catch (error) {
-        console.error("Failed to parse cart", error);
+    if (typeof window !== "undefined") {
+      const savedCart = localStorage.getItem("shoppingCart");
+      if (savedCart) {
+        try {
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+          setCart(JSON.parse(savedCart)); 
+        } catch (error) {
+          console.error("Failed to parse cart", error);
+        }
       }
+      setIsCartLoaded(true);
     }
   }, []);
 
   // Save Cart to Local Storage whenever it changes
   useEffect(() => {
-    localStorage.setItem("shoppingCart", JSON.stringify(cart));
-  }, [cart]);
+    if (isCartLoaded) {
+      localStorage.setItem("shoppingCart", JSON.stringify(cart));
+    }
+  }, [cart, isCartLoaded]);
 
-  const addToCart = (product: ExtendedProduct) => {
+  const addToCart = (product: ExtendedProduct, quantity: number = 1) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id);
       if (existing) {
         return prev.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
         );
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, { ...product, quantity: quantity }];
     });
-    setIsCartOpen(true); // Open cart when item added
+    setIsCartOpen(true); 
   };
 
   const removeFromCart = (id: number) => {
@@ -160,7 +167,6 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [products, featuredProducts, lovedProducts, categories, featuredCollections, newsArticles, faqs, reviews, adminCreds]);
 
-  // Admin Sync Logic (unchanged)
   useEffect(() => {
     const channel = new BroadcastChannel('watches_website_sync');
     channel.onmessage = (event) => {

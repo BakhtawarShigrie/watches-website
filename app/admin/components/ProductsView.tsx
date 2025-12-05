@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useGlobalContext, ExtendedProduct } from "@/context/GlobalContext";
 
 export default function ProductsView() {
-  const { products, deleteProduct, addProduct, updateProduct, toggleStock, featuredProducts, toggleFeatured, lovedProducts, toggleLoved, categories } = useGlobalContext();
+  const { products, deleteProduct, addProduct, updateProduct, featuredProducts, toggleFeatured, lovedProducts, toggleLoved, categories } = useGlobalContext();
   const [searchTerm, setSearchTerm] = useState("");
   
   // Product CRUD Modals
