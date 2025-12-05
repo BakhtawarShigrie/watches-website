@@ -2,7 +2,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { GlobalProvider } from "@/context/GlobalContext"; // Import this
+import { GlobalProvider } from "@/context/GlobalContext";
+import CartSidebar from "@/components/CartSidebar"; // Import CartSidebar
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <GlobalProvider>
           {children}
+          <CartSidebar /> {/* Add CartSidebar here inside Provider */}
         </GlobalProvider>
       </body>
     </html>

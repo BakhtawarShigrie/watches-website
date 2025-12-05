@@ -24,6 +24,11 @@ export interface ExtendedProduct extends Product {
   discountPercentage?: number;
 }
 
+// Cart Item Interface
+export interface CartItem extends ExtendedProduct {
+  quantity: number;
+}
+
 interface GlobalStateSnapshot {
   products: ExtendedProduct[];
   featuredProducts: ExtendedProduct[];
@@ -42,7 +47,6 @@ interface GlobalContextType {
   updateProduct: (id: number, updatedProduct: ExtendedProduct) => void;
   deleteProduct: (id: number) => void;
   
-  // NEW: Added toggleStock here
   toggleStock: (product: ExtendedProduct) => void;
 
   featuredProducts: ExtendedProduct[];
@@ -71,6 +75,14 @@ interface GlobalContextType {
   
   adminCreds: { user: string; pass: string };
   updateAdminCreds: (user: string, pass: string) => void;
+
+  // --- CART TYPES ---
+  cart: CartItem[];
+  isCartOpen: boolean;
+  setIsCartOpen: (isOpen: boolean) => void;
+  addToCart: (product: ExtendedProduct) => void;
+  removeFromCart: (id: number) => void;
+  updateCartQuantity: (id: number, type: 'inc' | 'dec') => void;
 }
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
@@ -86,6 +98,56 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   const [reviews, setReviews] = useState<Review[]>(reviewsData);
   const [adminCreds, setAdminCreds] = useState({ user: "admin", pass: "watches123@" });
 
+  // --- CART STATE ---
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  // Load Cart from Local Storage on Mount
+  useEffect(() => {
+    const savedCart = localStorage.getItem("shoppingCart");
+    if (savedCart) {
+      try {
+        setCart(JSON.parse(savedCart));
+      } catch (error) {
+        console.error("Failed to parse cart", error);
+      }
+    }
+  }, []);
+
+  // Save Cart to Local Storage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("shoppingCart", JSON.stringify(cart));
+  }, [cart]);
+
+  const addToCart = (product: ExtendedProduct) => {
+    setCart((prev) => {
+      const existing = prev.find((item) => item.id === product.id);
+      if (existing) {
+        return prev.map((item) =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prev, { ...product, quantity: 1 }];
+    });
+    setIsCartOpen(true); // Open cart when item added
+  };
+
+  const removeFromCart = (id: number) => {
+    setCart((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const updateCartQuantity = (id: number, type: 'inc' | 'dec') => {
+    setCart((prev) => 
+      prev.map((item) => {
+        if (item.id === id) {
+          const newQty = type === 'inc' ? item.quantity + 1 : item.quantity - 1;
+          return { ...item, quantity: newQty > 0 ? newQty : 1 };
+        }
+        return item;
+      })
+    );
+  };
+
   const stateRef = useRef<GlobalStateSnapshot>({
     products, featuredProducts, lovedProducts, categories, 
     featuredCollections, newsArticles, faqs, reviews, adminCreds
@@ -98,6 +160,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [products, featuredProducts, lovedProducts, categories, featuredCollections, newsArticles, faqs, reviews, adminCreds]);
 
+  // Admin Sync Logic (unchanged)
   useEffect(() => {
     const channel = new BroadcastChannel('watches_website_sync');
     channel.onmessage = (event) => {
@@ -155,16 +218,13 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     broadcastUpdate({ ...stateRef.current, products: updated, featuredProducts: updatedFeatured, lovedProducts: updatedLoved });
   };
 
-  // --- NEW FUNCTION: Toggle Stock Logic ---
   const toggleStock = (product: ExtendedProduct) => {
     if (product.stock && product.stock > 0) {
-      // Agar stock hai, tou user se confirm karein ke unstock karna hai ya nahi
       const confirmUnstock = window.confirm("Are you sure you want to mark this product as Out of Stock?");
       if (confirmUnstock) {
         updateProduct(product.id, { ...product, stock: 0 });
       }
     } else {
-      // Agar out of stock hai, tou user se quantity pouchein
       const qtyStr = window.prompt("Enter stock quantity to add:", "10");
       if (qtyStr) {
         const qty = parseInt(qtyStr);
@@ -187,14 +247,12 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     broadcastUpdate({ ...stateRef.current, featuredProducts: updated });
   };
 
-  // UPDATE: Accepts customThumbnail
   const toggleLoved = (product: ExtendedProduct, customThumbnail?: string) => {
     const exists = lovedProducts.find(p => p.id === product.id);
     let updated;
     if (exists) {
       updated = lovedProducts.filter(p => p.id !== product.id);
     } else {
-      // If adding, attach the custom thumbnail if provided
       const productToAdd = customThumbnail ? { ...product, thumbnail: customThumbnail } : product;
       updated = [productToAdd, ...lovedProducts];
     }
@@ -252,7 +310,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     <GlobalContext.Provider
       value={{
         products, addProduct, updateProduct, deleteProduct,
-        toggleStock, // Exporting the new function
+        toggleStock,
         featuredProducts, toggleFeatured,
         lovedProducts, toggleLoved,
         categories, addCategory, deleteCategory,
@@ -260,7 +318,8 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
         newsArticles, addArticle, deleteArticle,
         faqs, addFAQ, deleteFAQ,
         reviews,
-        adminCreds, updateAdminCreds
+        adminCreds, updateAdminCreds,
+        cart, addToCart, removeFromCart, updateCartQuantity, isCartOpen, setIsCartOpen
       }}
     >
       {children}

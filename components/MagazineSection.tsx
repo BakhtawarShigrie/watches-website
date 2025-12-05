@@ -7,7 +7,8 @@ export default function MagazineSection() {
 
   return (
     <section className="bg-white py-24 border-b border-gray-100">
-      <div className="container mx-auto px-4">
+      {/* UPDATED: Added extra horizontal padding (px-8 on mobile, px-16 on desktop) */}
+      <div className="container mx-auto px-8 md:px-16">
         <div className="text-center mb-16 max-w-2xl mx-auto">
           <p className="text-xs font-bold text-gray-400 tracking-[0.25em] uppercase mb-3">LIFESTYLE COLLECTION</p>
           <h2 className="text-4xl font-bold text-black mb-6">Magazine & Press</h2>

@@ -8,8 +8,9 @@ export default function CategoriesSection() {
 
   return (
     <section className="bg-white py-20">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 lg:mx-40 gap-8 place-items-center">
+      {/* UPDATED: Added extra horizontal padding (px-8 on mobile, px-16 on desktop) */}
+      <div className="container mx-auto px-8 md:px-12">
+        <div className="flex flex-wrap justify-center gap-2 lg:gap-2">
           {categories.map((category, index) => (
             <Link 
               href={`/Products?category=${encodeURIComponent(category.name)}`} 

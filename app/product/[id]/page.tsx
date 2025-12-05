@@ -6,38 +6,33 @@ import Link from "next/link";
 import { useGlobalContext, ExtendedProduct } from "@/context/GlobalContext";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  // Params ko unwrap karein
+  // Unwrap params
   const { id } = use(params);
   const productId = parseInt(id);
 
-  // Global Context se saari lists lein
-  const { products, featuredProducts, lovedProducts } = useGlobalContext();
+  // Use Global Context to get LIVE data and Cart functions
+  const { products, featuredProducts, lovedProducts, addToCart, cart, setIsCartOpen } = useGlobalContext();
   
-  // 1. SAARI LISTS KO MERGE KAREIN TA AAKE SEARCH HO SAKE
-  // Isse check hoga ki ID featured ya loved products mein toh nahi hai
+  // Merge all products to find the correct one by ID
   const allProducts = [...products, ...featuredProducts, ...lovedProducts];
-
-  // 2. AB 'allProducts' MEIN SEARCH KAREIN
   const product = allProducts.find((p) => p.id === productId);
 
-  // Related products ke liye current product ko hatakar baaki dikhayein
-  // Note: Yahan aap sirf main products dikhana chahein ya mix, wo aapki choice hai.
-  // Abhi ke liye hum sirf main products se recommendations le rahe hain.
+  // Get related products (exclude current product)
   const relatedProducts = products.filter(p => p.id !== productId).slice(0, 4);
 
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("Silver");
 
-  // Agar product abhi bhi na mile
+  // Handle case where product is not found
   if (!product) {
     return (
         <div className="min-h-screen flex items-center justify-center bg-white text-black">
-            Product Not Found (ID: {productId})
+            Product Not Found
         </div>
     );
   }
 
-  // Baaki logic same rahega
+  // Stock Logic
   const isOutOfStock = !product.stock || product.stock === 0;
 
   const discountPercentage = product.originalPrice 
@@ -57,7 +52,28 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Badge render karne ka helper function
+  // WhatsApp Logic for Single Product
+  const handleSingleProductWhatsApp = () => {
+    const phoneNumber = "923264555275";
+    const deliveryCharges = 300;
+    const total = (product.price * quantity) + deliveryCharges;
+
+    let message = "👋 *Hi, I want to order this specific product:*\n\n";
+    message += `🛒 *Product:* ${product.name}\n`;
+    message += `🔢 *Quantity:* ${quantity}\n`;
+    message += `🎨 *Color:* ${selectedColor}\n`;
+    message += `💰 *Price:* Rs. ${(product.price * quantity).toLocaleString()}\n`;
+    message += `🚚 *Delivery Charges:* Rs. 300\n`;
+    message += `-----------------------------\n`;
+    message += `💵 *Total Payable:* Rs. ${total.toLocaleString()}\n\n`;
+    message += "ℹ️ *Note:* I agree to pay delivery charges in advance.\n";
+    message += "Please confirm my order.";
+
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+  };
+
+  // Helper to render Product Badge
   const renderProductBadge = (prod: ExtendedProduct) => {
     if (!prod.stock || prod.stock === 0) {
       return (
@@ -80,9 +96,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     );
   };
 
-  // Image source handle karein (kabhi kabhi thumbnail alag hota hai)
-  const mainImage = product.image;
-
   return (
     <div className="bg-white min-h-screen font-sans text-[#333]">
       {/* ================= NAVBAR ================= */}
@@ -98,8 +111,16 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         <div className="flex items-center gap-5 text-zinc-200">
           <div className="flex gap-4">
              <button><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 5.197 5.197Z" /></svg></button>
-             <button><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A7.5 7.5 0 0 1 4.501 20.118Z" /></svg></button>
-             <button><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg></button>
+             
+             {/* CART ICON (Functional) */}
+             <button onClick={() => setIsCartOpen(true)} className="relative hover:text-white transition-colors">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
+                {cart.length > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[9px] font-bold w-3.5 h-3.5 flex items-center justify-center rounded-full">
+                        {cart.length}
+                    </span>
+                )}
+             </button>
           </div>
         </div>
       </header>
@@ -130,7 +151,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         </div>
                     )}
                     <Image 
-                        src={mainImage} 
+                        src={product.image} 
                         alt={product.name} 
                         fill 
                         className={`object-cover ${isOutOfStock ? "grayscale opacity-75" : ""}`}
@@ -140,20 +161,14 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 {/* Thumbnails */}
                 <div className="flex gap-4">
                     <div className="w-20 h-20 border border-black cursor-pointer relative">
-                        <Image src={mainImage} alt="thumb1" fill className="object-cover" />
+                        <Image src={product.image} alt="thumb1" fill className="object-cover" />
                     </div>
-                    {/* Placeholder for more images */}
-                    {product.images && product.images.length > 0 ? (
-                       product.images.map((img, idx) => (
-                         <div key={idx} className="w-20 h-20 border border-gray-200 cursor-pointer relative opacity-60 hover:opacity-100">
-                            <Image src={img} alt={`thumb-${idx}`} fill className="object-cover" />
-                         </div>
-                       ))
-                    ) : (
-                       <div className="w-20 h-20 border border-gray-200 cursor-pointer relative opacity-60 hover:opacity-100">
-                           <Image src={mainImage} alt="thumb2" fill className="object-cover" />
-                       </div>
-                    )}
+                    {/* If multiple images exist, map them here */}
+                    {product.images && product.images.length > 0 && product.images.map((img, idx) => (
+                        <div key={idx} className="w-20 h-20 border border-gray-200 cursor-pointer relative opacity-60 hover:opacity-100">
+                            <Image src={img} alt={`thumb${idx}`} fill className="object-cover" />
+                        </div>
+                    ))}
                 </div>
             </div>
 
@@ -180,7 +195,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 <div className="flex items-center gap-2 mb-6">
                     <div className={`w-2 h-2 rounded-full ${isOutOfStock ? "bg-red-500" : "bg-green-500 animate-pulse"}`}></div>
                     <span className={`text-xs font-medium ${isOutOfStock ? "text-red-600" : "text-green-600"}`}>
-                        {isOutOfStock ? "Currently unavailable" : `${product.stock || 'In'} items in stock`}
+                        {isOutOfStock ? "Currently unavailable" : `${product.stock} items in stock`}
                     </span>
                 </div>
 
@@ -188,11 +203,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">DESCRIPTION</h3>
                 </div>
                 <p className="text-sm text-gray-600 font-light leading-relaxed mb-6">
-                    {product.description || "No description available for this product."}
+                    {product.description || "No description available."}
                 </p>
                 <div className="text-sm text-gray-700 space-y-1 mb-8">
                     <p><span className="font-bold">Brand:</span> {product.brand}</p>
-                    <p><span className="font-bold">Category:</span> {product.category || "Watches"}</p>
+                    <p><span className="font-bold">Category:</span> {product.category || "General"}</p>
                 </div>
 
                 {/* Color Selection */}
@@ -229,6 +244,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 {/* ACTION BUTTONS */}
                 <div className="space-y-3 mb-8">
                     <button 
+                        onClick={handleSingleProductWhatsApp}
                         disabled={isOutOfStock}
                         className={`w-full py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors ${
                             isOutOfStock 
@@ -247,7 +263,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         DETAILS OF PRODUCT
                     </button>
                     
+                    {/* Add to Cart Button */}
                     <button 
+                        onClick={() => addToCart({ ...product, quantity })}
                         disabled={isOutOfStock}
                         className={`w-full py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider transition-colors shadow-sm ${
                             isOutOfStock
@@ -271,11 +289,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         </div>
 
         {/* ================= CUSTOMER REVIEWS SECTION ================= */}
-        {/* Same as before */}
         <div className="mb-24 pt-16 border-t border-gray-200">
             <h2 className="text-3xl font-serif text-center mb-12">Customer Reviews</h2>
             
             <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
+                
+                {/* Review Stats */}
                 <div className="w-full md:w-auto flex flex-col gap-1">
                     <div className="flex items-center gap-3">
                         <div className="flex text-[#D4B07B] text-xl">{"★".repeat(5)}</div>
@@ -283,11 +302,42 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     </div>
                     <p className="text-sm text-gray-500">Based on {product.reviews || 0} reviews</p>
                 </div>
+
+                {/* Rating Bars */}
+                <div className="w-full md:w-1/3 flex flex-col gap-2">
+                    {[5, 4, 3, 2, 1].map((star, index) => (
+                        <div key={star} className="flex items-center gap-3 text-xs">
+                            <div className="flex text-[#D4B07B] min-w-[60px]">
+                                {"★".repeat(star)}{"☆".repeat(5-star)}
+                            </div>
+                            <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div 
+                                    className="h-full bg-[#B88E2F]" 
+                                    style={{ width: index === 0 ? '90%' : index === 1 ? '7%' : '0%' }}
+                                ></div>
+                            </div>
+                            <span className="text-gray-400 min-w-[20px] text-right">
+                                {index === 0 ? 39 : index === 1 ? 3 : 0}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Write Review Button */}
                 <div className="w-full md:w-auto text-right">
                     <button className="bg-[#B88E2F] hover:bg-[#9c7826] text-white px-8 py-3 font-bold text-sm uppercase tracking-wide transition-colors">
                         Write a review
                     </button>
                 </div>
+            </div>
+
+            {/* Filter */}
+            <div className="border-b border-gray-200 pb-4 mb-8 flex justify-end">
+                <select className="text-sm text-gray-600 bg-transparent border-none focus:ring-0 cursor-pointer">
+                    <option>Most Recent</option>
+                    <option>Highest Rating</option>
+                    <option>Lowest Rating</option>
+                </select>
             </div>
 
             {/* Reviews List */}
@@ -305,6 +355,14 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     <h4 className="text-sm font-bold text-black mb-1">Beautiful</h4>
                     <p className="text-sm text-gray-600 font-light">Same as shown, even more beautiful in person. Very satisfied!</p>
                 </div>
+            </div>
+
+            {/* Pagination */}
+            <div className="flex justify-center items-center gap-4 mt-12">
+                <button className="w-8 h-8 border-b-2 border-black text-black font-bold">1</button>
+                <button className="w-8 h-8 text-gray-400 hover:text-black transition-colors">2</button>
+                <button className="w-8 h-8 text-gray-400 hover:text-black transition-colors">3</button>
+                <button className="text-gray-400 hover:text-black text-lg">›</button>
             </div>
         </div>
 

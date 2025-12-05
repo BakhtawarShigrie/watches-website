@@ -9,16 +9,19 @@ import { brandsList } from "@/app/website-data";
 
 // Main Content Component inside Suspense
 function ProductsContent() {
-  const { products, categories } = useGlobalContext();
+  const { products, addToCart, cart, setIsCartOpen } = useGlobalContext();
   const searchParams = useSearchParams();
 
-  // 1. Initialize variables directly from URL
+  // 1. Initialize variables directly from URL to avoid useEffect cascade
   const initialCategory = searchParams.get("category");
   
   // --- STATES ---
   const [selectedBrand, setSelectedBrand] = useState("All");
+  
+  // Initialize state directly with URL param
   const [selectedCategory, setSelectedCategory] = useState(initialCategory || "All");
-  const [selectedGender, setSelectedGender] = useState("All");
+  
+  const [selectedGender, setSelectedGender] = useState("All"); // Men, Women, Unisex
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000000 });
   const [sortOption, setSortOption] = useState("default");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -33,18 +36,18 @@ function ProductsContent() {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     PRICE: false,
     GENDER: false,
-    "WATCHES CATEGORY": !!initialCategory,
+    "WATCHES CATEGORY": !!initialCategory, // Auto-open if category is in URL
     BRANDS: false,
   });
 
   // --- EFFECT: Sync with URL changes ---
   useEffect(() => {
     const categoryFromUrl = searchParams.get("category");
-    if (categoryFromUrl) {
+    if (categoryFromUrl && categoryFromUrl !== selectedCategory) {
       setSelectedCategory(categoryFromUrl);
       setExpandedSections(prev => ({ ...prev, "WATCHES CATEGORY": true }));
     }
-  }, [searchParams]);
+  }, [searchParams, selectedCategory]);
 
   // --- EFFECT: Click Outside to Close Search ---
   useEffect(() => {
@@ -53,10 +56,8 @@ function ProductsContent() {
         setIsSearchOpen(false);
       }
     }
-    // Bind the event listener
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      // Unbind the event listener on clean up
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [searchContainerRef]);
@@ -171,7 +172,7 @@ function ProductsContent() {
                 />
               </div>
 
-              {/* UPDATED: Correct Search Icon */}
+              {/* SEARCH ICON */}
               <button 
                 onClick={() => setIsSearchOpen(!isSearchOpen)} 
                 className={`hover:text-white cursor-pointer transition-colors ${isSearchOpen ? 'text-white' : ''}`}
@@ -185,8 +186,13 @@ function ProductsContent() {
            {/* --- END SEARCH --- */}
 
            {/* Shopping Bag Icon */}
-           <button className="hover:text-white cursor-pointer transition-colors">
+           <button onClick={() => setIsCartOpen(true)} className="hover:text-white cursor-pointer transition-colors relative">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
+              {cart.length > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[9px] font-bold w-3.5 h-3.5 flex items-center justify-center rounded-full">
+                      {cart.length}
+                  </span>
+              )}
            </button>
         </div>
       </header>
@@ -320,7 +326,7 @@ function ProductsContent() {
                                 <input type="radio" name="category" className="hidden" checked={selectedCategory === "All"} onChange={() => setSelectedCategory("All")} />
                                 <span className="text-xs text-gray-600">All Categories</span>
                             </label>
-                            {categories.map((cat, idx) => (
+                            {useGlobalContext().categories.map((cat, idx) => (
                                 <label key={idx} className="flex items-center gap-3 cursor-pointer group">
                                     <div className={`w-4 h-4 border rounded-sm flex items-center justify-center ${selectedCategory === cat.name ? "bg-black border-black" : "border-gray-300 group-hover:border-gray-400"}`}>
                                         {selectedCategory === cat.name && <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
@@ -372,29 +378,47 @@ function ProductsContent() {
             {filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredProducts.map((product) => (
-                  <Link href={`/product/${product.id}`} key={product.id} className="group cursor-pointer block">
-                    <div className="relative w-full aspect-[4/5] bg-white mb-4 overflow-hidden border border-gray-100 rounded-sm">
-                      {renderProductBadge(product)}
-                      <Image src={product.image} alt={product.name} fill className="object-contain p-4 transition-transform duration-500 group-hover:scale-105" />
-                    </div>
-                    <div className="text-center">
-                      <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">{product.brand}</h4>
-                      <h3 className="text-sm font-medium text-black leading-snug mb-2 px-2">{product.name}</h3>
-                      <div className="text-sm font-bold text-gray-900">Rs {product.price.toLocaleString()}</div>
-                      <div className="text-[9px] text-gray-400 uppercase mt-1">inc. GST</div>
-                    </div>
-                  </Link>
+                  <div key={product.id} className="group relative block">
+                    <Link href={`/product/${product.id}`} className="cursor-pointer">
+                        <div className="relative w-full aspect-[4/5] bg-white mb-4 overflow-hidden border border-gray-100 rounded-sm">
+                        {renderProductBadge(product)}
+                        <Image src={product.image} alt={product.name} fill className="object-contain p-4 transition-transform duration-500 group-hover:scale-105" />
+                        
+                        {/* --- CART BUTTON (Updated for Mobile) --- */}
+                        <button 
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                addToCart(product);
+                            }}
+                            className="absolute bottom-4 right-4 bg-black text-white p-3 rounded-full shadow-lg hover:bg-gray-800 transition-all z-20 
+                            opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-10 lg:group-hover:opacity-100 lg:group-hover:translate-y-0"
+                            title="Add to Cart"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+                        </button>
+
+                        </div>
+                        <div className="text-center">
+                        <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">{product.brand}</h4>
+                        <h3 className="text-sm font-medium text-black leading-snug mb-2 px-2">{product.name}</h3>
+                        <div className="text-sm font-bold text-gray-900">Rs {product.price.toLocaleString()}</div>
+                        <div className="text-[9px] text-gray-400 uppercase mt-1">inc. GST</div>
+                        </div>
+                    </Link>
+                  </div>
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-gray-300 rounded-sm">
-                <div className="text-4xl mb-4">🔍</div>
-                <h3 className="text-lg font-bold text-black mb-2">No Products Found</h3>
-                <p className="text-gray-500 text-sm mb-6">Try adjusting your filters or search criteria.</p>
-                <button onClick={clearFilters} className="bg-black text-white px-6 py-2 text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-gray-800 transition-colors">
-                    Clear Filters
-                </button>
-              </div>
+                // No Results
+                <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-gray-300 rounded-sm">
+                    <div className="text-4xl mb-4">🔍</div>
+                    <h3 className="text-lg font-bold text-black mb-2">No Products Found</h3>
+                    <p className="text-gray-500 text-sm mb-6">Try adjusting your filters or search criteria.</p>
+                    <button onClick={clearFilters} className="bg-black text-white px-6 py-2 text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-gray-800 transition-colors">
+                        Clear Filters
+                    </button>
+                </div>
             )}
           </div>
 
