@@ -6,13 +6,18 @@ import Link from "next/link";
 import { useGlobalContext, ExtendedProduct } from "@/context/GlobalContext";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  // Unwrap params
   const { id } = use(params);
   const productId = parseInt(id);
 
+  // Use Global Context
   const { products, featuredProducts, lovedProducts, addToCart, cart, setIsCartOpen } = useGlobalContext();
   
+  // Merge all products to find the correct one
   const allProducts = [...products, ...featuredProducts, ...lovedProducts];
   const product = allProducts.find((p) => p.id === productId);
+
+  // Related products
   const relatedProducts = products.filter(p => p.id !== productId).slice(0, 4);
 
   const [quantity, setQuantity] = useState(1);
@@ -22,7 +27,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [zoom, setZoom] = useState({ x: 0, y: 0, show: false });
   const imageContainerRef = useRef<HTMLDivElement>(null);
 
-  // Define scrollToTop function
+  // Scroll To Top Helper
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -35,6 +40,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     );
   }
 
+  // Define mainImage
   const mainImage = product.image;
   const isOutOfStock = !product.stock || product.stock === 0;
 
@@ -51,6 +57,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     }
   };
 
+  // WhatsApp Logic
   const handleSingleProductWhatsApp = () => {
     const phoneNumber = "923264555275";
     const deliveryCharges = 300;
@@ -71,6 +78,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     window.open(url, "_blank");
   };
 
+  // Product Badge Helper
   const renderProductBadge = (prod: ExtendedProduct) => {
     if (!prod.stock || prod.stock === 0) {
       return <span className="absolute top-2 right-2 z-10 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">Out of Stock</span>;
@@ -105,7 +113,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     <div className="bg-white min-h-screen font-sans text-[#333]">
       {/* ================= NAVBAR ================= */}
       <header className="bg-black text-white w-full z-50 flex items-center justify-between px-6 py-4 md:px-12 sticky top-0">
-        <Link href="/" className="text-lg font-bold tracking-[0.15em] uppercase">Watches</Link>
+        <Link href="/" className="text-lg font-bold tracking-[0.15em] uppercase">
+          Nayab Watches
+        </Link>
         <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-zinc-300 uppercase tracking-widest">
           <Link href="/" className="hover:text-white transition-colors">Watches</Link>
           <Link href="/Products" className="hover:text-white transition-colors">Products</Link>
@@ -114,6 +124,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         <div className="flex items-center gap-5 text-zinc-200">
           <div className="flex gap-4">
              <button><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 5.197 5.197Z" /></svg></button>
+             
+             {/* CART ICON */}
              <button onClick={() => setIsCartOpen(true)} className="relative hover:text-white transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
                 {cart.length > 0 && (
@@ -143,7 +155,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             {/* --- LEFT: IMAGES (With Zoom) --- */}
             <div className="w-full lg:w-1/2 flex flex-col items-center">
                 
-                {/* Image Container */}
+                {/* Image Container with Zoom */}
                 <div 
                     ref={imageContainerRef}
                     className="relative w-full max-w-[450px] aspect-[0.8] bg-gray-50 border border-gray-100 rounded-sm overflow-hidden mb-4 cursor-crosshair group"
@@ -158,6 +170,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         </div>
                     )}
                     
+                    {/* Main Image */}
                     <Image 
                         src={mainImage} 
                         alt={product.name} 
@@ -176,7 +189,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                 transform: 'translate(-50%, -50%)',
                                 backgroundImage: `url(${mainImage})`,
                                 backgroundPosition: `${zoom.x}% ${zoom.y}%`,
-                                backgroundSize: '500%', 
+                                backgroundSize: '500%', // 5x Zoom
                                 backgroundRepeat: 'no-repeat'
                             }}
                         ></div>
@@ -215,6 +228,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     )}
                 </div>
 
+                {/* STOCK STATUS */}
                 <div className="flex items-center gap-2 mb-6">
                     <div className={`w-2 h-2 rounded-full ${isOutOfStock ? "bg-red-500" : "bg-green-500 animate-pulse"}`}></div>
                     <span className={`text-xs font-medium ${isOutOfStock ? "text-red-600" : "text-green-600"}`}>
@@ -233,6 +247,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     <p><span className="font-bold">Category:</span> {product.category || "General"}</p>
                 </div>
 
+                {/* Color Selection */}
                 <div className="mb-6">
                     <span className="text-sm font-bold text-black block mb-2">Color</span>
                     <div className="flex gap-3">
@@ -253,16 +268,17 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     </div>
                 </div>
 
+                {/* Quantity Selector */}
                 <div className="mb-8">
                     <span className="text-sm font-bold text-black block mb-2">Quantity</span>
                     <div className={`flex items-center border border-gray-300 w-max rounded-sm ${isOutOfStock ? "opacity-50 pointer-events-none" : ""}`}>
                         <button onClick={() => handleQuantityChange("dec")} className="px-4 py-2 hover:bg-gray-100 text-gray-600">-</button>
-                        {/* Fixed min-w-5 */}
                         <span className="px-4 py-2 text-sm font-bold min-w-5 text-center">{quantity}</span>
                         <button onClick={() => handleQuantityChange("inc")} className="px-4 py-2 hover:bg-gray-100 text-gray-600">+</button>
                     </div>
                 </div>
 
+                {/* ACTION BUTTONS */}
                 <div className="space-y-3 mb-8">
                     <button 
                         onClick={handleSingleProductWhatsApp}
@@ -283,7 +299,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         DETAILS OF PRODUCT
                     </button>
                     
-                    {/* FIXED: Correctly passing quantity as separate argument */}
+                    {/* Add to Cart Button */}
                     <button 
                         onClick={() => addToCart(product, quantity)}
                         disabled={isOutOfStock}
@@ -483,10 +499,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             <div className="border-t border-gray-300 mb-8"></div>
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="bg-black text-white px-4 py-2 font-serif text-xl tracking-widest border border-black cursor-pointer">
-                    LifeStyle <span className="block text-[8px] text-center tracking-[0.2em] -mt-1 text-gray-300">COLLECTION</span>
+                    Nayab <span className="block text-[8px] text-center tracking-[0.2em] -mt-1 text-gray-300">WATCHES</span>
                 </div>
                 <div className="text-xs text-gray-500 text-center md:text-left">
-                    Copyright 2024 Lifestyle Collection all rights reserved.
+                    Copyright 2024 Nayab Watches all rights reserved.
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="flex gap-2 opacity-60 grayscale hover:grayscale-0 transition-all cursor-default">
@@ -496,7 +512,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                        <span className="text-[10px] font-bold text-gray-600 border border-gray-400 px-1 rounded-sm">BANK TRANSFER</span>
                        <span className="text-xs font-bold text-orange-600">MasterCard</span>
                     </div>
-                    {/* Fixed button onClick to use defined scrollToTop function */}
                     <button onClick={scrollToTop} className="bg-[#666] hover:bg-[#444] text-white w-10 h-10 flex items-center justify-center rounded-sm transition-colors shadow-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                           <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />

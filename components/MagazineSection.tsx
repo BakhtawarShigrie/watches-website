@@ -7,13 +7,14 @@ export default function MagazineSection() {
 
   return (
     <section className="bg-white py-24 border-b border-gray-100">
-      {/* UPDATED: Added extra horizontal padding (px-8 on mobile, px-16 on desktop) */}
       <div className="container mx-auto px-8 md:px-16">
         <div className="text-center mb-16 max-w-2xl mx-auto">
-          <p className="text-xs font-bold text-gray-400 tracking-[0.25em] uppercase mb-3">LIFESTYLE COLLECTION</p>
+          {/* Updated Subtitle */}
+          <p className="text-xs font-bold text-gray-400 tracking-[0.25em] uppercase mb-3">NAYAB WATCHES</p>
           <h2 className="text-4xl font-bold text-black mb-6">Magazine & Press</h2>
           <p className="text-sm text-gray-500 leading-relaxed font-light">
-            Updated monthly, follow the lifestyle collection blog for everything you want to know about watches & Eyewear.
+            {/* Updated Description */}
+            Updated monthly, follow the Nayab Watches blog for everything you want to know about watches & Eyewear.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">

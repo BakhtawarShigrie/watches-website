@@ -1,9 +1,8 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { GlobalProvider } from "@/context/GlobalContext";
-import CartSidebar from "@/components/CartSidebar"; // Import CartSidebar
+import CartSidebar from "@/components/CartSidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Watches Website",
+  title: "Nayab Watches", // Updated Name
   description: "Luxury Watches Store",
 };
 
@@ -30,7 +29,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <GlobalProvider>
           {children}
-          <CartSidebar /> {/* Add CartSidebar here inside Provider */}
+          <CartSidebar />
         </GlobalProvider>
       </body>
     </html>

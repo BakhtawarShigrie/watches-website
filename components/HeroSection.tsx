@@ -9,7 +9,6 @@ export default function HeroSection() {
   const { setIsCartOpen, cart } = useGlobalContext();
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Detect Scroll Position
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 50) {
@@ -25,14 +24,13 @@ export default function HeroSection() {
 
   return (
     <section className="relative h-screen w-full overflow-hidden bg-black text-white">
-      
-      {/* HEADER with Dynamic Background Class */}
       <header 
         className={`fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-6 md:px-12 transition-colors duration-300 ${
           isScrolled ? "bg-black shadow-md" : "bg-transparent"
         }`}
       >
-        <div className="text-lg font-bold tracking-[0.15em] uppercase">Watches</div>
+        {/* Updated Name */}
+        <div className="text-lg font-bold tracking-[0.15em] uppercase">Nayab Watches</div>
         <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-zinc-300 uppercase tracking-widest">
           <Link href="#featuredProducts" className="hover:text-white transition-colors">Watches</Link>
           <Link href="/Products" className="hover:text-white transition-colors">Products</Link>
@@ -45,7 +43,6 @@ export default function HeroSection() {
             </svg>
           </button>
           
-          {/* CART BUTTON WITH BADGE */}
           <button onClick={() => setIsCartOpen(true)} className="hover:text-white transition-colors relative">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />

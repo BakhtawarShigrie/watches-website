@@ -66,11 +66,13 @@ export default function Footer() {
         </div>
         <div className="border-t border-gray-300 mb-8"></div>
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+          {/* Updated Footer Logo Name */}
           <div className="bg-black text-white px-4 py-2 font-serif text-xl tracking-widest border border-black cursor-pointer">
-            LifeStyle <span className="block text-[8px] text-center tracking-[0.2em] -mt-1 text-gray-300">COLLECTION</span>
+            Nayab <span className="block text-[8px] text-center tracking-[0.2em] -mt-1 text-gray-300">WATCHES</span>
           </div>
+          {/* Updated Copyright Name */}
           <div className="text-xs text-gray-500 text-center md:text-left">
-            Copyright 2024 Lifestyle Collection all rights reserved.
+            Copyright 2024 Nayab Watches all rights reserved.
           </div>
           <div className="flex items-center gap-4">
             <div className="flex gap-2 opacity-60 grayscale hover:grayscale-0 transition-all cursor-default">
