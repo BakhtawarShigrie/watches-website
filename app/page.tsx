@@ -17,7 +17,7 @@ export default function Home() {
       <HeroSection />
       <CategoriesSection />
       <FeaturedProductsSection />
-      <FeaturedCollectionSection />
+      {/* <FeaturedCollectionSection /> */}
       <LovedProductsSection />
       <AdSection />
       <MagazineSection />

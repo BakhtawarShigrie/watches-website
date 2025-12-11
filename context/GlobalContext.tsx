@@ -10,6 +10,7 @@ import {
   newsArticlesData,
   faqsData,
   reviewsData,
+  globalRedeemCode,
   Product,
   Category,
   Collection,
@@ -22,23 +23,19 @@ export interface ExtendedProduct extends Product {
   category?: string;
   images?: string[];
   discountPercentage?: number;
+  redeemCodeAvailable?: boolean;
 }
 
-// Cart Item Interface
+// UPDATED: Added isCouponApplied to CartItem
 export interface CartItem extends ExtendedProduct {
   quantity: number;
+  isCouponApplied?: boolean; 
 }
 
-interface GlobalStateSnapshot {
-  products: ExtendedProduct[];
-  featuredProducts: ExtendedProduct[];
-  lovedProducts: ExtendedProduct[];
-  categories: Category[];
-  featuredCollections: Collection[];
-  newsArticles: Article[];
-  faqs: FAQ[];
-  reviews: Review[];
-  adminCreds: { user: string; pass: string };
+export interface UserProfile {
+  name: string;
+  phone: string;
+  image?: string;
 }
 
 interface GlobalContextType {
@@ -46,7 +43,6 @@ interface GlobalContextType {
   addProduct: (product: ExtendedProduct) => void;
   updateProduct: (id: number, updatedProduct: ExtendedProduct) => void;
   deleteProduct: (id: number) => void;
-  
   toggleStock: (product: ExtendedProduct) => void;
 
   featuredProducts: ExtendedProduct[];
@@ -72,17 +68,29 @@ interface GlobalContextType {
   deleteFAQ: (question: string) => void;
 
   reviews: Review[];
+  addReview: (review: Review) => void;
+  deleteReview: (id: number) => void;
+  editReview: (id: number, updatedContent: string, updatedRating: number) => void;
   
   adminCreds: { user: string; pass: string };
   updateAdminCreds: (user: string, pass: string) => void;
 
-  // --- CART TYPES ---
   cart: CartItem[];
   isCartOpen: boolean;
   setIsCartOpen: (isOpen: boolean) => void;
   addToCart: (product: ExtendedProduct, quantity?: number) => void;
   removeFromCart: (id: number) => void;
   updateCartQuantity: (id: number, type: 'inc' | 'dec') => void;
+
+  wishlist: number[];
+  toggleWishlist: (id: number) => void;
+  user: UserProfile | null;
+  loginUser: (profile: UserProfile) => void;
+  logoutUser: () => void;
+
+  // --- UPDATED COUPON FUNCTIONS ---
+  applyCouponToItem: (itemId: number, code: string) => boolean;
+  removeCouponFromItem: (itemId: number) => void;
 }
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
@@ -98,35 +106,43 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   const [reviews, setReviews] = useState<Review[]>(reviewsData);
   const [adminCreds, setAdminCreds] = useState({ user: "admin", pass: "watches123@" });
 
-  // --- CART STATE ---
+  // --- CART & USER ---
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isCartLoaded, setIsCartLoaded] = useState(false);
+  const [wishlist, setWishlist] = useState<number[]>([]);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
-  // Load Cart from Local Storage on Mount
+  // Load Data
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedCart = localStorage.getItem("shoppingCart");
-      if (savedCart) {
-        try {
-          // ESLint rule disabled because this is a necessary initialization pattern in Next.js
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-          setCart(JSON.parse(savedCart));
-        } catch (error) {
-          console.error("Failed to parse cart", error);
-        }
-      }
-      setIsCartLoaded(true);
+      const savedWishlist = localStorage.getItem("wishlist");
+      const savedUser = localStorage.getItem("userProfile");
+      const savedReviews = localStorage.getItem("reviews"); 
+
+      if (savedCart) try { setCart(JSON.parse(savedCart)); } catch (e) { console.error(e); }
+      if (savedWishlist) try { setWishlist(JSON.parse(savedWishlist)); } catch (e) { console.error(e); }
+      if (savedUser) try { setUser(JSON.parse(savedUser)); } catch (e) { console.error(e); }
+      if (savedReviews) try { setReviews(JSON.parse(savedReviews)); } catch (e) { console.error(e); }
+      
+      setIsDataLoaded(true);
     }
   }, []);
 
-  // Save Cart to Local Storage whenever it changes
+  // Save Data
   useEffect(() => {
-    if (isCartLoaded) {
+    if (isDataLoaded) {
       localStorage.setItem("shoppingCart", JSON.stringify(cart));
+      localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      localStorage.setItem("reviews", JSON.stringify(reviews));
+      if (user) localStorage.setItem("userProfile", JSON.stringify(user));
+      else localStorage.removeItem("userProfile");
     }
-  }, [cart, isCartLoaded]);
+  }, [cart, wishlist, user, reviews, isDataLoaded]);
 
+  // --- CART FUNCTIONS ---
   const addToCart = (product: ExtendedProduct, quantity: number = 1) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id);
@@ -135,7 +151,8 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
           item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
         );
       }
-      return [...prev, { ...product, quantity: quantity }];
+      // Initialize isCouponApplied as false
+      return [...prev, { ...product, quantity: quantity, isCouponApplied: false }];
     });
     setIsCartOpen(true); 
   };
@@ -156,115 +173,99 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  const stateRef = useRef<GlobalStateSnapshot>({
-    products, featuredProducts, lovedProducts, categories, 
-    featuredCollections, newsArticles, faqs, reviews, adminCreds
-  });
-
-  useEffect(() => {
-    stateRef.current = {
-      products, featuredProducts, lovedProducts, categories, 
-      featuredCollections, newsArticles, faqs, reviews, adminCreds
-    };
-  }, [products, featuredProducts, lovedProducts, categories, featuredCollections, newsArticles, faqs, reviews, adminCreds]);
-
-  // Admin Sync Logic removed for production as per previous instruction, 
-  // but keeping provider structure clean.
-
-  const addProduct = (product: ExtendedProduct) => {
-    setProducts([ { ...product, id: Date.now() }, ...products]);
+  // --- COUPON FUNCTIONS (PER ITEM) ---
+  const applyCouponToItem = (itemId: number, code: string) => {
+    if (code === globalRedeemCode) {
+      setCart((prev) => prev.map(item => {
+        if (item.id === itemId && item.redeemCodeAvailable) {
+          return { ...item, isCouponApplied: true };
+        }
+        return item;
+      }));
+      return true;
+    }
+    return false;
   };
 
-  const updateProduct = (id: number, updatedProduct: ExtendedProduct) => {
-    setProducts(products.map(p => p.id === id ? { ...updatedProduct, id } : p));
-    setFeaturedProducts(featuredProducts.map(p => p.id === id ? { ...updatedProduct, id } : p));
-    setLovedProducts(lovedProducts.map(p => p.id === id ? { ...updatedProduct, id } : p));
+  const removeCouponFromItem = (itemId: number) => {
+    setCart((prev) => prev.map(item => {
+      if (item.id === itemId) {
+        return { ...item, isCouponApplied: false };
+      }
+      return item;
+    }));
   };
 
+  // --- OTHER FUNCTIONS ---
+  const toggleWishlist = (id: number) => {
+    setWishlist((prev) => {
+      if (prev.includes(id)) return prev.filter((pid) => pid !== id);
+      else return [...prev, id];
+    });
+  };
+
+  const loginUser = (profile: UserProfile) => setUser(profile);
+  const logoutUser = () => setUser(null);
+
+  const addReview = (review: Review) => setReviews([review, ...reviews]);
+  const deleteReview = (id: number) => setReviews((prev) => prev.filter(r => r.id !== id));
+  const editReview = (id: number, content: string, rating: number) => setReviews((prev) => prev.map(r => r.id === id ? { ...r, content, rating } : r));
+
+  const addProduct = (p: ExtendedProduct) => setProducts([{ ...p, id: Date.now() }, ...products]);
+  const updateProduct = (id: number, p: ExtendedProduct) => {
+    setProducts(products.map(prod => prod.id === id ? { ...p, id } : prod));
+    setFeaturedProducts(featuredProducts.map(prod => prod.id === id ? { ...p, id } : prod));
+    setLovedProducts(lovedProducts.map(prod => prod.id === id ? { ...p, id } : prod));
+  };
   const deleteProduct = (id: number) => {
-    setProducts(products.filter((p) => p.id !== id));
+    setProducts(products.filter(p => p.id !== id));
     setFeaturedProducts(featuredProducts.filter(p => p.id !== id));
     setLovedProducts(lovedProducts.filter(p => p.id !== id));
   };
-
   const toggleStock = (product: ExtendedProduct) => {
-    if (product.stock && product.stock > 0) {
-      const confirmUnstock = window.confirm("Are you sure you want to mark this product as Out of Stock?");
-      if (confirmUnstock) {
-        updateProduct(product.id, { ...product, stock: 0 });
-      }
-    } else {
-      const qtyStr = window.prompt("Enter stock quantity to add:", "10");
-      if (qtyStr) {
-        const qty = parseInt(qtyStr);
-        if (!isNaN(qty) && qty > 0) {
-          updateProduct(product.id, { ...product, stock: qty });
-        }
-      }
-    }
+     if (product.stock && product.stock > 0) {
+       if(window.confirm("Mark Out of Stock?")) updateProduct(product.id, {...product, stock: 0});
+     } else {
+       const qty = parseInt(window.prompt("Enter quantity:", "10") || "0");
+       if(qty > 0) updateProduct(product.id, {...product, stock: qty});
+     }
+  };
+  const toggleFeatured = (p: ExtendedProduct) => {
+    const exists = featuredProducts.find(fp => fp.id === p.id);
+    if(exists) setFeaturedProducts(featuredProducts.filter(fp => fp.id !== p.id));
+    else setFeaturedProducts([p, ...featuredProducts]);
+  };
+  const toggleLoved = (p: ExtendedProduct, thumb?: string) => {
+    const exists = lovedProducts.find(lp => lp.id === p.id);
+    if(exists) setLovedProducts(lovedProducts.filter(lp => lp.id !== p.id));
+    else setLovedProducts([thumb ? {...p, thumbnail: thumb} : p, ...lovedProducts]);
   };
 
-  const toggleFeatured = (product: ExtendedProduct) => {
-    const exists = featuredProducts.find(p => p.id === product.id);
-    if (exists) {
-      setFeaturedProducts(featuredProducts.filter(p => p.id !== product.id));
-    } else {
-      setFeaturedProducts([product, ...featuredProducts]);
-    }
-  };
-
-  const toggleLoved = (product: ExtendedProduct, customThumbnail?: string) => {
-    const exists = lovedProducts.find(p => p.id === product.id);
-    if (exists) {
-      setLovedProducts(lovedProducts.filter(p => p.id !== product.id));
-    } else {
-      const productToAdd = customThumbnail ? { ...product, thumbnail: customThumbnail } : product;
-      setLovedProducts([productToAdd, ...lovedProducts]);
-    }
-  };
-
-  const addCategory = (category: Category) => {
-    setCategories([...categories, category]);
-  };
-  const deleteCategory = (name: string) => {
-    setCategories(categories.filter((c) => c.name !== name));
-  };
-  const addCollection = (collection: Collection) => {
-    setFeaturedCollections([...featuredCollections, collection]);
-  };
-  const deleteCollection = (title: string) => {
-    setFeaturedCollections(featuredCollections.filter((c) => c.title !== title));
-  };
-  const addArticle = (article: Article) => {
-    setNewsArticles([...newsArticles, article]);
-  };
-  const deleteArticle = (title: string) => {
-    setNewsArticles(newsArticles.filter((a) => a.title !== title));
-  };
-  const addFAQ = (faq: FAQ) => {
-    setFaqs([...faqs, faq]);
-  };
-  const deleteFAQ = (question: string) => {
-    setFaqs(faqs.filter((q) => q.question !== question));
-  };
-  const updateAdminCreds = (user: string, pass: string) => {
-    setAdminCreds({ user, pass });
-  };
+  // Keep simple list updaters
+  const addCategory = (c: Category) => setCategories([...categories, c]);
+  const deleteCategory = (name: string) => setCategories(categories.filter(c => c.name !== name));
+  const addCollection = (c: Collection) => setFeaturedCollections([...featuredCollections, c]);
+  const deleteCollection = (title: string) => setFeaturedCollections(featuredCollections.filter(c => c.title !== title));
+  const addArticle = (a: Article) => setNewsArticles([...newsArticles, a]);
+  const deleteArticle = (title: string) => setNewsArticles(newsArticles.filter(a => a.title !== title));
+  const addFAQ = (f: FAQ) => setFaqs([...faqs, f]);
+  const deleteFAQ = (q: string) => setFaqs(faqs.filter(f => f.question !== q));
+  const updateAdminCreds = (u: string, p: string) => setAdminCreds({user: u, pass: p});
 
   return (
     <GlobalContext.Provider
       value={{
-        products, addProduct, updateProduct, deleteProduct,
-        toggleStock,
-        featuredProducts, toggleFeatured,
-        lovedProducts, toggleLoved,
+        products, addProduct, updateProduct, deleteProduct, toggleStock,
+        featuredProducts, toggleFeatured, lovedProducts, toggleLoved,
         categories, addCategory, deleteCategory,
         featuredCollections, addCollection, deleteCollection,
         newsArticles, addArticle, deleteArticle,
-        faqs, addFAQ, deleteFAQ,
-        reviews,
+        faqs, addFAQ, deleteFAQ, 
+        reviews, addReview, deleteReview, editReview,
         adminCreds, updateAdminCreds,
-        cart, addToCart, removeFromCart, updateCartQuantity, isCartOpen, setIsCartOpen
+        cart, addToCart, removeFromCart, updateCartQuantity, isCartOpen, setIsCartOpen,
+        wishlist, toggleWishlist, user, loginUser, logoutUser,
+        applyCouponToItem, removeCouponFromItem // Exported new functions
       }}
     >
       {children}

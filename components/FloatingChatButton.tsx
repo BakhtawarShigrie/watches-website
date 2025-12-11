@@ -1,8 +1,79 @@
+"use client";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { whatsappNumber } from "@/app/website-data";
+
 export default function FloatingChatButton() {
+  const [isVisible, setIsVisible] = useState(true); 
+  const pathname = usePathname();
+
+  useEffect(() => {
+    // Logic specific to Homepage ('/')
+    if (pathname === "/") {
+      setIsVisible(false); // Initially hide on homepage
+
+      const handleScroll = () => {
+        const scrolled = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const docHeight = document.documentElement.scrollHeight;
+
+        // Check if user is near the bottom (Footer area)
+        // Adjust 500 according to your footer height approx
+        const isNearBottom = windowHeight + scrolled >= docHeight - 500;
+
+        // Show ONLY if scrolled past Hero (> 600) AND NOT near bottom
+        if (scrolled > 600 && !isNearBottom) {
+          setIsVisible(true);
+        } else {
+          setIsVisible(false);
+        }
+      };
+
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    } else {
+      // Always visible on other pages? 
+      // If you want to hide on footer for ALL pages, move the logic outside the if(pathname === '/')
+      // For now, keeping it visible on other pages as per previous logic, 
+      // or we can apply the "hide on footer" rule globally.
+      
+      // Applying "Hide on Footer" logic globally for better UX:
+      const handleGlobalScroll = () => {
+        const scrolled = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const docHeight = document.documentElement.scrollHeight;
+        const isNearBottom = windowHeight + scrolled >= docHeight - 500;
+
+        if (isNearBottom) {
+            setIsVisible(false);
+        } else {
+            setIsVisible(true);
+        }
+      };
+      
+      window.addEventListener("scroll", handleGlobalScroll);
+      return () => window.removeEventListener("scroll", handleGlobalScroll);
+    }
+  }, [pathname]);
+
+  const handleWhatsAppClick = () => {
+    const message = "👋 Hello Support Team, I need assistance regarding Nayab Watches.";
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+  };
+
+  // Render nothing if not visible
+  if (!isVisible) return null;
+
   return (
-    <button className="fixed bottom-6 right-6 z-50 h-12 w-12 bg-[#1a1a1a] rounded-full flex items-center justify-center hover:bg-[#333] transition-colors shadow-xl border border-zinc-800/50">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-white">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+    <button 
+      onClick={handleWhatsAppClick}
+      className={`fixed bottom-6 right-6 z-50 h-12 w-12 bg-[#25D366] rounded-full flex items-center justify-center hover:bg-[#128C7E] transition-all duration-500 shadow-2xl border-2 border-white cursor-pointer group opacity-80 hover:opacity-100 ${isVisible ? 'animate-in fade-in zoom-in' : 'animate-out fade-out zoom-out'}`}
+      title="Chat on WhatsApp"
+    >
+      {/* WhatsApp SVG Icon (24x24) */}
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16" className="text-white group-hover:scale-110 transition-transform">
+        <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
       </svg>
     </button>
   );

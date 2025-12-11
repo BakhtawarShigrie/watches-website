@@ -1,25 +1,32 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import { useGlobalContext } from "@/context/GlobalContext";
+import { Article } from "@/app/website-data"; // Type import
 
 export default function MagazineSection() {
   const { newsArticles } = useGlobalContext();
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
 
   return (
-    <section className="bg-white py-24 border-b border-gray-100">
+    <section className="bg-white py-24 border-b border-gray-100 relative">
       <div className="container mx-auto px-8 md:px-16">
         <div className="text-center mb-16 max-w-2xl mx-auto">
-          {/* Updated Subtitle */}
           <p className="text-xs font-bold text-gray-400 tracking-[0.25em] uppercase mb-3">NAYAB WATCHES</p>
           <h2 className="text-4xl font-bold text-black mb-6">Magazine & Press</h2>
           <p className="text-sm text-gray-500 leading-relaxed font-light">
-            {/* Updated Description */}
             Updated monthly, follow the Nayab Watches blog for everything you want to know about watches & Eyewear.
           </p>
         </div>
+        
+        {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {newsArticles.map((article, index) => (
-            <div key={index} className="flex flex-col group cursor-pointer text-center">
+            <div 
+              key={index} 
+              onClick={() => setSelectedArticle(article)} // Click Handler
+              className="flex flex-col group cursor-pointer text-center"
+            >
               <div className="relative w-full h-[250px] overflow-hidden mb-6">
                 <Image 
                   src={article.image} 
@@ -38,13 +45,78 @@ export default function MagazineSection() {
               </div>
               <div className="inline-block relative">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-black pb-1 border-b border-black group-hover:text-gray-600 group-hover:border-gray-600 transition-all">
-                  CONTINUE READING...
+                  READ MORE
                 </span>
               </div>
             </div>
           ))}
         </div>
       </div>
+
+      {/* --- MAGAZINE POPUP MODAL --- */}
+      {selectedArticle && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+          onClick={() => setSelectedArticle(null)} // Close on backdrop click
+        >
+          {/* Modal Content */}
+          <div 
+            className="bg-white w-full max-w-4xl rounded-sm shadow-2xl overflow-hidden relative flex flex-col md:flex-row animate-in fade-in zoom-in duration-300"
+            onClick={(e) => e.stopPropagation()} // Prevent close when clicking inside
+          >
+            {/* Close Button (Cross) */}
+            <button 
+              onClick={() => setSelectedArticle(null)}
+              className="absolute top-4 right-4 z-10 bg-white/80 hover:bg-black hover:text-white text-black p-2 rounded-full transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+
+            {/* Left: Image */}
+            <div className="w-full md:w-1/2 h-[300px] md:h-auto relative bg-gray-100">
+              <Image 
+                src={selectedArticle.image} 
+                alt={selectedArticle.title} 
+                fill 
+                className="object-cover" 
+              />
+            </div>
+
+            {/* Right: Details */}
+            <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center text-left">
+              <span className="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-4">
+                {selectedArticle.category}
+              </span>
+              <h3 className="text-2xl md:text-3xl font-serif font-bold text-black mb-4 leading-tight">
+                {selectedArticle.title}
+              </h3>
+              <p className="text-sm text-gray-500 font-medium mb-6 flex items-center gap-2">
+                <span className="w-8 h-[1px] bg-gray-300"></span> {selectedArticle.date}
+              </p>
+              
+              {/* Dummy Description Content */}
+              <div className="text-sm text-gray-600 leading-relaxed space-y-4 font-light overflow-y-auto max-h-[200px] pr-2 custom-scrollbar">
+                <p>
+                  Discover the latest trends and stories from the world of horology. This article explores the craftsmanship and innovation behind our featured timepieces.
+                </p>
+                <p>
+                  Whether you are a collector or just starting your journey, Nayab Watches brings you the finest selection of luxury and sport watches tailored for every style.
+                </p>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+                </p>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-gray-100">
+                 <button className="text-xs font-bold uppercase tracking-widest text-black hover:text-red-600 transition-colors flex items-center gap-2">
+                    Share this article
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

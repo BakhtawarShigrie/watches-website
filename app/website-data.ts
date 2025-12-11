@@ -13,10 +13,12 @@ export interface Product {
   reviews?: number;
   description?: string;
   thumbnail?: string;
-  category?: string; // e.g., "Men Formal", "Men Sports"
-  gender?: string;   // "Men", "Women", "Unisex"
+  category?: string;
+  gender?: string;
   discountPercentage?: number;
   images?: string[];
+  redeemCodeAvailable?: boolean;
+  videoUrl?: string;
 }
 
 export interface Category {
@@ -44,28 +46,42 @@ export interface FAQ {
 
 export interface Review {
   id: number;
+  productId: number;
   name: string;
   date: string;
   rating: number;
-  title: string;
   content: string;
   verified: boolean;
 }
 
+// --- GLOBAL DATA ---
+export const globalRedeemCode = "NAYAB500";
+export const redeemDiscountAmount = 500;
+export const whatsappNumber = "923176402959"; // UPDATED WHATSAPP NUMBER
+
 // --- IMAGES (Static Assets) ---
-export const heroBgImage = "https://images.unsplash.com/photo-1670404160620-a3a86428560e?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bHV4dXJ5JTIwd2F0Y2h8ZW58MHx8MHx8fDA%3D";
+export const heroBgImages = [
+  "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765381368/4_wgo6py.jpg",
+  "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765381910/2_wzoana.jpg",
+  "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765382128/5_ggc270.jpg",
+  "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765381365/6_cmws8a.jpg",
+  "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765381366/7_lyrfcm.jpg"
+];
+
 export const adBgImage = "https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHdhdGNofGVufDB8fDB8fHww";
 
 // --- CATEGORIES ---
 export const categoriesData: Category[] = [
-  { name: "11.11 Sale", image: "https://en-pk.svestonwatches.com/cdn/shop/files/12.12_Sale_Website_Icon_06500ae6-9643-43f1-b445-d65fc100837f_1024x1024.png?v=1764334753" },
+  { name: "12.12 Sale", image: "https://en-pk.svestonwatches.com/cdn/shop/files/12.12_Sale_Website_Icon_06500ae6-9643-43f1-b445-d65fc100837f_1024x1024.png?v=1764334753" },
   { name: "Men Formal", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Men_Formal_833139bc-31be-4be7-a4a9-8a627e7b4120_1024x1024.png?v=1750671977" },
   { name: "Men Sports", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Men_Sports_ed2c875c-5bf8-478c-b297-506a3d232b40_1024x1024.png?v=1750671977" },
+  { name: "Female Watches", image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765381366/7_lyrfcm.jpg" },
+  { name: "Unisex", image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765381365/6_cmws8a.jpg" },
   { name: "Smart Watches", image: "https://en-pk.svestonwatches.com/cdn/shop/files/tourque_png_1024x1024.png?v=1750671977" },
-  { name: "Luxury Steel", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Couple_Watches_9997088b-d0fe-4781-8101-47b5d0c33f03_1024x1024.png?v=1750671977" },
+  { name: "Luxury Watches", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Couple_Watches_9997088b-d0fe-4781-8101-47b5d0c33f03_1024x1024.png?v=1750671977" },
 ];
 
-// --- MAIN PRODUCTS CATALOG (Only 11 Products as requested) ---
+// --- MAIN PRODUCTS CATALOG ---
 export const mainProductsData: Product[] = [
   {
     id: 1,
@@ -79,7 +95,9 @@ export const mainProductsData: Product[] = [
     stock: 10,
     reviews: 43,
     category: "Men Formal",
-    gender: "Men"
+    gender: "Men",
+    redeemCodeAvailable: true,
+    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
   },
   {
     id: 2,
@@ -87,13 +105,15 @@ export const mainProductsData: Product[] = [
     name: "Casio Edifice – EFR-539DE-3AVUDF",
     price: 52000,
     originalPrice: 66000,
-    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765132037/4_piuqic.jpg",
+    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765455944/4_gdnh6e.jpg",
     isNew: true,
     description: "Elegant green accents on a sturdy steel bracelet. Stand out from the crowd.",
     stock: 8,
     reviews: 12,
     category: "Men Formal",
-    gender: "Men"
+    gender: "Men",
+    redeemCodeAvailable: true,
+    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
   },
   {
     id: 3,
@@ -107,7 +127,8 @@ export const mainProductsData: Product[] = [
     stock: 12,
     reviews: 20,
     category: "Men Formal",
-    gender: "Men"
+    gender: "Men",
+    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
   },
   {
     id: 4,
@@ -121,7 +142,9 @@ export const mainProductsData: Product[] = [
     stock: 5,
     reviews: 15,
     category: "Smart Watches",
-    gender: "Men"
+    gender: "Men",
+    redeemCodeAvailable: true,
+    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
   },
   {
     id: 5,
@@ -135,7 +158,8 @@ export const mainProductsData: Product[] = [
     stock: 20,
     reviews: 100,
     category: "Men Sports",
-    gender: "Men"
+    gender: "Men",
+    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
   },
   {
     id: 6,
@@ -149,7 +173,8 @@ export const mainProductsData: Product[] = [
     stock: 6,
     reviews: 8,
     category: "Men Formal",
-    gender: "Men"
+    gender: "Men",
+    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
   },
   {
     id: 7,
@@ -163,7 +188,8 @@ export const mainProductsData: Product[] = [
     stock: 9,
     reviews: 5,
     category: "Men Formal",
-    gender: "Men"
+    gender: "Men",
+    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
   },
   {
     id: 8,
@@ -177,7 +203,8 @@ export const mainProductsData: Product[] = [
     stock: 4,
     reviews: 30,
     category: "Men Sports",
-    gender: "Men"
+    gender: "Men",
+    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
   },
   {
     id: 9,
@@ -191,7 +218,8 @@ export const mainProductsData: Product[] = [
     stock: 15,
     reviews: 22,
     category: "Smart Watches",
-    gender: "Men"
+    gender: "Men",
+    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
   },
   {
     id: 10,
@@ -205,7 +233,8 @@ export const mainProductsData: Product[] = [
     stock: 3,
     reviews: 18,
     category: "Men Sports",
-    gender: "Men"
+    gender: "Men",
+    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
   },
   {
     id: 11,
@@ -219,7 +248,8 @@ export const mainProductsData: Product[] = [
     stock: 25,
     reviews: 50,
     category: "Men Sports",
-    gender: "Men"
+    gender: "Men",
+    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
   },
   {
     id: 12,
@@ -233,39 +263,36 @@ export const mainProductsData: Product[] = [
     stock: 25,
     reviews: 50,
     category: "Men Sports",
-    gender: "Men"
+    gender: "Men",
+    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
   },
 ];
 
-// --- FEATURED & LOVED LISTS (Derived from Main Products) ---
-
-// Featured Products
+// --- FEATURED & LOVED LISTS ---
 export const homeFeaturedProducts: Product[] = [
-  mainProductsData[0], // EFR-539DE-2AVUDF
-  mainProductsData[3], // ECB-10DC-3A
-  mainProductsData[5], // EFR-S108DE-3AVUDF
-  mainProductsData[8], // ECB-2000DD-1ADF
-  mainProductsData[10] // ECB-2000PB-1A
+  mainProductsData[0], 
+  mainProductsData[3], 
+  mainProductsData[5], 
+  mainProductsData[8], 
+  mainProductsData[10] 
 ];
 
-// Loved Products
 export const homeLovedProducts: Product[] = [
   {
-    ...mainProductsData[1], // EFR-539DE-3AVUDF
+    ...mainProductsData[1], 
     thumbnail: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8d2F0Y2h8ZW58MHx8MHx8fDA%3D"
   },
   {
-    ...mainProductsData[4], // ECB-10P-1ADF
+    ...mainProductsData[4], 
     thumbnail: "https://images.unsplash.com/photo-1622434641406-a158123450f9?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8d2F0Y2h8ZW58MHx8MHx8fDA%3D"
   },
   {
-    ...mainProductsData[9], // ECB-2000NP-1ADF
+    ...mainProductsData[9], 
     thumbnail: "https://images.unsplash.com/photo-1582150264904-e0bea5ef0ad1?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8d3Jpc3R3YXRjaHxlbnwwfHwwfHx8MA%3D%3D"
   }
 ];
 
 // --- OTHER DATA ---
-
 export const featuredCollectionsData: Collection[] = [
   {
     title: "Luxury Watches",
@@ -331,7 +358,10 @@ export const faqsData: FAQ[] = [
 // --- FILTERS & BRANDS ---
 export const brandsList = [
   "All",
-  "CASIO EDIFICE",
+  "CITIZEN",
+  "ROLEX",
+  "FORICHS",
+  "MOONSTON",
 ];
 
 export const sidebarFiltersList = [
@@ -345,28 +375,28 @@ export const sidebarFiltersList = [
 export const reviewsData: Review[] = [
   {
     id: 1,
+    productId: 1, 
     name: "Fatima Nadeem",
     date: "10/16/2025",
     rating: 5,
-    title: "Beautiful",
     content: "Same as shown, even more beautiful in person. Very satisfied!",
     verified: true
   },
   {
     id: 2,
+    productId: 1, 
     name: "Ali Khan",
     date: "10/18/2025",
     rating: 4,
-    title: "Good Quality",
     content: "The watch is solid and feels premium. Delivery was a bit late though.",
     verified: true
   },
   {
     id: 3,
+    productId: 1, 
     name: "Sara Ahmed",
     date: "10/20/2025",
     rating: 5,
-    title: "Love it!",
     content: "Bought this for my husband and he loves it. Highly recommended.",
     verified: true
   },

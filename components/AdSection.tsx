@@ -14,7 +14,7 @@ export default function AdSection() {
       />
       <div className="absolute inset-0 bg-black/10"></div>
       <div className="absolute inset-0 flex flex-col justify-between p-8 md:p-16">
-        <div className="text-white/80 text-xs font-bold uppercase tracking-widest mt-4">Speedmaster</div>
+        <div className="text-white/80 text-xs font-bold uppercase tracking-widest mt-4">Nayab Watches</div>
         <div className="max-w-lg mb-8">
           <h2 className="text-4xl md:text-5xl font-serif text-white mb-6 leading-tight">Dark Side of the Moon</h2>
           <p className="text-white/80 text-sm md:text-base mb-8 leading-relaxed font-light">
