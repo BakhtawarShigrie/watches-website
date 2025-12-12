@@ -47,22 +47,22 @@ export default function LovedProductsSection() {
                             addToCart(item);
                         }}
                         className="absolute top-2 right-2 bg-white text-black p-3 rounded-full shadow-lg hover:bg-black hover:text-white transition-all z-20
-                        opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-[-10px] lg:group-hover:opacity-100 lg:group-hover:translate-y-0"
+                        opacity-100 translate-y-0 lg:opacity-0 lg:-translate-y-2.5 lg:group-hover:opacity-100 lg:group-hover:translate-y-0"
                         title="Add to Cart"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
                     </button>
 
                     <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-sm p-4 rounded-sm flex items-center gap-4 shadow-sm transition-transform duration-300 hover:-translate-y-1">
-                        <div className="relative w-12 h-12 flex-shrink-0 bg-gray-50 rounded-sm overflow-hidden">
+                        <div className="relative w-12 h-12 shrink-0 bg-gray-50 rounded-sm overflow-hidden">
                         <Image src={item.image} alt={item.name} fill className="object-contain" />
                         </div>
-                        <div className="flex-grow">
+                        <div className="grow">
                         <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{item.brand}</h4>
                         <h3 className="text-sm font-semibold text-black">{item.name}</h3>
                         <p className="text-xs font-bold text-gray-800 mt-1">Rs. {item.price.toLocaleString()}</p>
                         </div>
-                        <div className="flex-shrink-0 text-gray-400 group-hover:text-black transition-colors">
+                        <div className="shrink-0 text-gray-400 group-hover:text-black transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                         </svg>

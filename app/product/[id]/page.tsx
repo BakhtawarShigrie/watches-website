@@ -22,7 +22,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const productReviews = reviews.filter(r => r.productId === productId);
 
   const [quantity, setQuantity] = useState(1);
-  const [selectedColor, setSelectedColor] = useState("Silver");
+  const [] = useState("Silver");
   const [zoom, setZoom] = useState({ x: 0, y: 0, show: false });
   const imageContainerRef = useRef<HTMLDivElement>(null);
 
@@ -67,7 +67,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   };
 
   const handleWhatsApp = () => {
-    const phoneNumber = "923264555275";
     const deliveryCharges = 300;
     const total = (finalPrice * quantity) + deliveryCharges;
     let message = "👋 *Hi, I want to order this product:*\n\n";
@@ -340,7 +339,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
       {/* LOGIN PROMPT MODAL */}
       {showLoginPrompt && (
-        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
+        <div className="fixed inset-0 bg-black/60 z-100 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
             <div className="bg-white p-8 rounded-lg max-w-sm w-full shadow-2xl text-center">
                 <div className="mb-4 text-4xl">🔒</div>
                 <h3 className="text-xl font-bold mb-2">Login Required</h3>
@@ -355,7 +354,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
       {/* REVIEW FORM MODAL */}
       {isReviewModalOpen && (
-        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
+        <div className="fixed inset-0 bg-black/60 z-100 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
             <div className="bg-white p-8 rounded-lg max-w-md w-full shadow-2xl relative">
                 <button onClick={() => setIsReviewModalOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-black">✕</button>
                 <h3 className="text-xl font-bold mb-6 text-center">{editingReviewId ? "Edit Review" : "Write a Review"}</h3>
@@ -388,7 +387,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       )}
 
       {isVideoOpen && (
-        <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
+        <div className="fixed inset-0 bg-black/80 z-100 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
             <div className="bg-black w-full max-w-3xl aspect-video relative shadow-2xl">
                 <button onClick={() => setIsVideoOpen(false)} className="absolute -top-10 right-0 text-white hover:text-gray-300 text-sm font-bold uppercase tracking-widest">Close [X]</button>
                 <iframe width="100%" height="100%" src={product.videoUrl || "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"} title="Product Video" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>

@@ -235,7 +235,7 @@ export default function ProductsView() {
       
       {/* STOCK MODAL */}
       {isStockModalOpen && stockProduct && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[70] p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-70 p-4 backdrop-blur-sm">
           <div className="bg-white p-6 rounded-xl w-full max-w-sm shadow-2xl transform transition-all scale-100">
             <div className="flex flex-col items-center mb-6 text-center">
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 ${stockProduct.stock && stockProduct.stock > 0 ? "bg-red-50 text-red-500" : "bg-green-50 text-green-500"}`}>
@@ -264,7 +264,7 @@ export default function ProductsView() {
                         <label className="text-xs font-bold text-gray-500 uppercase mb-1.5 block">Enter Quantity to Add</label>
                         <input 
                             type="number" 
-                            className="w-full border border-gray-300 p-3 rounded-lg text-sm focus:ring-2 focus:ring-black outline-none font-bold text-center text-lg"
+                            className="w-full border border-gray-300 p-3 rounded-lg text-sm focus:ring-2 focus:ring-black outline-none font-bold text-center"
                             value={stockQtyInput}
                             onChange={(e) => setStockQtyInput(e.target.value)}
                             placeholder="10"
@@ -288,7 +288,7 @@ export default function ProductsView() {
 
       {/* ADD / EDIT PRODUCT MODAL */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-60 p-4 backdrop-blur-sm">
           <div className="bg-white p-6 rounded-lg w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
             <h3 className="text-xl font-bold mb-6 pb-2 border-b border-gray-100">
                 {isEditMode ? "Edit Product" : "Add New Product"}
@@ -358,7 +358,7 @@ export default function ProductsView() {
 
       {/* ADD TO LOVED POPUP MODAL */}
       {isLoveModalOpen && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[70] p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-70 p-4 backdrop-blur-sm">
           <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-2xl transform scale-100 transition-all">
             <h3 className="text-xl font-bold mb-4 text-center">Add to Loved Products</h3>
             <p className="text-sm text-gray-500 mb-6 text-center">

@@ -49,7 +49,7 @@ function ProductsContent() {
       setSelectedBrand(brandFromUrl);
       setExpandedSections(prev => ({ ...prev, "BRANDS": true }));
     }
-  }, [searchParams]);
+  }, [searchParams, selectedBrand, selectedCategory]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -112,13 +112,13 @@ function ProductsContent() {
 
   const renderProductBadge = (product: ExtendedProduct) => {
     if (product.stock === 0) {
-      return <span className="absolute top-2 left-2 z-10 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">Out of Stock</span>;
+      return <span className="absolute top-2 left-2 z-10 bg-red-700 text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">Out of Stock</span>;
     }
     if (product.isNew) {
-      return <span className="absolute top-2 left-2 z-10 bg-[#49a010] text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">New</span>;
+      return <span className="absolute top-2 left-2 z-10 bg-[#3a800d] text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">New</span>;
     }
-    return <span className="absolute top-2 left-2 z-10 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">In Stock</span>;
-  };
+    return <span className="absolute top-2 left-2 z-10 bg-blue-700 text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">In Stock</span>;
+};
 
   const clearFilters = () => {
     setSelectedBrand("All");
@@ -350,7 +350,7 @@ function ProductsContent() {
                                     </button>
                                 </div>
                                 <div className="text-center pb-2">
-                                    <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">{product.brand}</h4>
+                                    <h4 className="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-1">{product.brand}</h4>
                                     <h3 className="text-sm font-medium text-black leading-snug mb-2 px-2">{product.name}</h3>
                                     <div className="text-sm font-bold text-gray-900">Rs {product.price.toLocaleString()}</div>
                                     <div className="text-[9px] text-gray-400 uppercase mt-1">inc. GST</div>

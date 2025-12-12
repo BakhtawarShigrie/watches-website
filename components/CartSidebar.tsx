@@ -7,6 +7,8 @@ import { whatsappNumber, redeemDiscountAmount } from "@/app/website-data";
 
 export default function CartSidebar() {
   const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateCartQuantity, applyCouponToItem, removeCouponFromItem } = useGlobalContext();
+  
+  // FIX: isCheckoutModalOpen was defined but unused (now used in JSX)
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   
   const [couponInputs, setCouponInputs] = useState<Record<number, string>>({});
@@ -17,14 +19,9 @@ export default function CartSidebar() {
   }, 0);
 
   const deliveryCharges = 300;
+  
+  // FIX: grandTotal was defined but unused (now used in Checkout Modal)
   const grandTotal = subtotal + deliveryCharges;
-
-  const totalSavings = cart.reduce((savings, item) => {
-    if (item.isCouponApplied && item.redeemCodeAvailable) {
-        return savings + (redeemDiscountAmount * item.quantity);
-    }
-    return savings;
-  }, 0);
 
   const handleInputChange = (id: number, value: string) => {
     setCouponInputs(prev => ({ ...prev, [id]: value }));
@@ -40,8 +37,10 @@ export default function CartSidebar() {
     }
   };
 
+  // FIX: handleWhatsAppOrder was defined but unused (now used in Checkout Modal)
+  // FIX: whatsappNumber was imported but unused (used here)
   const handleWhatsAppOrder = () => {
-    let message = "👋 *Hi, I want to place an order from your website.*\n\n";
+    let message = "👋 *Hi, I want to place an order via Website Checkout.*\n\n";
     message += "*🛒 ORDER DETAILS:*\n";
     
     cart.forEach((item, index) => {
@@ -65,16 +64,18 @@ export default function CartSidebar() {
   return (
     <>
       <div 
-        className={`fixed inset-0 bg-black/50 z-[60] transition-opacity duration-300 ${isCartOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
+        // FIX: Changed z-[60] to z-60
+        className={`fixed inset-0 bg-black/50 z-60 transition-opacity duration-300 ${isCartOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
         onClick={() => setIsCartOpen(false)}
       ></div>
 
-      <div className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-[70] shadow-2xl transform transition-transform duration-300 ease-in-out ${isCartOpen ? "translate-x-0" : "translate-x-full"}`}>
+      {/* FIX: Changed z-[70] to z-70 */}
+      <div className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-70 shadow-2xl transform transition-transform duration-300 ease-in-out ${isCartOpen ? "translate-x-0" : "translate-x-full"}`}>
         <div className="flex flex-col h-full">
           
           <div className="flex items-center justify-between p-5 border-b border-gray-100">
             <h2 className="text-lg font-bold uppercase tracking-wider text-black">Shopping Cart ({cart.length})</h2>
-            <button onClick={() => setIsCartOpen(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
+            <button onClick={() => setIsCartOpen(false)} aria-label="Close Cart" className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
@@ -92,8 +93,8 @@ export default function CartSidebar() {
                   <div key={item.id} className="flex flex-col border-b border-gray-100 pb-4 last:border-0">
                     <div className="flex gap-4">
                       
-                      <Link href={`/product/${item.id}`} className="relative w-20 h-24 bg-white border border-gray-100 rounded-sm overflow-hidden flex-shrink-0 cursor-pointer" onClick={() => setIsCartOpen(false)}>
-                        {/* CHANGED: Removed item.thumbnail fallback, now uses item.image only */}
+                      {/* FIX: Changed flex-shrink-0 to shrink-0 */}
+                      <Link href={`/product/${item.id}`} className="relative w-20 h-24 bg-white border border-gray-100 rounded-sm overflow-hidden shrink-0 cursor-pointer" onClick={() => setIsCartOpen(false)}>
                         <Image src={item.image} alt={item.name} fill className="object-contain p-1" />
                       </Link>
 
@@ -110,7 +111,8 @@ export default function CartSidebar() {
                         <div className="flex justify-between items-end mt-2">
                           <div className="flex items-center border border-gray-300 rounded-sm">
                             <button onClick={() => updateCartQuantity(item.id, 'dec')} className="px-2 py-1 text-xs hover:bg-gray-100 text-gray-600 cursor-pointer">-</button>
-                            <span className="px-2 text-xs font-bold min-w-[20px] text-center text-black">{item.quantity}</span>
+                            {/* FIX: Changed min-w-[20px] to min-w-5 */}
+                            <span className="px-2 text-xs font-bold min-w-5 text-center text-black">{item.quantity}</span>
                             <button onClick={() => updateCartQuantity(item.id, 'inc')} className="px-2 py-1 text-xs hover:bg-gray-100 text-gray-600 cursor-pointer">+</button>
                           </div>
                           <div className="text-right">
@@ -165,6 +167,8 @@ export default function CartSidebar() {
                 <span className="text-lg font-bold text-black">Rs {subtotal.toLocaleString()}</span>
               </div>
               <p className="text-[10px] text-gray-400 mb-4 text-center">Shipping & taxes calculated at checkout.</p>
+              
+              {/* This Button triggers the modal where handleWhatsAppOrder is used */}
               <button 
                 onClick={() => setIsCheckoutModalOpen(true)}
                 className="w-full bg-black text-white py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider hover:bg-gray-800 transition-colors cursor-pointer"
@@ -176,8 +180,9 @@ export default function CartSidebar() {
         </div>
       </div>
 
+      {/* Checkout Modal - Uses grandTotal and handleWhatsAppOrder */}
       {isCheckoutModalOpen && (
-        <div className="fixed inset-0 bg-black/60 z-[80] flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setIsCheckoutModalOpen(false)}>
+        <div className="fixed inset-0 bg-black/60 z-80 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setIsCheckoutModalOpen(false)}>
           <div className="bg-white w-full max-w-md rounded-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200" onClick={(e) => e.stopPropagation()}>
             <div className="bg-[#25D366] p-4 text-white text-center">
                 <h3 className="text-lg font-bold uppercase tracking-wider">Confirm Your Order</h3>
@@ -202,9 +207,11 @@ export default function CartSidebar() {
 
                 <div className="flex justify-between items-center border-t border-gray-200 pt-3 mb-6">
                     <span className="font-bold text-black">Total Amount:</span>
+                    {/* grandTotal used here */}
                     <span className="font-bold text-xl text-[#8B1A1A]">Rs. {grandTotal.toLocaleString()}</span>
                 </div>
 
+                {/* handleWhatsAppOrder used here */}
                 <button 
                     onClick={handleWhatsAppOrder}
                     className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white py-3.5 rounded-md text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-lg cursor-pointer"

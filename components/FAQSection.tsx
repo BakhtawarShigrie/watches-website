@@ -45,7 +45,7 @@ export default function FAQSection() {
           </div>
 
           {!showAll && (
-            <div className="absolute bottom-0 left-0 w-full pt-10 pb-2 bg-gradient-to-t from-[#f0f2eb] to-transparent flex justify-start pl-0">
+            <div className="absolute bottom-0 left-0 w-full pt-10 pb-2 bg-linear-to-t from-[#f0f2eb] to-transparent flex justify-start pl-0">
               <button onClick={() => setShowAll(true)} className="bg-[#dcdccf] hover:bg-[#cfcfc2] text-[#1a1a1a] px-8 py-3 text-sm font-medium transition-colors rounded-sm">
                 Show More
               </button>

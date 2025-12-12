@@ -239,7 +239,7 @@ export default function Footer() {
 
       {/* POPUP MODAL */}
       {activePopup && (
-        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in" onClick={() => setActivePopup(null)}>
+        <div className="fixed inset-0 bg-black/60 z-100 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in" onClick={() => setActivePopup(null)}>
           <div className="bg-white p-8 rounded-lg max-w-md w-full relative shadow-2xl" onClick={e => e.stopPropagation()}>
             <button 
               onClick={() => setActivePopup(null)} 

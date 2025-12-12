@@ -12,9 +12,11 @@ export default function MagazineSection() {
     <section className="bg-white py-24 border-b border-gray-100 relative">
       <div className="container mx-auto px-8 md:px-16">
         <div className="text-center mb-16 max-w-2xl mx-auto">
-          <p className="text-xs font-bold text-gray-400 tracking-[0.25em] uppercase mb-3">NAYAB WATCHES</p>
+          {/* ACCESSIBILITY FIX: Darkened text-gray-400 to text-gray-600 */}
+          <p className="text-xs font-bold text-gray-600 tracking-[0.25em] uppercase mb-3">NAYAB WATCHES</p>
           <h2 className="text-4xl font-bold text-black mb-6">Magazine & Press</h2>
-          <p className="text-sm text-gray-500 leading-relaxed font-light">
+          {/* ACCESSIBILITY FIX: Darkened text-gray-500 to text-gray-600 */}
+          <p className="text-sm text-gray-600 leading-relaxed font-light">
             Updated monthly, follow the Nayab Watches blog for everything you want to know about watches & Eyewear.
           </p>
         </div>
@@ -38,9 +40,10 @@ export default function MagazineSection() {
               <h3 className="text-base font-semibold text-black mb-3 px-4 leading-snug group-hover:text-gray-600 transition-colors">
                 {article.title}
               </h3>
-              <div className="flex items-center justify-center gap-3 text-xs text-gray-400 font-light mb-6">
+              {/* ACCESSIBILITY FIX: Darkened text-gray-400 to text-gray-600 for Category/Date */}
+              <div className="flex items-center justify-center gap-3 text-xs text-gray-600 font-medium mb-6">
                 <span>{article.category}</span>
-                <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
                 <span>{article.date}</span>
               </div>
               <div className="inline-block relative">
@@ -56,7 +59,7 @@ export default function MagazineSection() {
       {/* --- MAGAZINE POPUP MODAL --- */}
       {selectedArticle && (
         <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+          className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
           onClick={() => setSelectedArticle(null)} // Close on backdrop click
         >
           {/* Modal Content */}
@@ -67,6 +70,7 @@ export default function MagazineSection() {
             {/* Close Button (Cross) */}
             <button 
               onClick={() => setSelectedArticle(null)}
+              aria-label="Close Article"
               className="absolute top-4 right-4 z-10 bg-white/80 hover:bg-black hover:text-white text-black p-2 rounded-full transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -84,18 +88,20 @@ export default function MagazineSection() {
 
             {/* Right: Details */}
             <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center text-left">
-              <span className="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase mb-4">
+              {/* ACCESSIBILITY FIX: Darkened text-gray-400 to text-gray-600 */}
+              <span className="text-xs font-bold text-gray-600 tracking-[0.2em] uppercase mb-4">
                 {selectedArticle.category}
               </span>
               <h3 className="text-2xl md:text-3xl font-serif font-bold text-black mb-4 leading-tight">
                 {selectedArticle.title}
               </h3>
-              <p className="text-sm text-gray-500 font-medium mb-6 flex items-center gap-2">
-                <span className="w-8 h-[1px] bg-gray-300"></span> {selectedArticle.date}
+              {/* ACCESSIBILITY FIX: Darkened text-gray-500 to text-gray-600 */}
+              <p className="text-sm text-gray-600 font-medium mb-6 flex items-center gap-2">
+                <span className="w-8 h-px bg-gray-400"></span> {selectedArticle.date}
               </p>
               
               {/* Dummy Description Content */}
-              <div className="text-sm text-gray-600 leading-relaxed space-y-4 font-light overflow-y-auto max-h-[200px] pr-2 custom-scrollbar">
+              <div className="text-sm text-gray-700 leading-relaxed space-y-4 font-light overflow-y-auto max-h-[200px] pr-2 custom-scrollbar">
                 <p>
                   Discover the latest trends and stories from the world of horology. This article explores the craftsmanship and innovation behind our featured timepieces.
                 </p>
