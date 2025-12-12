@@ -149,11 +149,11 @@ export default function Footer() {
       <footer className="bg-[#f9f9f9] text-[#333] pt-16 pb-8 font-sans border-t border-gray-200">
         <div className="container mx-auto px-4">
           
-          {/* FLEXBOX LAYOUT */}
-          <div className="flex flex-wrap gap-y-12 gap-x-4 md:gap-8 mb-12 justify-between">
+          {/* GRID LAYOUT FOR MOBILE ROWS & DESKTOP COLUMNS */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-y-12 gap-x-4 md:gap-8 mb-12">
             
             {/* 1. HELP */}
-            <div className="w-[48%] md:w-auto">
+            <div>
               <h3 className="font-bold text-sm uppercase mb-6 tracking-wider">Help</h3>
               <ul className="space-y-4 text-sm text-gray-600">
                 <li><button onClick={() => setActivePopup("About")} className="hover:text-black transition-colors text-left">About Us</button></li>
@@ -164,8 +164,8 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* 2. ACCOUNT */}
-            <div className="w-[48%] md:w-auto">
+            {/* 3. ACCOUNT (Starts 2nd Row on Mobile) */}
+            <div>
               <h3 className="font-bold text-sm uppercase mb-6 tracking-wider">Account</h3>
               <ul className="space-y-4 text-sm text-gray-600">
                 <li><Link href="/login" className="hover:text-black transition-colors">Login / Register</Link></li>
@@ -174,8 +174,18 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* 3. INFORMATION */}
-            <div className="w-[48%] md:w-auto">
+            {/* 4. CATEGORIES (Next to Account) */}
+            <div>
+              <h3 className="font-bold text-sm uppercase mb-6 tracking-wider">Categories</h3>
+              <ul className="space-y-4 text-sm text-gray-600">
+                <li><Link href="/Products" className="hover:text-black transition-colors">Watches</Link></li>
+                <li><button onClick={() => setActivePopup("Brands")} className="hover:text-black transition-colors text-left">Brands</button></li>
+                <li><Link href="/Products" className="text-[#d95e00] hover:text-red-700 transition-colors">Sale</Link></li>
+              </ul>
+            </div>
+
+            {/* 2. INFORMATION (Moved next to Help for 1st Row) */}
+            <div>
               <h3 className="font-bold text-sm uppercase mb-6 tracking-wider">Information</h3>
               <ul className="space-y-4 text-sm text-gray-600">
                 <li><button onClick={() => setActivePopup("Redeem")} className="hover:text-black transition-colors text-left">Redeem Codes</button></li>
@@ -183,19 +193,9 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* 4. CATEGORIES */}
-            <div className="w-[48%] md:w-auto">
-              <h3 className="font-bold text-sm uppercase mb-6 tracking-wider">Categories</h3>
-              <ul className="space-y-4 text-sm text-gray-600">
-                <li><Link href="/Products" className="hover:text-black transition-colors">Watches</Link></li>
-                <li><button onClick={() => setActivePopup("Brands")} className="hover:text-black transition-colors text-left">Brands</button></li>
-                <li><Link href="/Products" className="hover:text-black transition-colors">Accessories</Link></li>
-                <li><Link href="/Products" className="text-[#d95e00] hover:text-red-700 transition-colors">Sale</Link></li>
-              </ul>
-            </div>
 
-            {/* 5. SUBSCRIBE */}
-            <div className="w-full lg:w-1/4">
+            {/* 5. SUBSCRIBE (3rd Row Full Width on Mobile) */}
+            <div className="col-span-2 md:col-span-1">
               <h3 className="font-bold text-sm uppercase mb-6 tracking-wider">Subscribe & Follow Us</h3>
               <p className="text-sm text-gray-600 mb-6 leading-relaxed">
                 Get the latest updates on promotions, new products, much more.
@@ -217,7 +217,7 @@ export default function Footer() {
               Nayab <span className="block text-[8px] text-center tracking-[0.2em] -mt-1 text-gray-300">WATCHES</span>
             </div>
             <div className="text-xs text-gray-500 text-center md:text-left">
-              Copyright 2024 Nayab Watches all rights reserved.
+              Copyright 2025 Nayab Watches all rights reserved.
             </div>
             <div className="flex items-center gap-4">
               <div className="flex gap-2 opacity-60 grayscale hover:grayscale-0 transition-all cursor-default">
