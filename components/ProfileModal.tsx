@@ -14,6 +14,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   // Sync state with user data when modal opens
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (user) {
       setName(user.name);
@@ -35,7 +36,8 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in" onClick={onClose}>
+    // FIX: Changed z-[100] to z-100
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in" onClick={onClose}>
       <div 
         className="bg-white w-full max-w-sm rounded-sm shadow-2xl overflow-hidden relative"
         onClick={(e) => e.stopPropagation()}

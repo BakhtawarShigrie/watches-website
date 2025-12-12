@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useRef, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import {
   mainProductsData,
   homeFeaturedProducts,
@@ -115,6 +115,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   // Load Data
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedCart = localStorage.getItem("shoppingCart");

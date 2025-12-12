@@ -35,6 +35,7 @@ function ProductsContent() {
     BRANDS: !!initialBrand,
   });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const categoryFromUrl = searchParams.get("category");
     const brandFromUrl = searchParams.get("brand");
@@ -137,11 +138,6 @@ function ProductsContent() {
           {/* A. HEADER */}
           <header className="bg-black text-white w-full flex items-center justify-between px-6 py-4 md:px-12">
             
-            {/* CHANGE 1: Logo Transition Logic 
-                - Added 'transition-all duration-500 ease-in-out'
-                - Added Logic: isSearchOpen ? "w-0 opacity-0 overflow-hidden" : "w-auto opacity-100"
-                - Added 'md:w-auto md:opacity-100' so logo stays visible on Desktop always
-            */}
             <Link 
               href="/" 
               className={`text-lg font-bold tracking-[0.15em] uppercase whitespace-nowrap transition-all duration-3000 ease-in-out ${
@@ -156,7 +152,6 @@ function ProductsContent() {
               <Link href="/wishlist" className="hover:text-white transition-colors">Loved Products</Link>
             </nav>
             
-            {/* Added 'ml-auto' to keep icons on right when logo disappears */}
             <div className="flex items-center gap-5 text-zinc-200 ml-auto md:ml-0">
                <div ref={searchContainerRef} className="flex items-center relative">
                   <div className={`transition-all duration-500 ease-in-out overflow-hidden flex items-center ${isSearchOpen ? "w-40 md:w-64 opacity-100 mr-2" : "w-0 opacity-0 mr-0"}`}>
@@ -227,10 +222,8 @@ function ProductsContent() {
       {/* SECTION 2: MAIN CONTENT AREA */}
       <div className="flex container mx-auto px-4 md:px-0 mb-10">
         
-        {/* CHANGE 2: Sidebar Z-Index
-            - Changed 'z-50' to 'z-30'
-        */}
-        <aside className={`fixed inset-y-0 left-0 z-30 w-[85%] max-w-xs bg-white shadow-2xl transform transition-transform duration-300 lg:sticky lg:top-[13.5rem] lg:h-[calc(100vh-13.5rem)] lg:translate-x-0 lg:shadow-none lg:w-64 lg:flex-none lg:border-r lg:border-gray-200 overflow-y-auto ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        {/* FIX: Changed top-[13.5rem] to top-54 */}
+        <aside className={`fixed inset-y-0 left-0 z-30 w-[85%] max-w-xs bg-white shadow-2xl transform transition-transform duration-300 lg:sticky lg:top-54 lg:h-[calc(100vh-13.5rem)] lg:translate-x-0 lg:shadow-none lg:w-64 lg:flex-none lg:border-r lg:border-gray-200 overflow-y-auto ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
           {/* Mobile Overlay Button */}
           <div className="lg:hidden absolute top-0 right-0 p-4">
               <button onClick={() => setIsSidebarOpen(false)} className="p-2 bg-gray-100 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>

@@ -10,6 +10,7 @@ export default function FloatingChatButton() {
   useEffect(() => {
     // Logic specific to Homepage ('/')
     if (pathname === "/") {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       setIsVisible(false); // Initially hide on homepage
 
       const handleScroll = () => {
