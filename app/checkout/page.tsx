@@ -10,6 +10,7 @@ export default function CheckoutPage() {
   const [mounted, setMounted] = useState(false);
   const [couponInputs, setCouponInputs] = useState<Record<number, string>>({});
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setMounted(true), []);
 
   if (!mounted) return null;
@@ -62,7 +63,7 @@ export default function CheckoutPage() {
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4 text-black">Your Cart is Empty</h2>
-          <p className="text-gray-500 mb-8">Looks like you haven't added anything yet.</p>
+          <p className="text-gray-500 mb-8">Looks like you haven&apos;t added anything yet.</p>
           <Link href="/Products" className="bg-black text-white px-8 py-3 rounded-sm uppercase font-bold text-xs tracking-widest hover:bg-gray-800 cursor-pointer">
             Continue Shopping
           </Link>
@@ -74,7 +75,6 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
       <header className="bg-white border-b border-gray-200 p-6 flex justify-between items-center sticky top-0 z-50">
-        {/* UPDATED: text-black added explicitly */}
         <Link href="/" className="text-xl font-bold tracking-widest uppercase text-black cursor-pointer">Nayab Watches</Link>
         <span className="text-xs font-medium uppercase tracking-wider text-gray-500">Secure Checkout</span>
       </header>
@@ -85,7 +85,6 @@ export default function CheckoutPage() {
           <div className="lg:w-2/3">
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
               <div className="p-6 border-b border-gray-100">
-                {/* UPDATED: text-black */}
                 <h2 className="text-lg font-bold uppercase tracking-wide text-black">Review Your Cart ({cart.length})</h2>
               </div>
               <div className="divide-y divide-gray-100">
@@ -94,8 +93,8 @@ export default function CheckoutPage() {
                   return (
                     <div key={item.id} className="p-6 flex flex-col gap-4">
                         <div className="flex gap-4 sm:gap-6 items-start">
-                            {/* IMAGE (White Background & Clickable) */}
-                            <Link href={`/product/${item.id}`} className="relative w-20 h-24 sm:w-28 sm:h-32 bg-white border border-gray-200 rounded-sm flex-shrink-0 cursor-pointer">
+                            {/* FIX: Changed flex-shrink-0 to shrink-0 */}
+                            <Link href={`/product/${item.id}`} className="relative w-20 h-24 sm:w-28 sm:h-32 bg-white border border-gray-200 rounded-sm shrink-0 cursor-pointer">
                                 <Image src={item.image} alt={item.name} fill className="object-contain p-2" />
                             </Link>
                             
@@ -114,7 +113,6 @@ export default function CheckoutPage() {
                                 <div className="mt-4 flex justify-between items-center">
                                     <div className="flex items-center border border-gray-300 rounded-sm">
                                     <button onClick={() => updateCartQuantity(item.id, 'dec')} className="px-3 py-1 hover:bg-gray-100 text-gray-600 cursor-pointer">-</button>
-                                    {/* UPDATED: text-black */}
                                     <span className="px-3 py-1 text-sm font-bold min-w-[30px] text-center text-black">{item.quantity}</span>
                                     <button onClick={() => updateCartQuantity(item.id, 'inc')} className="px-3 py-1 hover:bg-gray-100 text-gray-600 cursor-pointer">+</button>
                                     </div>
@@ -161,7 +159,6 @@ export default function CheckoutPage() {
 
           <div className="lg:w-1/3">
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 sticky top-24">
-              {/* UPDATED: text-black */}
               <h3 className="text-lg font-bold uppercase tracking-wide mb-6 text-black">Order Summary</h3>
               
               <div className="space-y-4 mb-6 text-sm text-gray-600">
