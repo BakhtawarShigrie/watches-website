@@ -68,17 +68,17 @@ export const heroBgImages = [
   "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765381366/7_lyrfcm.jpg"
 ];
 
-export const adBgImage = "https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHdhdGNofGVufDB8fDB8fHww";
+export const adBgImage = "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765389587/ad-01_cnjaax.jpg";
 
 // --- CATEGORIES ---
 export const categoriesData: Category[] = [
-  { name: "12.12 Sale", image: "https://en-pk.svestonwatches.com/cdn/shop/files/12.12_Sale_Website_Icon_06500ae6-9643-43f1-b445-d65fc100837f_1024x1024.png?v=1764334753" },
-  { name: "Men Formal", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Men_Formal_833139bc-31be-4be7-a4a9-8a627e7b4120_1024x1024.png?v=1750671977" },
-  { name: "Men Sports", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Men_Sports_ed2c875c-5bf8-478c-b297-506a3d232b40_1024x1024.png?v=1750671977" },
-  { name: "Female Watches", image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765381366/7_lyrfcm.jpg" },
-  { name: "Unisex", image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765381365/6_cmws8a.jpg" },
-  { name: "Smart Watches", image: "https://en-pk.svestonwatches.com/cdn/shop/files/tourque_png_1024x1024.png?v=1750671977" },
-  { name: "Luxury Watches", image: "https://en-pk.svestonwatches.com/cdn/shop/files/Couple_Watches_9997088b-d0fe-4781-8101-47b5d0c33f03_1024x1024.png?v=1750671977" },
+  { name: "12.12 Sale", image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765527396/12_butjjo.webp" },
+  { name: "Men Formal", image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765392141/1.Men_Formal_wzirs2.webp" },
+  { name: "Men Sports", image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765392142/2.Men_Sports_skguit.webp" },
+  { name: "Female Watches", image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765392142/4.Female_Bracelet_ylxlu1.webp" },
+  { name: "Smart Watches", image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765392145/4_lsxi9t.webp" },
+  { name: "Luxury Watches", image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765392142/3.Female_Fancy_fgpgyn.webp" },
+  { name: "Couple Watches", image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765392146/6.Couple_Watches_giqg3i.webp" },
 ];
 
 // --- MAIN PRODUCTS CATALOG ---
@@ -316,19 +316,19 @@ export const newsArticlesData: Article[] = [
     title: "Casio Edifice – Speed & Intelligence",
     category: "Nayab Watches",
     date: "December 24, 2024",
-    image: "https://i.pinimg.com/736x/dd/de/51/ddde51bee1994e52a67c9883c9f0a824.jpg",
+    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765527788/1_drkjfk.webp",
   },
   {
     title: "The Evolution of Chronographs",
     category: "Nayab Watches",
     date: "July 7, 2024",
-    image: "https://sharpmagazine.com/wp-content/uploads/2025/11/moser-streamliner-dubai-watch-week.png",
+    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765527789/2_vicofl.webp",
   },
   {
     title: "Smart Technology in Analog Watches",
     category: "Nayab Watches",
     date: "July 27, 2024",
-    image: "https://bezlmagazine.com/wp-content/uploads/2025/09/cropped-Omslag-Artikel-About.jpg",
+    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765527788/3_jvprzt.webp",
   },
 ];
 
