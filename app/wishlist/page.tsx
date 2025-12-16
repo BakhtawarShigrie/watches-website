@@ -1,15 +1,38 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useGlobalContext } from "@/context/GlobalContext";
 
 export default function WishlistPage() {
-  const { wishlist, products, featuredProducts, lovedProducts, addToCart, toggleWishlist } = useGlobalContext();
+  const { wishlist, products, featuredProducts, lovedProducts, addToCart, toggleWishlist, cart, setIsCartOpen } = useGlobalContext();
+  const router = useRouter();
   
   const allProducts = [...products, ...featuredProducts, ...lovedProducts];
   const uniqueProducts = Array.from(new Map(allProducts.map(item => [item.id, item])).values());
   
   const wishlistItems = uniqueProducts.filter(p => wishlist.includes(p.id));
+
+  const handleAddAllToCartAndCheckout = () => {
+    let itemsAdded = 0;
+    
+    wishlistItems.forEach((item) => {
+      // Check if product is already in cart
+      const isInCart = cart.some((cartItem) => cartItem.id === item.id);
+      
+      // Only add if NOT in cart (prevent duplicates)
+      if (!isInCart) {
+        addToCart(item);
+        itemsAdded++;
+      }
+    });
+
+    // Close the cart sidebar if it opened automatically
+    setIsCartOpen(false);
+
+    // Redirect to checkout immediately
+    router.push("/checkout");
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -19,8 +42,22 @@ export default function WishlistPage() {
       </header>
 
       <div className="container mx-auto px-4 py-12 max-w-5xl">
-        {/* UPDATED: text-black */}
-        <h1 className="text-3xl font-bold mb-8 text-center uppercase tracking-wider text-black">Your Wishlist ({wishlistItems.length})</h1>
+        <h1 className="text-3xl font-bold mb-4 text-center uppercase tracking-wider text-black">Your Wishlist ({wishlistItems.length})</h1>
+        
+        {/* ADD TO CART & CHECKOUT BUTTON */}
+        {wishlistItems.length > 0 && (
+          <div className="flex justify-center mb-10">
+            <button 
+              onClick={handleAddAllToCartAndCheckout}
+              className="bg-[#25D366] hover:bg-[#128C7E] text-white py-3 px-8 rounded-sm text-sm font-bold uppercase tracking-wider shadow-lg flex items-center gap-2 transition-all transform hover:-translate-y-1"
+            >
+              <span>Add All to Cart & Checkout</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+              </svg>
+            </button>
+          </div>
+        )}
         
         {wishlistItems.length === 0 ? (
           <div className="text-center py-20 bg-gray-50 rounded-lg">

@@ -94,7 +94,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   };
 
   const handleWhatsApp = () => {
-    const deliveryCharges = 300;
+    const deliveryCharges = 200;
     const total = (finalPrice * quantity) + deliveryCharges;
     let message = "👋 *Hi, I want to order this product:*\n\n";
     message += `🛒 *Product:* ${product.name}\n`;
@@ -105,7 +105,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         message += `🎟 *Coupon Applied:* ✅ (Rs. ${redeemDiscountAmount} OFF)\n`;
     }
 
-    message += `🚚 *Delivery Charges:* Rs. 300\n`;
+    message += `🚚 *Delivery Charges:* Rs. 200\n`;
     message += `-----------------------------\n`;
     message += `💵 *Total Payable:* Rs. ${total.toLocaleString()}\n\n`;
     message += "Please confirm my order.";
@@ -412,7 +412,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       {/* MODIFIED: Video Modal with Portrait Support & URL Fix */}
       {isVideoOpen && (
         <div className="fixed inset-0 bg-black/80 z-100 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
-            <div className="bg-black w-full max-w-sm aspect-[9/16] relative shadow-2xl rounded-lg overflow-hidden border border-gray-800">
+            <div className="bg-black w-full max-w-sm aspect-9/16 relative shadow-2xl rounded-lg overflow-hidden border border-gray-800">
                 <button onClick={() => setIsVideoOpen(false)} className="absolute top-4 right-4 z-50 text-white hover:text-red-500 bg-black/50 rounded-full p-2 transition-colors cursor-pointer">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>

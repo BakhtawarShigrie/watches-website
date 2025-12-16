@@ -20,7 +20,7 @@ export default function CheckoutPage() {
     return total + (price * item.quantity);
   }, 0);
 
-  const deliveryCharges = 300;
+  const deliveryCharges = 200;
   const grandTotal = subtotal + deliveryCharges;
 
   const handleInputChange = (id: number, value: string) => {
@@ -51,7 +51,7 @@ export default function CheckoutPage() {
     message += `\n*🚚 Delivery Charges:* Rs. ${deliveryCharges}`;
     message += `\n*💰 Grand Total:* Rs. ${grandTotal.toLocaleString()}\n\n`;
     message += "-----------------------------\n";
-    message += "ℹ️ *Note:* I agree to pay Rs. 300 Delivery Charges in advance.\n";
+    message += "ℹ️ *Note:* I agree to pay Rs. 200 Delivery Charges in advance.\n";
     message += "Please confirm my order.";
 
     const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
@@ -180,7 +180,7 @@ export default function CheckoutPage() {
               </div>
 
               <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 text-xs p-3 rounded-md mb-6 leading-relaxed">
-                <strong>Note:</strong> Rs. 300 Delivery Charges must be paid in advance to confirm your order.
+                <strong>Note:</strong> Rs. 200 Delivery Charges must be paid in advance to confirm your order.
               </div>
 
               <button 

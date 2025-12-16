@@ -8,7 +8,6 @@ import { whatsappNumber, redeemDiscountAmount } from "@/app/website-data";
 export default function CartSidebar() {
   const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateCartQuantity, applyCouponToItem, removeCouponFromItem } = useGlobalContext();
   
-  // FIX: isCheckoutModalOpen was defined but unused (now used in JSX)
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   
   const [couponInputs, setCouponInputs] = useState<Record<number, string>>({});
@@ -18,9 +17,8 @@ export default function CartSidebar() {
     return total + (price * item.quantity);
   }, 0);
 
-  const deliveryCharges = 300;
+  const deliveryCharges = 200;
   
-  // FIX: grandTotal was defined but unused (now used in Checkout Modal)
   const grandTotal = subtotal + deliveryCharges;
 
   const handleInputChange = (id: number, value: string) => {
@@ -37,8 +35,6 @@ export default function CartSidebar() {
     }
   };
 
-  // FIX: handleWhatsAppOrder was defined but unused (now used in Checkout Modal)
-  // FIX: whatsappNumber was imported but unused (used here)
   const handleWhatsAppOrder = () => {
     let message = "👋 *Hi, I want to place an order via Website Checkout.*\n\n";
     message += "*🛒 ORDER DETAILS:*\n";
@@ -54,7 +50,7 @@ export default function CartSidebar() {
     message += `\n*🚚 Delivery Charges:* Rs. ${deliveryCharges}`;
     message += `\n*💰 Grand Total:* Rs. ${grandTotal.toLocaleString()}\n\n`;
     message += "-----------------------------\n";
-    message += "ℹ️ *Note:* I agree to pay Rs. 300 Delivery Charges in advance.\n";
+    message += "ℹ️ *Note:* I agree to pay Rs. 200 Delivery Charges in advance.\n";
     message += "Please confirm my order.";
 
     const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
@@ -64,19 +60,17 @@ export default function CartSidebar() {
   return (
     <>
       <div 
-        // FIX: Changed z-[60] to z-60
         className={`fixed inset-0 bg-black/50 z-60 transition-opacity duration-300 ${isCartOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
         onClick={() => setIsCartOpen(false)}
       ></div>
 
-      {/* FIX: Changed z-[70] to z-70 */}
       <div className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-70 shadow-2xl transform transition-transform duration-300 ease-in-out ${isCartOpen ? "translate-x-0" : "translate-x-full"}`}>
         <div className="flex flex-col h-full">
           
           <div className="flex items-center justify-between p-5 border-b border-gray-100">
             <h2 className="text-lg font-bold uppercase tracking-wider text-black">Shopping Cart ({cart.length})</h2>
-            <button onClick={() => setIsCartOpen(false)} aria-label="Close Cart" className="p-2  hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="black" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            <button onClick={() => setIsCartOpen(false)} aria-label="Close Cart" className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
 
@@ -85,6 +79,9 @@ export default function CartSidebar() {
               <div className="flex flex-col items-center justify-center h-full text-gray-400">
                 <p className="text-sm font-medium">Your cart is empty</p>
                 <button onClick={() => setIsCartOpen(false)} className="mt-4 text-xs font-bold underline text-black cursor-pointer">Continue Shopping</button>
+                <Link href="/wishlist" onClick={() => setIsCartOpen(false)} className="mt-6 text-xs font-bold text-gray-500 hover:text-black border-b border-gray-300 pb-0.5 cursor-pointer uppercase tracking-wider">
+                  View Wishlist
+                </Link>
               </div>
             ) : (
               cart.map((item) => {
@@ -93,7 +90,6 @@ export default function CartSidebar() {
                   <div key={item.id} className="flex flex-col border-b border-gray-100 pb-4 last:border-0">
                     <div className="flex gap-4">
                       
-                      {/* FIX: Changed flex-shrink-0 to shrink-0 */}
                       <Link href={`/product/${item.id}`} className="relative w-20 h-24 bg-white border border-gray-100 rounded-sm overflow-hidden shrink-0 cursor-pointer" onClick={() => setIsCartOpen(false)}>
                         <Image src={item.image} alt={item.name} fill className="object-contain p-1" />
                       </Link>
@@ -111,7 +107,6 @@ export default function CartSidebar() {
                         <div className="flex justify-between items-end mt-2">
                           <div className="flex items-center border border-gray-300 rounded-sm">
                             <button onClick={() => updateCartQuantity(item.id, 'dec')} className="px-2 py-1 text-xs hover:bg-gray-100 text-gray-600 cursor-pointer">-</button>
-                            {/* FIX: Changed min-w-[20px] to min-w-5 */}
                             <span className="px-2 text-xs font-bold min-w-5 text-center text-black">{item.quantity}</span>
                             <button onClick={() => updateCartQuantity(item.id, 'inc')} className="px-2 py-1 text-xs hover:bg-gray-100 text-gray-600 cursor-pointer">+</button>
                           </div>
@@ -140,7 +135,7 @@ export default function CartSidebar() {
                                     <input 
                                         type="text" 
                                         placeholder="Enter Coupon" 
-                                        className="flex-1 border border-gray-300 text-black p-1.5 text-[10px] rounded-sm focus:border-black outline-none uppercase"
+                                        className="flex-1 border border-gray-300 p-1.5 text-[10px] rounded-sm focus:border-black outline-none uppercase"
                                         value={couponInputs[item.id] || ""}
                                         onChange={(e) => handleInputChange(item.id, e.target.value)}
                                     />
@@ -168,19 +163,25 @@ export default function CartSidebar() {
               </div>
               <p className="text-[10px] text-gray-400 mb-4 text-center">Shipping & taxes calculated at checkout.</p>
               
-              {/* This Button triggers the modal where handleWhatsAppOrder is used */}
               <button 
                 onClick={() => setIsCheckoutModalOpen(true)}
                 className="w-full bg-black text-white py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider hover:bg-gray-800 transition-colors cursor-pointer"
               >
                 Checkout
               </button>
+
+              <Link 
+                href="/wishlist" 
+                onClick={() => setIsCartOpen(false)}
+                className="w-full block text-center border border-gray-300 text-black py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider hover:bg-gray-50 transition-colors cursor-pointer mt-3"
+              >
+                View Wishlist
+              </Link>
             </div>
           )}
         </div>
       </div>
 
-      {/* Checkout Modal - Uses grandTotal and handleWhatsAppOrder */}
       {isCheckoutModalOpen && (
         <div className="fixed inset-0 bg-black/60 z-80 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setIsCheckoutModalOpen(false)}>
           <div className="bg-white w-full max-w-md rounded-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200" onClick={(e) => e.stopPropagation()}>
@@ -189,7 +190,7 @@ export default function CartSidebar() {
             </div>
             <div className="p-6">
                 <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 p-3 rounded-md mb-6 text-sm">
-                    <strong>Note:</strong> Order is <strong>Cash on Delivery</strong>. However, you must pay <strong>Rs. 300 Delivery Charges</strong> in advance via JazzCash/EasyPaisa to confirm.
+                    <strong>Note:</strong> Order is <strong>Cash on Delivery</strong>. However, you must pay <strong>Rs. 200 Delivery Charges</strong> in advance via JazzCash/EasyPaisa to confirm.
                 </div>
 
                 <h4 className="text-sm font-bold text-gray-700 mb-3 border-b pb-1">Order Summary:</h4>
@@ -207,11 +208,9 @@ export default function CartSidebar() {
 
                 <div className="flex justify-between items-center border-t border-gray-200 pt-3 mb-6">
                     <span className="font-bold text-black">Total Amount:</span>
-                    {/* grandTotal used here */}
                     <span className="font-bold text-xl text-[#8B1A1A]">Rs. {grandTotal.toLocaleString()}</span>
                 </div>
 
-                {/* handleWhatsAppOrder used here */}
                 <button 
                     onClick={handleWhatsAppOrder}
                     className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white py-3.5 rounded-md text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-lg cursor-pointer"
