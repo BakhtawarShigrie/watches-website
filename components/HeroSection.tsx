@@ -61,7 +61,7 @@ export default function HeroSection() {
           Nayab Watches
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-zinc-300 uppercase tracking-widest">
+        <nav className="hidden md:flex items-center -ml-30 gap-8 text-xs font-medium text-zinc-300 uppercase tracking-widest">
           <Link href="#featuredProducts" className="hover:text-white transition-colors">Watches</Link>
           <Link href="/Products" className="hover:text-white transition-colors">Products</Link>
         </nav>

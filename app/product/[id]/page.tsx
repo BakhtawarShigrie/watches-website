@@ -166,7 +166,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         </Link>
         
         {/* UPDATED NAV LINKS */}
-        <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-zinc-300 uppercase tracking-widest">
+        <nav className="hidden md:flex items-center gap-8 text-xs -ml-30 font-medium text-zinc-300 uppercase tracking-widest">
           <Link href="/" className="hover:text-white transition-colors">Home</Link>
           <Link href="/Products" className="hover:text-white transition-colors">Products</Link>
         </nav>

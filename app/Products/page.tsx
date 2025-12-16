@@ -147,7 +147,7 @@ function ProductsContent() {
               Nayab Watches
             </Link>
 
-            <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-zinc-300 uppercase tracking-widest">
+            <nav className="hidden md:flex items-center gap-8 -ml-20 text-xs font-medium text-zinc-300 uppercase tracking-widest">
               <Link href="/" className="hover:text-white transition-colors">Home</Link>
               <Link href="/wishlist" className="hover:text-white transition-colors">Loved Products</Link>
             </nav>

@@ -3,7 +3,7 @@
 import HeroSection from "@/components/HeroSection";
 import CategoriesSection from "@/components/CategoriesSection";
 import FeaturedProductsSection from "@/components/FeaturedProductsSection";
-import FeaturedCollectionSection from "@/components/FeaturedCollectionSection";
+// import FeaturedCollectionSection from "@/components/FeaturedCollectionSection";
 import LovedProductsSection from "@/components/LovedProductsSection";
 import AdSection from "@/components/AdSection";
 import MagazineSection from "@/components/MagazineSection";
