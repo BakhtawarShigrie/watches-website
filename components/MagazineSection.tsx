@@ -64,7 +64,7 @@ export default function MagazineSection() {
         >
           {/* Modal Content */}
           <div 
-            className="bg-white w-full max-w-4xl rounded-sm shadow-2xl overflow-hidden relative flex flex-col md:flex-row animate-in fade-in zoom-in duration-300"
+            className="bg-white w-full max-w-4xl rounded-sm shadow-2xl relative flex flex-col md:flex-row animate-in fade-in zoom-in duration-300 max-h-[90vh] overflow-y-auto md:overflow-hidden"
             onClick={(e) => e.stopPropagation()} // Prevent close when clicking inside
           >
             {/* Close Button (Cross) */}
@@ -77,7 +77,7 @@ export default function MagazineSection() {
             </button>
 
             {/* Left: Image */}
-            <div className="w-full md:w-1/2 h-[300px] md:h-auto relative bg-gray-100">
+            <div className="w-full md:w-1/2 h-64 md:h-auto relative bg-gray-100 shrink-0">
               <Image 
                 src={selectedArticle.image} 
                 alt={selectedArticle.title} 
@@ -101,7 +101,7 @@ export default function MagazineSection() {
               </p>
               
               {/* Dummy Description Content */}
-              <div className="text-sm text-gray-700 leading-relaxed space-y-4 font-light overflow-y-auto max-h-[200px] pr-2 custom-scrollbar">
+              <div className="text-sm text-gray-700 leading-relaxed space-y-4 font-light overflow-y-auto max-h-[200px] md:max-h-[300px] pr-2 custom-scrollbar">
                 <p>
                   Discover the latest trends and stories from the world of horology. This article explores the craftsmanship and innovation behind our featured timepieces.
                 </p>
@@ -110,6 +110,9 @@ export default function MagazineSection() {
                 </p>
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+                </p>
+                <p>
+                  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
                 </p>
               </div>
 

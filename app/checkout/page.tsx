@@ -137,7 +137,7 @@ export default function CheckoutPage() {
                                         <input 
                                             type="text" 
                                             placeholder="Enter Coupon" 
-                                            className="flex-1 border border-gray-300 p-1.5 text-xs rounded-sm focus:border-black outline-none uppercase"
+                                            className="flex-1 border border-gray-300 text-black p-1.5 text-xs rounded-sm focus:border-black outline-none uppercase"
                                             value={couponInputs[item.id] || ""}
                                             onChange={(e) => handleInputChange(item.id, e.target.value)}
                                         />

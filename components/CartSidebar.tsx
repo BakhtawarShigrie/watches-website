@@ -75,8 +75,8 @@ export default function CartSidebar() {
           
           <div className="flex items-center justify-between p-5 border-b border-gray-100">
             <h2 className="text-lg font-bold uppercase tracking-wider text-black">Shopping Cart ({cart.length})</h2>
-            <button onClick={() => setIsCartOpen(false)} aria-label="Close Cart" className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            <button onClick={() => setIsCartOpen(false)} aria-label="Close Cart" className="p-2  hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="black" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
 
@@ -140,7 +140,7 @@ export default function CartSidebar() {
                                     <input 
                                         type="text" 
                                         placeholder="Enter Coupon" 
-                                        className="flex-1 border border-gray-300 p-1.5 text-[10px] rounded-sm focus:border-black outline-none uppercase"
+                                        className="flex-1 border border-gray-300 text-black p-1.5 text-[10px] rounded-sm focus:border-black outline-none uppercase"
                                         value={couponInputs[item.id] || ""}
                                         onChange={(e) => handleInputChange(item.id, e.target.value)}
                                     />
