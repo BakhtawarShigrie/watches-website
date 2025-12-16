@@ -97,7 +97,7 @@ export const mainProductsData: Product[] = [
     category: "Men Formal",
     gender: "Men",
     redeemCodeAvailable: false,
-    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
+    videoUrl: "https://www.youtube.com/shorts/yofRAbzbDi8"
   },
   {
     id: 2,

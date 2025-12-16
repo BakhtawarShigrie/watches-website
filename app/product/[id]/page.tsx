@@ -41,6 +41,33 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
   if (!product) return <div className="min-h-screen flex items-center justify-center">Product Not Found</div>;
 
+  // --- NEW HELPER FUNCTION TO FIX YOUTUBE LINKS ---
+  const getEmbedUrl = (url: string) => {
+    if (!url) return "";
+    
+    // Agar Shorts link hai
+    if (url.includes("/shorts/")) {
+      const videoId = url.split("/shorts/")[1].split("?")[0];
+      return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}`;
+    }
+    
+    // Agar Normal Watch link hai
+    if (url.includes("watch?v=")) {
+      const videoId = url.split("watch?v=")[1].split("&")[0];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    
+    // Agar youtu.be short link hai
+    if (url.includes("youtu.be/")) {
+      const videoId = url.split("youtu.be/")[1].split("?")[0];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    
+    // Agar pehle se embed link hai ya kuch aur hai
+    return url;
+  };
+  // ------------------------------------------------
+
   const isWishlisted = wishlist.includes(product.id);
   const isOutOfStock = !product.stock || product.stock === 0;
   
@@ -159,13 +186,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
 
       <header className="bg-black text-white w-full z-50 flex items-center justify-between px-6 py-4 md:px-12 sticky top-0">
-        
-        {/* UPDATED LOGO TEXT */}
         <Link href="/" className="text-lg font-bold tracking-[0.15em] uppercase">
           Nayab Watch
         </Link>
-        
-        {/* UPDATED NAV LINKS */}
         <nav className="hidden md:flex items-center gap-8 text-xs -ml-30 font-medium text-zinc-300 uppercase tracking-widest">
           <Link href="/" className="hover:text-white transition-colors">Home</Link>
           <Link href="/Products" className="hover:text-white transition-colors">Products</Link>
@@ -386,11 +409,24 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         </div>
       )}
 
+      {/* MODIFIED: Video Modal with Portrait Support & URL Fix */}
       {isVideoOpen && (
         <div className="fixed inset-0 bg-black/80 z-100 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
-            <div className="bg-black w-full max-w-3xl aspect-video relative shadow-2xl">
-                <button onClick={() => setIsVideoOpen(false)} className="absolute -top-10 right-0 text-white hover:text-gray-300 text-sm font-bold uppercase tracking-widest">Close [X]</button>
-                <iframe width="100%" height="100%" src={product.videoUrl || "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"} title="Product Video" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+            <div className="bg-black w-full max-w-sm aspect-[9/16] relative shadow-2xl rounded-lg overflow-hidden border border-gray-800">
+                <button onClick={() => setIsVideoOpen(false)} className="absolute top-4 right-4 z-50 text-white hover:text-red-500 bg-black/50 rounded-full p-2 transition-colors cursor-pointer">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+                <iframe 
+                  width="100%" 
+                  height="100%" 
+                  // UPDATED: Using getEmbedUrl helper
+                  src={getEmbedUrl(product.videoUrl || "https://www.youtube.com/embed/S9V70Wob7MI")} 
+                  title="Product Video" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                  className="w-full h-full object-cover"
+                ></iframe>
             </div>
         </div>
       )}
