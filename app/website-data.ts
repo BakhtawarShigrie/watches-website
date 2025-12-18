@@ -97,12 +97,12 @@ export const mainProductsData: Product[] = [
     category: "Men Formal",
     gender: "Men",
     redeemCodeAvailable: false,
-    videoUrl: "https://www.youtube.com/shorts/yofRAbzbDi8"
+    videoUrl: "https://www.youtube.com/shorts/BeBkVtvHw3k"
   },
   {
     id: 2,
     brand: "CITIZEN",
-    name: "Citizen – EFR-539DE-3AVUDF",
+    name: "Citizen – EFR-539UDF",
     price: 4499,
     originalPrice: 7999,
     image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765132038/8_jftqyq.jpg",
@@ -113,7 +113,7 @@ export const mainProductsData: Product[] = [
     category: "Men Formal",
     gender: "Men",
     redeemCodeAvailable: true,
-    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
+    videoUrl: "https://youtube.com/shorts/3xmAPT-fsUY"
   },
   {
     id: 3,
@@ -129,7 +129,7 @@ export const mainProductsData: Product[] = [
     category: "Men Formal",
     gender: "Men",
     redeemCodeAvailable: true,
-    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
+    videoUrl: "https://youtube.com/shorts/SzCFGE-B_Xs"
   },
   {
     id: 4,
@@ -145,7 +145,7 @@ export const mainProductsData: Product[] = [
     category: "Luxury Watches",
     gender: "Men",
     redeemCodeAvailable: true,
-    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
+    videoUrl: "https://youtube.com/shorts/ydP6LLWahTU"
   },
   {
     id: 5,
@@ -161,7 +161,7 @@ export const mainProductsData: Product[] = [
     category: "Luxury Watches",
     gender: "Men",
     redeemCodeAvailable: true,
-    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
+    videoUrl: "https://youtube.com/shorts/sm9Dm9QB6QM"
   },
   {
     id: 6,
@@ -177,7 +177,7 @@ export const mainProductsData: Product[] = [
     category: "Men Sports",
     gender: "Men",
     redeemCodeAvailable: true,
-    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
+    videoUrl: "https://youtube.com/shorts/WNz6wmiiMJI"
   },
   {
     id: 7,
@@ -193,7 +193,7 @@ export const mainProductsData: Product[] = [
     category: "Luxury Watches",
     gender: "Men",
     redeemCodeAvailable: true,
-    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
+    videoUrl: "https://youtube.com/shorts/4uVWRt8oV-A"
   },
   {
     id: 8,
@@ -209,7 +209,7 @@ export const mainProductsData: Product[] = [
     category: "Luxury Watches",
     gender: "Men",
     redeemCodeAvailable: true,
-    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
+    videoUrl: "https://youtube.com/shorts/rm9zbIxM9_8"
   },
   {
     id: 9,
@@ -225,7 +225,7 @@ export const mainProductsData: Product[] = [
     category: "Luxury Watches",
     gender: "Men",
     redeemCodeAvailable: true,
-    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
+    videoUrl: "https://youtube.com/shorts/hVGxK0wA4y0"
   },
   {
     id: 10,
@@ -241,7 +241,7 @@ export const mainProductsData: Product[] = [
     category: "Female Watches",
     gender: "Women",
     redeemCodeAvailable: true,
-    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
+    videoUrl: "https://youtube.com/shorts/hdckfeOnFe8"
   },
   {
     id: 11,
@@ -257,7 +257,7 @@ export const mainProductsData: Product[] = [
     category: "Luxury Watches",
     gender: "Men",
     redeemCodeAvailable: true,
-    videoUrl: "https://www.youtube.com/embed/S9V70Wob7MI?si=DrZ_GgXDbZuvXn_O"
+    videoUrl: "https://youtube.com/shorts/hVGxK0wA4y0"
   },
 ];
 

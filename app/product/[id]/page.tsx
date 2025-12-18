@@ -271,7 +271,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 </div>
                 <div className="space-y-3 mb-8">
                     <button onClick={handleWhatsApp} className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors">ORDER ON WHATSAPP</button>
-                    <button onClick={() => setIsVideoOpen(true)} className="w-full bg-white border border-[#8B1A1A] text-[#8B1A1A] py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#8B1A1A] hover:text-white transition-colors">DETAILS OF PRODUCT</button>
+                    <button onClick={() => setIsVideoOpen(true)} className="w-full bg-white border border-[#8B1A1A] text-[#8B1A1A] py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#8B1A1A] hover:text-white transition-colors">DETAILS & UNBOXING VIDEO</button>
                     <button onClick={() => addToCart(product, quantity)} disabled={isOutOfStock} className={`w-full py-3.5 rounded-sm text-sm font-bold uppercase tracking-wider transition-colors shadow-sm ${isOutOfStock ? "bg-gray-400 text-gray-200 cursor-not-allowed" : "bg-[#8B1A1A] hover:bg-[#6d1414] text-white"}`}>ADD TO CART</button>
                 </div>
             </div>
