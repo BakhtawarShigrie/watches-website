@@ -222,8 +222,8 @@ function ProductsContent() {
       {/* SECTION 2: MAIN CONTENT AREA */}
       <div className="flex container mx-auto px-4 md:px-0 mb-10">
         
-        {/* FIX: Changed top-[13.5rem] to top-54 */}
-        <aside className={`fixed inset-y-0 left-0 z-30 w-[85%] max-w-xs bg-white shadow-2xl transform transition-transform duration-300 lg:sticky lg:top-54 lg:h-[calc(100vh-13.5rem)] lg:translate-x-0 lg:shadow-none lg:w-64 lg:flex-none lg:border-r lg:border-gray-200 overflow-y-auto ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        {/* CHANGED: Increased Z-index to 50 for mobile, reset to 30 for desktop (lg:z-30) */}
+        <aside className={`fixed inset-y-0 left-0 z-50 lg:z-30 w-[85%] max-w-xs bg-white shadow-2xl transform transition-transform duration-300 lg:sticky lg:top-54 lg:h-[calc(100vh-13.5rem)] lg:translate-x-0 lg:shadow-none lg:w-64 lg:flex-none lg:border-r lg:border-gray-200 overflow-y-auto ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
           {/* Mobile Overlay Button */}
           <div className="lg:hidden absolute top-0 right-0 p-4">
               <button onClick={() => setIsSidebarOpen(false)} className="p-2 bg-gray-100 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
@@ -352,7 +352,15 @@ function ProductsContent() {
                                 <div className="text-center pb-2">
                                     <h4 className="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-1">{product.brand}</h4>
                                     <h3 className="text-sm font-medium text-black leading-snug mb-2 px-2">{product.name}</h3>
-                                    <div className="text-sm font-bold text-gray-900">Rs {product.price.toLocaleString()}</div>
+                                    
+                                    {/* CHANGED: Show Original Price if exists and higher than selling price */}
+                                    <div className="flex items-center justify-center gap-2">
+                                        {product.originalPrice && product.originalPrice > product.price && (
+                                            <span className="text-xs text-gray-400 line-through">Rs {product.originalPrice.toLocaleString()}</span>
+                                        )}
+                                        <div className="text-sm font-bold text-gray-900">Rs {product.price.toLocaleString()}</div>
+                                    </div>
+
                                     <div className="text-[9px] text-gray-400 uppercase mt-1">inc. GST</div>
                                 </div>
                             </Link>
