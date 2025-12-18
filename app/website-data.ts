@@ -327,6 +327,26 @@ export const newsArticlesData: Article[] = [
 
 export const faqsData: FAQ[] = [
   {
+    question: "What are the benefits for loyal customers?",
+    answer: "We value our returning customers! You will earn Royalty Points on every purchase. How it works For every Rs. 1,000 spent, you earn 100 Points. Redemption 1 Point is equal to Rs. 1. You can redeem these points on future orders."
+  }
+  ,
+  {
+    question: "How long does delivery take?",
+    answer: "Once your order is confirmed, you will receive your package within 03 to 07 working days."
+  }
+  ,{
+    question: "How do I confirm my order?",
+    answer: "To confirm your order, you need to pay Rs. 200 delivery charges in advance via JazzCash or EasyPaisa. Please share the payment screenshot with our WhatsApp support team to process your order. The remaining amount will be collected via Cash on Delivery (COD) when the rider arrives."
+  }
+  ,{
+    question: "Is there a warranty or return policy?",
+    answer: "All our products are of premium quality. However, for your satisfaction, we offer an Open Parcel Policy. You can open the parcel and check the watch before making the payment to the rider. If you find any defect or do not like the product, you can return or exchange it instantly."
+  }
+  ,{
+    question: "How can I place an order?",
+    answer: "We are committed to providing premium quality watches at prices significantly lower than the market rate. You get luxury style without the heavy price tag."
+  },{
     question: "What is your exchange & return policy",
     answer: "We offer a 03-day exchange and return policy for all unworn watches in original packaging. Please retain your receipt.",
   },
