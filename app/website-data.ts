@@ -328,7 +328,7 @@ export const newsArticlesData: Article[] = [
 export const faqsData: FAQ[] = [
   {
     question: "What are the benefits for loyal customers?",
-    answer: "We value our returning customers! You will earn Royalty Points on every purchase. How it works For every Rs. 1,000 spent, you earn 100 Points. Redemption 1 Point is equal to Rs. 1. You can redeem these points on future orders."
+    answer: "We value our returning customers! You will earn Royalty Points on every purchase. How it works For every Rs. 5,000 spent, you earn 100 Points. Redemption 1 Point is equal to Rs. 1. You can redeem these points on future orders."
   }
   ,
   {
