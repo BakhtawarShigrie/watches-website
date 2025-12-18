@@ -272,16 +272,16 @@ export const homeFeaturedProducts: Product[] = [
 
 export const homeLovedProducts: Product[] = [
   {
+    ...mainProductsData[0], 
+    thumbnail: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1766095942/Gemini_Generated_Image_zdh7jezdh7jezdh7_w1hpd3.jpg"
+  },
+  {
     ...mainProductsData[1], 
-    thumbnail: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8d2F0Y2h8ZW58MHx8MHx8fDA%3D"
+    thumbnail: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1766095941/Gemini_Generated_Image_x2mjwcx2mjwcx2mj_w8tmnk.jpg"
   },
   {
-    ...mainProductsData[4], 
-    thumbnail: "https://images.unsplash.com/photo-1622434641406-a158123450f9?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8d2F0Y2h8ZW58MHx8MHx8fDA%3D"
-  },
-  {
-    ...mainProductsData[9], 
-    thumbnail: "https://images.unsplash.com/photo-1582150264904-e0bea5ef0ad1?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8d3Jpc3R3YXRjaHxlbnwwfHwwfHx8MA%3D%3D"
+    ...mainProductsData[2], 
+    thumbnail: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1766095941/Gemini_Generated_Image_mdccl6mdccl6mdcc_jsfpnb.jpg"
   }
 ];
 
@@ -328,19 +328,15 @@ export const newsArticlesData: Article[] = [
 export const faqsData: FAQ[] = [
   {
     question: "What is your exchange & return policy",
-    answer: "We offer a 30-day exchange and return policy for all unworn watches in original packaging. Please retain your receipt.",
+    answer: "We offer a 03-day exchange and return policy for all unworn watches in original packaging. Please retain your receipt.",
   },
   {
     question: "How will my order be shipped",
     answer: "All orders are shipped via insured express courier services. You will receive a tracking number once your order is dispatched.",
   },
   {
-    question: "How can I become part of the Loyalty Program",
-    answer: "You can join our Loyalty Program by creating an account on our website. Points are earned on every purchase.",
-  },
-  {
     question: "Can I collect my order from your retail stores?",
-    answer: "Yes, you can choose the 'Click & Collect' option at checkout to pick up your order from your nearest store.",
+    answer: "currently, you can purchase our products online.",
   },
   {
     question: "Do you offer international shipping?",
