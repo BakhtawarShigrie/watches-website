@@ -110,7 +110,7 @@ export const mainProductsData: Product[] = [
     description: "Watch for boy’s stainless steel water resistant.",
     stock: 876,
     reviews: 912,
-    category: "Men Formal",
+    category: "Luxury Watches",
     gender: "Men",
     redeemCodeAvailable: true,
     videoUrl: "https://youtube.com/shorts/3xmAPT-fsUY"
@@ -126,7 +126,7 @@ export const mainProductsData: Product[] = [
     description: "Green dial chronograph, perfect for business meetings and daily wear.",
     stock: 1472,
     reviews: 207,
-    category: "Men Formal",
+    category: "Luxury Watches",
     gender: "Men",
     redeemCodeAvailable: true,
     videoUrl: "https://youtube.com/shorts/SzCFGE-B_Xs"
@@ -190,7 +190,7 @@ export const mainProductsData: Product[] = [
     description: "Slimline series in a sleek Golden finish. Lightweight comfort.",
     stock: 97,
     reviews: 53,
-    category: "Luxury Watches",
+    category: "Men Formal",
     gender: "Men",
     redeemCodeAvailable: true,
     videoUrl: "https://youtube.com/shorts/4uVWRt8oV-A"
@@ -222,7 +222,7 @@ export const mainProductsData: Product[] = [
     description: "Very sporty and unique finish.",
     stock: 387,
     reviews: 186,
-    category: "Luxury Watches",
+    category: "Men Formal",
     gender: "Men",
     redeemCodeAvailable: true,
     videoUrl: "https://youtube.com/shorts/hVGxK0wA4y0"
@@ -254,7 +254,7 @@ export const mainProductsData: Product[] = [
     description: "Very sporty and unique finish.",
     stock: 287,
     reviews: 141,
-    category: "Luxury Watches",
+    category: "Men Formal",
     gender: "Men",
     redeemCodeAvailable: true,
     videoUrl: "https://youtube.com/shorts/hVGxK0wA4y0"

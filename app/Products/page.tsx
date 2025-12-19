@@ -91,7 +91,8 @@ function ProductsContent() {
       result = result.filter((p) => p.brand === selectedBrand);
     }
 
-    if (selectedCategory !== "All") {
+    // UPDATED LOGIC: "12.12 Sale" shows ALL products
+    if (selectedCategory !== "All" && selectedCategory !== "12.12 Sale") {
       result = result.filter((p) => p.category === selectedCategory);
     }
 
@@ -114,11 +115,15 @@ function ProductsContent() {
     if (product.stock === 0) {
       return <span className="absolute top-2 left-2 z-10 bg-red-700 text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">Out of Stock</span>;
     }
+    // Agar "12.12 Sale" category select ho, toh "Sale" badge dikha sakte hein (Optional)
+    if (selectedCategory === "12.12 Sale") {
+         return <span className="absolute top-2 left-2 z-10 bg-[#e60000] text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">12.12 Sale</span>;
+    }
     if (product.isNew) {
       return <span className="absolute top-2 left-2 z-10 bg-[#3a800d] text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">New</span>;
     }
     return <span className="absolute top-2 left-2 z-10 bg-blue-700 text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">In Stock</span>;
-};
+  };
 
   const clearFilters = () => {
     setSelectedBrand("All");
@@ -140,7 +145,7 @@ function ProductsContent() {
             
             <Link 
               href="/" 
-              className={`text-lg font-bold tracking-[0.15em] uppercase whitespace-nowrap transition-all duration-3000 ease-in-out ${
+              className={`text-lg font-bold tracking-[0.15em] uppercase whitespace-nowrap transition-all duration-300 ease-in-out ${
                 isSearchOpen ? "w-0 opacity-0 overflow-hidden md:w-auto md:opacity-100" : "w-auto opacity-100"
               }`}
             >
@@ -222,7 +227,6 @@ function ProductsContent() {
       {/* SECTION 2: MAIN CONTENT AREA */}
       <div className="flex container mx-auto px-4 md:px-0 mb-10">
         
-        {/* CHANGED: Increased Z-index to 50 for mobile, reset to 30 for desktop (lg:z-30) */}
         <aside className={`fixed inset-y-0 left-0 z-50 lg:z-30 w-[85%] max-w-xs bg-white shadow-2xl transform transition-transform duration-300 lg:sticky lg:top-54 lg:h-[calc(100vh-13.5rem)] lg:translate-x-0 lg:shadow-none lg:w-64 lg:flex-none lg:border-r lg:border-gray-200 overflow-y-auto ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
           {/* Mobile Overlay Button */}
           <div className="lg:hidden absolute top-0 right-0 p-4">
@@ -326,12 +330,20 @@ function ProductsContent() {
           </div>
         </aside>
 
-        {/* Mobile Backdrop - Using z-40 so it's above z-30 sidebar if needed, but below z-50 header */}
+        {/* Mobile Backdrop */}
         {isSidebarOpen && <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setIsSidebarOpen(false)}></div>}
 
         {/* RIGHT SIDE: PRODUCTS AREA */}
         <main className="flex-1 bg-white">
             <div className="p-4 md:p-8 min-h-[50vh]">
+                {/* Optional Banner for 12.12 Sale */}
+                {selectedCategory === "12.12 Sale" && (
+                    <div className="mb-8 p-6 bg-red-600 text-white rounded-sm text-center shadow-lg">
+                        <h2 className="text-3xl font-serif font-bold mb-2">12.12 MEGA SALE</h2>
+                        <p className="text-sm font-medium tracking-wide uppercase">Flat Discount on All Products</p>
+                    </div>
+                )}
+
                 {filteredProducts.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {filteredProducts.map((product) => {
@@ -353,7 +365,6 @@ function ProductsContent() {
                                     <h4 className="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-1">{product.brand}</h4>
                                     <h3 className="text-sm font-medium text-black leading-snug mb-2 px-2">{product.name}</h3>
                                     
-                                    {/* CHANGED: Show Original Price if exists and higher than selling price */}
                                     <div className="flex items-center justify-center gap-2">
                                         {product.originalPrice && product.originalPrice > product.price && (
                                             <span className="text-xs text-gray-400 line-through">Rs {product.originalPrice.toLocaleString()}</span>
