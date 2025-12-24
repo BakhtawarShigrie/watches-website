@@ -259,6 +259,54 @@ export const mainProductsData: Product[] = [
     redeemCodeAvailable: true,
     videoUrl: "https://youtube.com/shorts/hVGxK0wA4y0"
   },
+  {
+    id: 12,
+    brand: "MOONSTON",
+    name: "Moonston – E201 (Silver)",
+    price: 3999,
+    originalPrice: 6999,
+    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1766607466/15_nou7sn.jpg",
+    isNew: true,
+    description: "Moonston Female Watch E201 Silver Stainless Steel Band Water Resistant.",
+    stock: 289,
+    reviews: 341,
+    category: "Female Watches",
+    gender: "Women",
+    redeemCodeAvailable: true,
+    videoUrl: ""
+  },
+  {
+    id: 13,
+    brand: "MOONSTON",
+    name: "Moonston – E202 (Silver & Gold)",
+    price: 3999,
+    originalPrice: 6999,
+    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1766607466/16_ieysjx.jpg",
+    isNew: true,
+    description: "Moonston Female Watch E202 Silver & Gold Stainless Steel Band Water Resistant.",
+    stock: 189,
+    reviews: 621,
+    category: "Female Watches",
+    gender: "Women",
+    redeemCodeAvailable: true,
+    videoUrl: ""
+  },
+  {
+    id: 14,
+    brand: "MOONSTON",
+    name: "Moonston – E203 (Rose Gold)",
+    price: 3999,
+    originalPrice: 6999,
+    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1766607467/17_nrb7k5.jpg",
+    isNew: true,
+    description: "Moonston Female Watch E203 Rose Gold Stainless Steel Band Water Resistant.",
+    stock: 432,
+    reviews: 121,
+    category: "Female Watches",
+    gender: "Women",
+    redeemCodeAvailable: true,
+    videoUrl: ""
+  },
 ];
 
 // --- FEATURED & LOVED LISTS ---
