@@ -273,7 +273,7 @@ export const mainProductsData: Product[] = [
     category: "Female Watches",
     gender: "Women",
     redeemCodeAvailable: true,
-    videoUrl: ""
+    videoUrl: "https://www.youtube.com/shorts/Y2oer21bpMk"
   },
   {
     id: 13,
@@ -289,7 +289,7 @@ export const mainProductsData: Product[] = [
     category: "Female Watches",
     gender: "Women",
     redeemCodeAvailable: true,
-    videoUrl: ""
+    videoUrl: "https://www.youtube.com/shorts/cUCP0qaSaNo"
   },
   {
     id: 14,
@@ -305,7 +305,7 @@ export const mainProductsData: Product[] = [
     category: "Female Watches",
     gender: "Women",
     redeemCodeAvailable: true,
-    videoUrl: ""
+    videoUrl: "https://www.youtube.com/shorts/XIt1MFfo0ug"
   },
 ];
 
