@@ -307,6 +307,86 @@ export const mainProductsData: Product[] = [
     redeemCodeAvailable: true,
     videoUrl: "https://www.youtube.com/shorts/XIt1MFfo0ug"
   },
+  {
+    id: 15,
+    brand: "CARRERA",
+    name: "Carrera – S121",
+    price: 3999,
+    originalPrice: 5999,
+    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1766757806/18_s0e0bg.jpg",
+    isNew: true,
+    description: "Carrera watch S121 with elegant design and premium quality materials.",
+    stock: 232,
+    reviews: 423,
+    category: "Men Formal",
+    gender: "Men",
+    redeemCodeAvailable: true,
+    videoUrl: ""
+  },
+  {
+    id: 16,
+    brand: "CARRERA",
+    name: "Carrera – S122",
+    price: 3999,
+    originalPrice: 5999,
+    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1766757806/19_ksg5h8.jpg",
+    isNew: true,
+    description: "Carrera watch S122 with elegant design and premium quality materials.",
+    stock: 332,
+    reviews: 123,
+    category: "Men Formal",
+    gender: "Men",
+    redeemCodeAvailable: true,
+    videoUrl: ""
+  },
+  {
+    id: 17,
+    brand: "CARRERA",
+    name: "Carrera – S123",
+    price: 3999,
+    originalPrice: 5999,
+    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1766757806/20_peovwp.jpg",
+    isNew: true,
+    description: "Carrera watch S123 with elegant design and premium quality materials.",
+    stock: 134,
+    reviews: 623,
+    category: "Men Formal",
+    gender: "Men",
+    redeemCodeAvailable: true,
+    videoUrl: ""
+  },
+  {
+    id: 18,
+    brand: "PHILIPPE",
+    name: "Philippe – M049",
+    price: 6999,
+    originalPrice: 11999,
+    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1766757806/21_v1wwvu.jpg",
+    isNew: true,
+    description: "Philippe diamonds Men watch M049 with elegant design and premium quality materials.",
+    stock: 39,
+    reviews: 63,
+    category: "Luxury Watches",
+    gender: "Men",
+    redeemCodeAvailable: true,
+    videoUrl: ""
+  },
+  {
+    id: 19,
+    brand: "PHILIPPE",
+    name: "Philippe – F050",
+    price: 6999,
+    originalPrice: 11999,
+    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1766757806/22_lksheu.jpg",
+    isNew: true,
+    description: "Philippe diamonds Women watch F050 with elegant design and premium quality materials.",
+    stock: 39,
+    reviews: 63,
+    category: "Female Watches",
+    gender: "Women",
+    redeemCodeAvailable: true,
+    videoUrl: ""
+  },
 ];
 
 // --- FEATURED & LOVED LISTS ---
@@ -419,7 +499,9 @@ export const brandsList = [
   "ROLEX",
   "FORICHS",
   "MOONSTON",
-  "SUCCESS WAY"
+  "SUCCESS WAY",
+  "CARRERA",
+  "PHILIPPE"
 ];
 
 export const sidebarFiltersList = [
