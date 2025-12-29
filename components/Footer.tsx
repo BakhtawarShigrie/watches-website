@@ -111,7 +111,7 @@ export default function Footer() {
             <h3 className="text-xl font-bold uppercase">Shipping & Delivery</h3>
             <div className="text-sm text-gray-600 leading-relaxed bg-blue-50 p-4 border border-blue-200 rounded-sm space-y-2">
               <p>
-                Shipping charges are <span className="font-bold">Rs. 200</span>{" "}
+                Shipping charges are <span className="font-bold">Rs. 250</span>{" "}
                 nationwide, which must be paid in advance to confirm your order.
               </p>
               <p>

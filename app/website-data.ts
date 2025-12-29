@@ -465,7 +465,7 @@ export const faqsData: FAQ[] = [
   }
   ,{
     question: "How do I confirm my order?",
-    answer: "To confirm your order, you need to pay Rs. 200 delivery charges in advance via JazzCash or EasyPaisa. Please share the payment screenshot with our WhatsApp support team to process your order. The remaining amount will be collected via Cash on Delivery (COD) when the rider arrives."
+    answer: "To confirm your order, you need to pay Rs. 250 delivery charges in advance via JazzCash or EasyPaisa. Please share the payment screenshot with our WhatsApp support team to process your order. The remaining amount will be collected via Cash on Delivery (COD) when the rider arrives."
   }
   ,{
     question: "Is there a warranty or return policy?",

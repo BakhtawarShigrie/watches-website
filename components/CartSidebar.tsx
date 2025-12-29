@@ -17,7 +17,7 @@ export default function CartSidebar() {
     return total + (price * item.quantity);
   }, 0);
 
-  const deliveryCharges = 200;
+  const deliveryCharges = 250;
   
   const grandTotal = subtotal + deliveryCharges;
 
@@ -50,7 +50,7 @@ export default function CartSidebar() {
     message += `\n*🚚 Delivery Charges:* Rs. ${deliveryCharges}`;
     message += `\n*💰 Grand Total:* Rs. ${grandTotal.toLocaleString()}\n\n`;
     message += "-----------------------------\n";
-    message += "ℹ️ *Note:* I agree to pay Rs. 200 Delivery Charges in advance.\n";
+    message += "ℹ️ *Note:* I agree to pay Rs. 250 Delivery Charges in advance.\n";
     message += "Please confirm my order.";
 
     const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
@@ -190,7 +190,7 @@ export default function CartSidebar() {
             </div>
             <div className="p-6">
                 <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 p-3 rounded-md mb-6 text-sm">
-                    <strong>Note:</strong> Order is <strong>Cash on Delivery</strong>. However, you must pay <strong>Rs. 200 Delivery Charges</strong> in advance via JazzCash/EasyPaisa to confirm.
+                    <strong>Note:</strong> Order is <strong>Cash on Delivery</strong>. However, you must pay <strong>Rs. 250 Delivery Charges</strong> in advance via JazzCash/EasyPaisa to confirm.
                 </div>
 
                 <h4 className="text-sm font-bold text-gray-700 mb-3 border-b pb-1">Order Summary:</h4>

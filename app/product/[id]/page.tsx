@@ -94,7 +94,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   };
 
   const handleWhatsApp = () => {
-    const deliveryCharges = 200;
+    const deliveryCharges = 250;
     const total = (finalPrice * quantity) + deliveryCharges;
     let message = "👋 *Hi, I want to order this product:*\n\n";
     message += `🛒 *Product:* ${product.name}\n`;
@@ -105,7 +105,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         message += `🎟 *Coupon Applied:* ✅ (Rs. ${redeemDiscountAmount} OFF)\n`;
     }
 
-    message += `🚚 *Delivery Charges:* Rs. 200\n`;
+    message += `🚚 *Delivery Charges:* Rs. 250\n`;
     message += `-----------------------------\n`;
     message += `💵 *Total Payable:* Rs. ${total.toLocaleString()}\n\n`;
     message += "Please confirm my order.";
