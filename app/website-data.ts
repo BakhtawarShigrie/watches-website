@@ -89,7 +89,7 @@ export const mainProductsData: Product[] = [
     name: "Moonston – Arabic Aura",
     price: 999,
     originalPrice: 2499,
-    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765132038/12_is3twq.jpg",
+    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1767005385/23_mmlybe.jpg",
     isNew: false,
     description: "A classic stainless steel chronograph with a deep blue dial. Perfect for formal wear.",
     stock: 1871,
@@ -97,7 +97,7 @@ export const mainProductsData: Product[] = [
     category: "Men Formal",
     gender: "Men",
     redeemCodeAvailable: false,
-    videoUrl: "https://www.youtube.com/shorts/BeBkVtvHw3k"
+    videoUrl: "https://www.youtube.com/shorts/cfsogNzxK0s"
   },
   {
     id: 2,
@@ -182,7 +182,7 @@ export const mainProductsData: Product[] = [
   {
     id: 7,
     brand: "CITIZEN",
-    name: "Citizen – EFR-S108DE-8AVUDM",
+    name: "Citizen (Men) – EFR-8AVUDM",
     price: 3499,
     originalPrice: 6499,
     image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765132037/3_lyygco.jpg",
@@ -190,7 +190,7 @@ export const mainProductsData: Product[] = [
     description: "Slimline series in a sleek Golden finish. Lightweight comfort.",
     stock: 97,
     reviews: 53,
-    category: "Men Formal",
+    category: "Couple Watches",
     gender: "Men",
     redeemCodeAvailable: true,
     videoUrl: "https://youtube.com/shorts/4uVWRt8oV-A"
@@ -230,15 +230,15 @@ export const mainProductsData: Product[] = [
   {
     id: 10,
     brand: "CITIZEN",
-    name: "Citizen – EFR-S108DE-8AVUDF",
+    name: "Citizen (Women) – EFR-8AVUDF",
     price: 3499,
     originalPrice: 6499,
-    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1765132039/13_p0m1pg.jpg",
+    image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1767006113/24_zjekrj.jpg",
     isNew: true,
     description: "Slimline series in a sleek Golden finish. Lightweight comfort.",
     stock: 97,
     reviews: 29,
-    category: "Female Watches",
+    category: "Couple Watches",
     gender: "Women",
     redeemCodeAvailable: true,
     videoUrl: "https://youtube.com/shorts/hdckfeOnFe8"
@@ -358,7 +358,7 @@ export const mainProductsData: Product[] = [
   {
     id: 18,
     brand: "PHILIPPE",
-    name: "Philippe – M049",
+    name: "Philippe (Men) – M049",
     price: 6999,
     originalPrice: 11999,
     image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1766757806/21_v1wwvu.jpg",
@@ -366,7 +366,7 @@ export const mainProductsData: Product[] = [
     description: "Philippe diamonds Men watch M049 with elegant design and premium quality materials.",
     stock: 39,
     reviews: 63,
-    category: "Luxury Watches",
+    category: "Couple Watches",
     gender: "Men",
     redeemCodeAvailable: true,
     videoUrl: ""
@@ -374,7 +374,7 @@ export const mainProductsData: Product[] = [
   {
     id: 19,
     brand: "PHILIPPE",
-    name: "Philippe – F050",
+    name: "Philippe (Women) – F050",
     price: 6999,
     originalPrice: 11999,
     image: "https://res.cloudinary.com/dm7irbzcf/image/upload/v1766757806/22_lksheu.jpg",
@@ -382,7 +382,7 @@ export const mainProductsData: Product[] = [
     description: "Philippe diamonds Women watch F050 with elegant design and premium quality materials.",
     stock: 39,
     reviews: 63,
-    category: "Female Watches",
+    category: "Couple Watches",
     gender: "Women",
     redeemCodeAvailable: true,
     videoUrl: ""

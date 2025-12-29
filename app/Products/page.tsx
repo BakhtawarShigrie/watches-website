@@ -354,10 +354,10 @@ function ProductsContent() {
                                 <div className="relative w-full aspect-[0.8] bg-white mb-4 overflow-hidden border border-gray-100 rounded-sm">
                                     {renderProductBadge(product)}
                                     <Image src={product.image} alt={product.name} fill className="object-contain p-4 transition-transform duration-500 group-hover:scale-105" />
-                                    <button onClick={(e) => {e.preventDefault(); e.stopPropagation(); toggleWishlist(product.id);}} className={`absolute top-2 right-2 p-2 rounded-full shadow-md z-20 transition-all ${isWishlisted ? "bg-red-50 text-red-500" : "bg-white text-gray-400 hover:text-red-500"}`} title="Add to Wishlist">
+                                    <button onClick={(e) => {e.preventDefault(); e.stopPropagation(); toggleWishlist(product.id);}} className={`absolute top-2 right-2 p-2 rounded-full shadow-md z-20 transition-all ${isWishlisted ? "bg-red-50 text-red-500" : "bg-white text-gray-400 cursor-pointer hover:bg-gray-100 hover:text-red-500"}`} title="Add to Wishlist">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill={isWishlisted ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                                     </button>
-                                    <button onClick={(e) => {e.preventDefault(); e.stopPropagation(); addToCart(product);}} className="absolute bottom-4 right-4 bg-white text-black p-3 rounded-full shadow-lg hover:bg-gray-800 transition-all z-20 opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-10 lg:group-hover:opacity-100 lg:group-hover:translate-y-0" title="Add to Cart">
+                                    <button onClick={(e) => {e.preventDefault(); e.stopPropagation(); addToCart(product);}} className="absolute bottom-4 right-4 bg-white text-black p-3 rounded-full shadow-lg hover:bg-gray-100 cursor-pointer transition-all z-20 opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-10 lg:group-hover:opacity-100 lg:group-hover:translate-y-0" title="Add to Cart">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
                                     </button>
                                 </div>
@@ -367,7 +367,7 @@ function ProductsContent() {
                                     
                                     <div className="flex items-center justify-center gap-2">
                                         {product.originalPrice && product.originalPrice > product.price && (
-                                            <span className="text-xs text-gray-400 line-through">Rs {product.originalPrice.toLocaleString()}</span>
+                                            <span className="text-xs text-red-600 line-through">Rs {product.originalPrice.toLocaleString()}</span>
                                         )}
                                         <div className="text-sm font-bold text-gray-900">Rs {product.price.toLocaleString()}</div>
                                     </div>
